@@ -24,5 +24,3 @@ Elle se divisera en plusieur sprint qui correspondont aux differentes fonctional
   - [x] Configuration du web.xml
     - [x] Creation du servlet FrontMapping
     - [x] Url pattern '/'
-
-
