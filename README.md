@@ -11,18 +11,16 @@ Elle se divisera en plusieur sprint qui correspondont aux differentes fonctional
 
 ### Sprint 0
 
-- [ ] Creation du working directory
-  - [ ] Le dossier de travail du framework
-  - [ ] Le dossier du projet de WebTest  
-- [ ]  Creation des Scripts
-  - [ ] Script de deployement du framework en jar
-  - [ ] Script de deployement du projet web
-- [ ] FrontController
-  - [ ] doGet et doPost => processRequest
-  - [ ] processRequest
-    - [ ] afiicher l'url
-  - [ ] Configuration du web.xml
-    - [ ] Creation du servlet FrontMapping
-    - [ ] Url pattern '/'
-
-
+- [x] Creation du working directory
+  - [x] Le dossier de travail du framework
+  - [x] Le dossier du projet de WebTest  
+- [x]  Creation des Scripts
+  - [x] Script de deployement du framework en jar
+  - [x] Script de deployement du projet web
+- [x] FrontController
+  - [x] doGet et doPost => processRequest
+  - [x] processRequest
+    - [x] afiicher l'url
+  - [x] Configuration du web.xml
+    - [x] Creation du servlet FrontMapping
+    - [x] Url pattern '/'
