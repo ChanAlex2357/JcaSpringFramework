@@ -9,6 +9,8 @@ OUTPUT_DIR="./dist"
 # Le dossier des fichiers compilee
 BIN_DIR="./bin"
 
+README="README.md"
+
 # Supprimer le dossier de destination s'il existe déjà
 if [ -d "$OUTPUT_DIR" ]; then
   rm -rf $OUTPUT_DIR
@@ -24,6 +26,9 @@ cp lib/*.jar $OUTPUT_DIR/lib
 
 # Copier les fichiers de ressources dans le dossier resources
 cp -R $SOURCE_DIR/resources $OUTPUT_DIR
+
+# Copier le readme dans la distribution
+cp -R $README $OUTPUT_DIR
 
 # Créer le fichier JAR
 jar cf $JAR_NAME -C $OUTPUT_DIR .
