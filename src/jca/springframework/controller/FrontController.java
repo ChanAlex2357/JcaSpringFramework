@@ -4,7 +4,6 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletResponse;
@@ -19,7 +18,6 @@ public class FrontController extends HttpServlet{
     private String controller_package;
     private boolean scann_status;
     private List<String> controllers;
-    private PackageScanner package_scanner;
 
     
     @Override
