@@ -29,6 +29,8 @@ public class FrontController extends HttpServlet{
         this.setScann_status(false);
         /// Initialiser la liste des controllers a 0 
         this.setControllers(new ArrayList<String>());
+        /// Scanner la liste des controllers
+        this.scann_controllers();
     }
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -40,7 +42,6 @@ public class FrontController extends HttpServlet{
     }
 
     protected void processRequest(HttpServletRequest req, HttpServletResponse resp)throws ServletException, IOException {
-        this.scann_controllers();
         PrintWriter out = resp.getWriter();
         out.println("URL : "+req.getRequestURL().toString());
         this.printControllers(out);
@@ -49,13 +50,15 @@ public class FrontController extends HttpServlet{
 /// Fonctionalites
     public List<String> scann_controllers(){
         if (!scann_status) {
-            setControllers(PackageScanner.findClassesNames(this.getController_package()));
+            setControllers(
+                PackageScanner.findAnnotedClassesNames(getController_package(), null)
+            );
         }
-        
         return this.getControllers();
     }
     private void printControllers(PrintWriter out){
         List<String> list  = this.getControllers();
+        out.println("PACKAGE : "+this.getController_package());
         out.println("CONTROLLERS :");
         for (String controller : list) {
             out.println("\t- "+controller);
@@ -76,6 +79,9 @@ public class FrontController extends HttpServlet{
         this.scann_status = scann_status;
     }
     public List<String> getControllers() {
+        if(!isScann_status()){
+            controllers = this.scann_controllers();
+        }
         return controllers;
     }
     public void setControllers(List<String> controllers) {
