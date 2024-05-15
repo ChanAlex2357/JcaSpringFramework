@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletResponse;
 import jca.springframework.PackageScanner;
 import jakarta.servlet.http.HttpServletRequest;
+import jca.springframework.annotations.Controller;
 /**
  * FrontController
  * Joue le role du servlet principale qui va recuperer tout les requetes entrantes
@@ -48,13 +49,15 @@ public class FrontController extends HttpServlet{
     }
 
 /// Fonctionalites
-    public List<String> scann_controllers(){
+    public void scann_controllers(){
         if (!scann_status) {
             setControllers(
-                PackageScanner.findAnnotedClassesNames(getController_package(), null)
+                PackageScanner.findAnnotedClassesNames(
+                    getController_package(),
+                    Controller.class 
+                )
             );
         }
-        return this.getControllers();
     }
     private void printControllers(PrintWriter out){
         List<String> list  = this.getControllers();
@@ -80,7 +83,7 @@ public class FrontController extends HttpServlet{
     }
     public List<String> getControllers() {
         if(!isScann_status()){
-            controllers = this.scann_controllers();
+            this.scann_controllers();
         }
         return controllers;
     }
