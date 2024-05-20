@@ -2,6 +2,7 @@ package jca.springframework.controller;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import jakarta.servlet.ServletException;
@@ -17,19 +18,14 @@ import jca.springframework.annotations.Controller;
 public class FrontController extends HttpServlet{
     /// Le package des controllers
     private String controller_package;
-    private boolean scann_status;
-    private List<String> controllers;
+    /// Mapping des controller
+    private HashMap<String,String> urlMapping;
 
-    
     @Override
     public void init() throws ServletException {
         super.init();
         /// Recuperer le nom de package des controller 
         this.setController_package(getServletConfig().getInitParameter("package-name"));
-        /// Considerer que le scan est encore a faire 
-        this.setScann_status(false);
-        /// Initialiser la liste des controllers a 0 
-        this.setControllers(new ArrayList<String>());
         /// Scanner la liste des controllers
         this.scann_controllers();
     }
@@ -50,17 +46,14 @@ public class FrontController extends HttpServlet{
 
 /// Fonctionalites
     public void scann_controllers(){
-        if (!scann_status) {
-            setControllers(
-                PackageScanner.findAnnotedClassesNames(
-                    getController_package(),
-                    Controller.class 
-                )
+
+            PackageScanner.findAnnotedClasses(
+                getController_package(),
+                Controller.class 
             );
-        }
     }
     private void printControllers(PrintWriter out){
-        List<String> list  = this.getControllers();
+        List<String> list  = new ArrayList<>();
         out.println("PACKAGE : "+this.getController_package());
         out.println("CONTROLLERS :");
         for (String controller : list) {
@@ -75,19 +68,11 @@ public class FrontController extends HttpServlet{
     public void setController_package(String controller_package) {
         this.controller_package = controller_package;
     }
-    public boolean isScann_status() {
-        return scann_status;
+
+    public HashMap<String, String> getUrlMapping() {
+        return urlMapping;
     }
-    public void setScann_status(boolean scann_status) {
-        this.scann_status = scann_status;
-    }
-    public List<String> getControllers() {
-        if(!isScann_status()){
-            this.scann_controllers();
-        }
-        return controllers;
-    }
-    public void setControllers(List<String> controllers) {
-        this.controllers = controllers;
+    public void setUrlMapping(HashMap<String, String> urlMapping) {
+        this.urlMapping = urlMapping;
     }
 }
