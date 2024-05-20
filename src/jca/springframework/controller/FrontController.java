@@ -1,6 +1,7 @@
 package jca.springframework.controller;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -19,13 +20,15 @@ public class FrontController extends HttpServlet{
     /// Le package des controllers
     private String controller_package;
     /// Mapping des controller
-    private HashMap<String,String> urlMapping;
+    private HashMap<String,Mapping> urlMapping;
 
     @Override
     public void init() throws ServletException {
         super.init();
         /// Recuperer le nom de package des controller 
         this.setController_package(getServletConfig().getInitParameter("package-name"));
+        /// Iitialiser la liste a 0
+        this.setUrlMapping(new HashMap<String,Mapping>());
         /// Scanner la liste des controllers
         this.scann_controllers();
     }
@@ -46,11 +49,21 @@ public class FrontController extends HttpServlet{
 
 /// Fonctionalites
     public void scann_controllers(){
-
-            PackageScanner.findAnnotedClasses(
-                getController_package(),
-                Controller.class 
-            );
+        /// Recuperer la liste de tous les controllers du contexte
+        List<Class<?>> controllersClasses =  PackageScanner.findAnnotedClasses(
+                                            getController_package(),
+                                Controller.class 
+                                        );
+        for (Class<?> controller : controllersClasses) {
+            Method[] controllerMethods = controller.getDeclaredMethods();
+            for (Method method : controllerMethods) {
+                ///  Creation de l'objet mapping controller -> method 
+                Mapping mapping = new Mapping(controller.getName(),method.getName());
+                /// Ajouter a la liste de url mapping correspondant
+                getUrlMapping().put("/",mapping);
+            }
+        }
+        
     }
     private void printControllers(PrintWriter out){
         List<String> list  = new ArrayList<>();
@@ -59,7 +72,6 @@ public class FrontController extends HttpServlet{
         for (String controller : list) {
             out.println("\t- "+controller);
         }
-
     }
 /// Getteurs et Setteurs
     public String getController_package() {
@@ -69,10 +81,10 @@ public class FrontController extends HttpServlet{
         this.controller_package = controller_package;
     }
 
-    public HashMap<String, String> getUrlMapping() {
+    public HashMap<String, Mapping> getUrlMapping() {
         return urlMapping;
     }
-    public void setUrlMapping(HashMap<String, String> urlMapping) {
+    public void setUrlMapping(HashMap<String, Mapping> urlMapping) {
         this.urlMapping = urlMapping;
     }
 }

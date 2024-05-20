@@ -4,6 +4,10 @@ public class Mapping {
     String classControllerName;
     String methodeControllerName;
 
+    public Mapping(String classControllerName, String methodeControllerName) {
+        setClassControllerName(classControllerName);
+        setMethodeControllerName(methodeControllerName);
+    }
     public String getClassControllerName() {
         return classControllerName;
     }
@@ -15,5 +19,10 @@ public class Mapping {
     }
     public void setMethodeControllerName(String methodeControllerName) {
         this.methodeControllerName = methodeControllerName;
+    }
+
+    @Override
+    public String toString() {
+        return getClassControllerName() +" => "+getMethodeControllerName();
     }
 }
