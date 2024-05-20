@@ -2,7 +2,6 @@ package jca.springframework.controller;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
@@ -10,9 +9,11 @@ import java.util.Set;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletResponse;
+import jca.springframework.MethodScanner;
 import jca.springframework.PackageScanner;
 import jakarta.servlet.http.HttpServletRequest;
 import jca.springframework.annotations.Controller;
+import jca.springframework.annotations.Get;
 /**
  * FrontController
  * Joue le role du servlet principale qui va recuperer tout les requetes entrantes
@@ -58,10 +59,13 @@ public class FrontController extends HttpServlet{
         for (Class<?> controller : controllersClasses) {
             Method[] controllerMethods = controller.getDeclaredMethods();
             for (Method method : controllerMethods) {
-                ///  Creation de l'objet mapping controller -> method 
-                Mapping mapping = new Mapping(controller.getName(),method.getName());
-                /// Ajouter a la liste de url mapping correspondant
-                getUrlMapping().put("/",mapping);
+                Get getConfig =  MethodScanner.getGetAnnotation(method);
+                if ( getConfig != null) {
+                    ///  Creation de l'objet mapping controller -> method 
+                    Mapping mapping = new Mapping(controller.getName(),method.getName());
+                    /// Ajouter a la liste de url mapping correspondant
+                    getUrlMapping().put(getConfig.url(),mapping);
+                }
             }
         }
         
