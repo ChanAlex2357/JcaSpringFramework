@@ -5,6 +5,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
@@ -66,11 +67,11 @@ public class FrontController extends HttpServlet{
         
     }
     private void printControllers(PrintWriter out){
-        List<String> list  = new ArrayList<>();
         out.println("PACKAGE : "+this.getController_package());
         out.println("CONTROLLERS :");
-        for (String controller : list) {
-            out.println("\t- "+controller);
+        Set<String> urls = getUrlMapping().keySet();
+        for (String url : urls) {
+            out.println("\t-"+getUrlMapping().get(url));
         }
     }
 /// Getteurs et Setteurs
