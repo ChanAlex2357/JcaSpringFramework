@@ -1,17 +1,14 @@
 package jca.springframework.controller;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
+import java.util.Set;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletResponse;
-import jca.springframework.PackageScanner;
+import jca.springframework.UrlMapping;
 import jakarta.servlet.http.HttpServletRequest;
-import jca.springframework.annotations.Controller;
 /**
  * FrontController
  * Joue le role du servlet principale qui va recuperer tout les requetes entrantes
@@ -43,34 +40,51 @@ public class FrontController extends HttpServlet{
 
     protected void processRequest(HttpServletRequest req, HttpServletResponse resp)throws ServletException, IOException {
         PrintWriter out = resp.getWriter();
-        out.println("URL : "+req.getRequestURL().toString());
-        this.printControllers(out);
+        String fullUrl = req.getRequestURL().toString();
+        out.println("URL : "+fullUrl);
+        this.printController(
+            fullUrl,
+            UrlMapping.getMappingWithFullUrl(
+                fullUrl,
+                getUrlMapping()
+            ),
+            out
+        );
     }
 
 /// Fonctionalites
+    
     public void scann_controllers(){
-        /// Recuperer la liste de tous les controllers du contexte
-        List<Class<?>> controllersClasses =  PackageScanner.findAnnotedClasses(
-                                            getController_package(),
-                                Controller.class 
-                                        );
-        for (Class<?> controller : controllersClasses) {
-            Method[] controllerMethods = controller.getDeclaredMethods();
-            for (Method method : controllerMethods) {
-                ///  Creation de l'objet mapping controller -> method 
-                Mapping mapping = new Mapping(controller.getName(),method.getName());
-                /// Ajouter a la liste de url mapping correspondant
-                getUrlMapping().put("/",mapping);
-            }
-        }
-        
+        MappingBuilder.scann_controllers(
+            getController_package(),
+            getUrlMapping()
+        );
     }
-    private void printControllers(PrintWriter out){
-        List<String> list  = new ArrayList<>();
+    
+    void printControllers(PrintWriter out){
         out.println("PACKAGE : "+this.getController_package());
         out.println("CONTROLLERS :");
-        for (String controller : list) {
-            out.println("\t- "+controller);
+        Set<String> urls = getUrlMapping().keySet();
+        for (String url : urls) {
+            printController(
+                url,
+                out
+            );
+        }
+    }
+    void printController(String url , PrintWriter out){
+        printController(
+            url,
+            UrlMapping.getMapping(url, getUrlMapping()),
+            out
+        );
+    }
+    void printController(String url , Mapping mapping , PrintWriter out ){
+        if (mapping == null) {
+            System.out.println("\t Aucun mapping ne correspond a l'url :"+url);
+        }
+        else {
+            out.println("\t-("+url+") "+mapping);
         }
     }
 /// Getteurs et Setteurs
@@ -80,7 +94,6 @@ public class FrontController extends HttpServlet{
     public void setController_package(String controller_package) {
         this.controller_package = controller_package;
     }
-
     public HashMap<String, Mapping> getUrlMapping() {
         return urlMapping;
     }

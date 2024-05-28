@@ -1,6 +1,7 @@
 package jca.springframework;
 
 import java.io.File;
+import jca.springframework.annotations.Controller;
 import java.lang.annotation.Annotation;
 import java.net.URL;
 import java.util.ArrayList;
@@ -99,5 +100,9 @@ public class PackageScanner {
 
   static public List<String> findAnnotedClassesNames(String package_name , Class<? extends Annotation> annotation){
     return findClassesNames( findAnnotedClasses(package_name, annotation));
+  }
+
+  static public List<Class<?>> findControllerCasses(String package_name){
+    return findAnnotedClasses(package_name, Controller.class);
   }
 }
