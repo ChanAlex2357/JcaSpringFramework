@@ -37,8 +37,8 @@ et envoyer le framework sur git.
 - FrontController :
   - Prendre le nom du package où se trouvent les controleurs
   - Tester si j'ai déjà scanner mes controleurs
-    - Si oui, afficher la liste des noms de mes controleurs 
-    - Sinon scanner, puis afficher la liste des noms de mes controleurs 
+    - Si oui, afficher la liste des noms de mes controleurs
+    - Sinon scanner, puis afficher la liste des noms de mes controleurs
 - Creer un ReadMe file pour décrire précisément les configs à faire pour utiliser mon framework (envoyer le ReadMe file avec mon framework sur Git)
 
 ### Coté Test
