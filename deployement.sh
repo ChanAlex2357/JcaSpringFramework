@@ -24,9 +24,6 @@ mkdir -p $OUTPUT_DIR/lib
 # Copier les dépendances de la bibliothèque dans le dossier lib
 cp lib/*.jar $OUTPUT_DIR/lib
 
-# Copier les fichiers de ressources dans le dossier resources
-cp -R $SOURCE_DIR/resources $OUTPUT_DIR
-
 # Copier le readme dans la distribution
 cp -R $README $OUTPUT_DIR
 
