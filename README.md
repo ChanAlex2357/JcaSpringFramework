@@ -9,3 +9,4 @@ Ceci est framework inspirer de spring pour implementer un systeme MVC dans un pr
   - servlet-class  : **jca.springframework.controller.FrontController**
   - url-pattern : " / "
 - Declarer dans le web.xml init-param le nom du package de controller en tant que **package-name**
+- Les controllerurs doivent retourner une valeur String ou ModelAndView
