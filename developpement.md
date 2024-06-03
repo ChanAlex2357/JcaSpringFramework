@@ -88,3 +88,24 @@ et envoyer le framework sur git.
 ### Coté Test
 
 - Changer le type de retour des methodes en String a afficher
+
+## Sprint 4
+
+**Objectif**:
+Envoyer des données du controller vers view
+
+### Côté Framework
+
+- créer une classe ModelView qui aura pour attributs: 
+- String url[url de destination après l'exécution de la méthode], 
+  - HashMap<String : nom de la variable, Object: sa valeur)> data [donnée à envoyer vers cette view],
+    - créer une fonction "AddObject" qui a comme type de retour void pour pouvoir mettre les données dans HashMap
+- Dans FrontController,
+ dans ProcessRequest, récupérer les données issues de la méthode annotée Get
+    - si les data sont de type string, retourner la valeur directement
+    - si les données sont de type ModelView, récupérer le url et dispatcher les données vers cet url 
+  - boucle de data: y faire request.setAttribute
+     - si autre, retourner "non reconnu"
+### Test
+
+Les méthodes des controlleurs qui seront annotées ont pour type de retour "String" ou "ModelView"
