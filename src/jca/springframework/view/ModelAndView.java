@@ -15,6 +15,6 @@ public class ModelAndView extends View{
         /// Ajouter les donnees data en attribut de la requete
         setAttributs(req);
         /// Dispatch vers la view demander
-        req.getRequestDispatcher( getViewPath() );
+        req.getRequestDispatcher( getViewPath() ).forward(req,resp);
     }
 }
