@@ -1,6 +1,5 @@
 package jca.springframework.controller;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.HashMap;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
