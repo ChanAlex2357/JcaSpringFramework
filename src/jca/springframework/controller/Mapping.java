@@ -1,11 +1,13 @@
 package jca.springframework.controller;
 
+import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-
-import jca.springframework.annotations.Get;
-import jca.springframework.annotations.Post;
+import jca.springframework.view.View;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 public class Mapping {
     String classControllerName;
@@ -32,9 +34,8 @@ public class Mapping {
         this.methodeControllerName = methodeControllerName;
     }
 
-    public String execute(){
-        String outString = getMethodResult().toString();
-        return outString;
+    public void execute(HttpServletRequest req, HttpServletResponse resp)throws ServletException, IOException{
+        getViewResult().dispatch(req, resp);
     }
 
     public Object getControllerInstance(){
@@ -69,5 +70,16 @@ public class Mapping {
         catch (IllegalAccessException e){} 
         catch (InvocationTargetException e){}
         return resultObject;
+    }
+
+    public View getViewResult(){
+        View view;
+        /// Recuperer l'objet de retour de la methode du controller
+        Object methodResult = getMethodResult();
+        /// Traitement du resultat
+        if (methodResult){
+
+        }
+        return view;
     }
 }
