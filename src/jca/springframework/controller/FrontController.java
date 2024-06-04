@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jca.springframework.UrlMapping;
 import jca.springframework.exception.FrameworkException;
 import jca.springframework.scanner.exception.NotControllerPackageException;
+import jca.springframework.view.ExceptionView;
 import jca.springframework.view.View;
 import jakarta.servlet.http.HttpServletRequest;
 /**
@@ -24,10 +25,10 @@ public class FrontController extends HttpServlet{
 
     private List<FrameworkException> initExceptions;
 
-    public List<FrameworkException> getInitExceptions() {
+    List<FrameworkException> getInitExceptions() {
         return initExceptions;
     }
-    public void setInitExceptions(List<FrameworkException> initExceptions) {
+    void setInitExceptions(List<FrameworkException> initExceptions) {
         this.initExceptions = initExceptions;
     }
     @Override
@@ -51,10 +52,18 @@ public class FrontController extends HttpServlet{
     }
 
     protected void processRequest(HttpServletRequest req, HttpServletResponse resp)throws ServletException, IOException {
-        /// Recuperer l'url demander
-        String fullUrl = req.getRequestURL().toString();
-        /// Excecution du mapping correspondant a l'url
-        executeMapping(fullUrl,req,resp);
+        if ( getInitExceptions().size() == 0) {
+            /// Recuperer l'url demander
+            String fullUrl = req.getRequestURL().toString();
+            /// Excecution du mapping correspondant a l'url
+            executeMapping(fullUrl,req,resp);    
+        }
+        /// Si il y a des exceptions a l'init on afficher les erreurs
+        else {
+            View excptionView = new ExceptionView(getInitExceptions());
+            excptionView.dispatch(req, resp);
+        }
+        
     }
 
 /// Fonctionalites
