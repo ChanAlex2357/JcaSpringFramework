@@ -5,6 +5,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletResponse;
 import jca.springframework.UrlMapping;
+import jca.springframework.exception.FrameworkException;
 import jca.springframework.view.View;
 import jakarta.servlet.http.HttpServletRequest;
 /**
@@ -45,14 +46,15 @@ public class FrontController extends HttpServlet{
 
 /// Fonctionalites
     public void executeMapping(String fullurl,HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
-        /// Message a afficher ; par defaut indiquant que l'url n'est associer a aucun controller
-        View viewResult = ControllerPrinter.errorMappingView(fullurl); 
-        /// Recuperer le mapping associer a l'url demander
-        Mapping mapping = UrlMapping.getMappingWithFullUrl(fullurl,getUrlMapping());
-        if (mapping != null) {
-            /// Excuter le mapping et recuperer le String de retour
+        View viewResult = null;
+        try {
+            /// Recuperer le mapping associer a l'url demander
+            Mapping mapping = UrlMapping.getMappingWithFullUrl(fullurl,getUrlMapping());
             viewResult = mapping.getViewResult();
+        } catch (FrameworkException e) {
+            viewResult = e.getExceptionView();
         }
+        
         viewResult.dispatch(req, resp);
     }
     public void scann_controllers(){
