@@ -7,6 +7,6 @@ public class UnhandledUrlException extends FrameworkException {
         super( urlMappingErrorMessage(url)  , null);
     }
     static public String urlMappingErrorMessage(String url){
-        return "\t L'url que vous demander n'est gerer par aucun Controller \t URL :"+url;
+        return "\tL'url que vous demander n'est gerer par aucun Controller \n\tURL :"+url;
     }
 }

@@ -1,16 +1,12 @@
 package jca.springframework.controller;
 
-import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import jca.springframework.view.ModelAndView;
-import jca.springframework.view.StringView;
 import jca.springframework.view.View;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import jca.springframework.view.ViewBuilder;
+import jca.springframework.view.exception.InvalidReturnException;
 
 public class Mapping {
     String classControllerName;
@@ -35,10 +31,6 @@ public class Mapping {
     }
     public void setMethodeControllerName(String methodeControllerName) {
         this.methodeControllerName = methodeControllerName;
-    }
-
-    public void execute(HttpServletRequest req, HttpServletResponse resp)throws ServletException, IOException{
-        getViewResult().dispatch(req, resp);
     }
 
     public Object getControllerInstance(){
@@ -75,16 +67,17 @@ public class Mapping {
         return resultObject;
     }
 
-    public View getViewResult(){
-        View view = null;
+    public View getViewResult()throws InvalidReturnException{
+        
         /// Recuperer l'objet de retour de la methode du controller
         Object methodResult = getMethodResult();
+
         /// Traitement du resultat
-        if (methodResult instanceof ModelAndView){
-            view = (View)methodResult;
-        }
-        else if (methodResult instanceof String) {
-            view = new StringView( methodResult.toString() );            
+        View view = ViewBuilder.getViewOf(methodResult);
+
+        /// La vue est null si le resultat ne corespond a aucun format valide
+        if ( view == null) {
+            throw new InvalidReturnException(this);
         }
         return view;
     }

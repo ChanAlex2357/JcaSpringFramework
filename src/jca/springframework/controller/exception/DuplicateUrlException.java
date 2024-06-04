@@ -1,5 +1,5 @@
 package jca.springframework.controller.exception;
 
-public class MethodeUrlMappingException {
+public class DuplicateUrlException {
     
 }
