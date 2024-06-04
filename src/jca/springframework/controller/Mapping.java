@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+
+import jca.springframework.view.ModelAndView;
+import jca.springframework.view.StringView;
 import jca.springframework.view.View;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -73,12 +76,15 @@ public class Mapping {
     }
 
     public View getViewResult(){
-        View view;
+        View view = null;
         /// Recuperer l'objet de retour de la methode du controller
         Object methodResult = getMethodResult();
         /// Traitement du resultat
-        if (methodResult){
-
+        if (methodResult instanceof ModelAndView){
+            view = (View)methodResult;
+        }
+        else if (methodResult instanceof String) {
+            view = new StringView( methodResult.toString() );            
         }
         return view;
     }

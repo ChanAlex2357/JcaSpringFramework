@@ -45,7 +45,7 @@ public class FrontController extends HttpServlet{
     }
 
 /// Fonctionalites
-    public void executeMapping(String fullurl,HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException ){
+    public void executeMapping(String fullurl,HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
         /// Message a afficher ; par defaut indiquant que l'url n'est associer a aucun controller
         View viewResult = ControllerPrinter.errorMappingView(fullurl);
         /// Recuperer le mapping associer a l'url demander
