@@ -1,11 +1,15 @@
 package jca.springframework.controller;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletResponse;
 import jca.springframework.UrlMapping;
 import jca.springframework.exception.FrameworkException;
+import jca.springframework.scanner.exception.NotControllerPackageException;
 import jca.springframework.view.View;
 import jakarta.servlet.http.HttpServletRequest;
 /**
@@ -18,9 +22,18 @@ public class FrontController extends HttpServlet{
     /// Mapping des controller
     private HashMap<String,Mapping> urlMapping;
 
+    private List<FrameworkException> initExceptions;
+
+    public List<FrameworkException> getInitExceptions() {
+        return initExceptions;
+    }
+    public void setInitExceptions(List<FrameworkException> initExceptions) {
+        this.initExceptions = initExceptions;
+    }
     @Override
     public void init() throws ServletException {
         super.init();
+        setInitExceptions(new ArrayList<>());
         /// Recuperer le nom de package des controller 
         this.setController_package(getServletConfig().getInitParameter("package-name"));
         /// Iitialiser la liste a 0
@@ -57,11 +70,19 @@ public class FrontController extends HttpServlet{
         
         viewResult.dispatch(req, resp);
     }
-    public void scann_controllers(){
-        MappingBuilder.scann_controllers(
-            getController_package(),
-            getUrlMapping()
-        );
+    private void scann_controllers(){
+        try {
+            MappingBuilder.scann_controllers(
+                getController_package(),
+                getUrlMapping()
+            );
+            /// Si le Url Mapping reste null alors il n'y a aucun controller
+            if (getUrlMapping() == null) {
+                throw new NotControllerPackageException(getController_package());
+            }
+        } catch (FrameworkException e) {
+            getInitExceptions().add(e);
+        }
     }
 /// Getteurs et Setteurs
     public String getController_package() {

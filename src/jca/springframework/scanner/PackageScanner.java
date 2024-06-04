@@ -2,6 +2,8 @@ package jca.springframework.scanner;
 
 import java.io.File;
 import jca.springframework.annotations.Controller;
+import jca.springframework.scanner.exception.InvalidPackageException;
+
 import java.lang.annotation.Annotation;
 import java.net.URL;
 import java.util.ArrayList;
@@ -14,7 +16,7 @@ public class PackageScanner {
      * @param package_name le nom du package a scanner
      * @return la liste des classes portant le package
      */
-  static public List<Class<?>> findClasses(String package_name){
+  static public List<Class<?>> findClasses(String package_name)throws InvalidPackageException {
     List<Class<?>> classes = new ArrayList<Class<?>>();
     try {
       /// Recuperer la classLoader du contexte du projet
@@ -45,7 +47,7 @@ public class PackageScanner {
    * @param package_name le nom du package a scanner
    * @return la liste des noms des classes
    */
-  static public List<String> findClassesNames(String package_name){
+  static public List<String> findClassesNames(String package_name) throws InvalidPackageException {
     /// recuperer la liste des classes
     List<Class<?>> classes = PackageScanner.findClasses(package_name);
     return findClassesNames(classes);
@@ -59,10 +61,10 @@ public class PackageScanner {
     return classes_names;
   }
 
-  private static void scanDirectoriesClasses(File directory, String packageName , List<Class<?>> classes) {
+  private static void scanDirectoriesClasses(File directory, String packageName , List<Class<?>> classes) throws InvalidPackageException {
       /// Tester si le dossier du package existe
       if (!directory.exists()) {
-          return;
+          throw new InvalidPackageException(packageName);
       }
       /// Recuperer la liste des fichiers du dossier
       File[] files = directory.listFiles();
@@ -87,7 +89,7 @@ public class PackageScanner {
       }
   }
 
-  static public List<Class<?>> findAnnotedClasses(String package_name , Class<? extends Annotation> annotation){
+  static public List<Class<?>> findAnnotedClasses(String package_name , Class<? extends Annotation> annotation)throws InvalidPackageException {
     List<Class<?>> classes = findClasses(package_name);
     List<Class<?>> annoted = new ArrayList<Class<?>>();
     for (Class<?> class1 : classes) {
@@ -98,11 +100,11 @@ public class PackageScanner {
     return annoted;
   }
 
-  static public List<String> findAnnotedClassesNames(String package_name , Class<? extends Annotation> annotation){
+  static public List<String> findAnnotedClassesNames(String package_name , Class<? extends Annotation> annotation)throws InvalidPackageException {
     return findClassesNames( findAnnotedClasses(package_name, annotation));
   }
 
-  static public List<Class<?>> findControllerCasses(String package_name){
+  static public List<Class<?>> findControllerCasses(String package_name)throws InvalidPackageException {
     return findAnnotedClasses(package_name, Controller.class);
   }
 }
