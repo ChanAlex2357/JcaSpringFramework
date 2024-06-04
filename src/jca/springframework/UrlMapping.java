@@ -11,10 +11,13 @@ public class UrlMapping {
     }
 
     static public Mapping getMappingWithFullUrl(String fullurl , HashMap<String,Mapping> urlMaps){
-        String url = "/";
+        String url = "";
         try {
             String[] parts = fullurl.split("/");
             url += parts[4];
+            for (int i = 5; i < parts.length; i++) {
+                url+= parts[i];
+            }
         } catch (Exception e) {
             url += "index";
         }

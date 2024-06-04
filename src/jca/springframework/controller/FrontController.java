@@ -1,13 +1,11 @@
 package jca.springframework.controller;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.HashMap;
-import java.util.Set;
-
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletResponse;
 import jca.springframework.UrlMapping;
+import jca.springframework.view.View;
 import jakarta.servlet.http.HttpServletRequest;
 /**
  * FrontController
@@ -39,53 +37,29 @@ public class FrontController extends HttpServlet{
     }
 
     protected void processRequest(HttpServletRequest req, HttpServletResponse resp)throws ServletException, IOException {
-        PrintWriter out = resp.getWriter();
+        /// Recuperer l'url demander
         String fullUrl = req.getRequestURL().toString();
-        out.println("URL : "+fullUrl);
-        this.printController(
-            fullUrl,
-            UrlMapping.getMappingWithFullUrl(
-                fullUrl,
-                getUrlMapping()
-            ),
-            out
-        );
+        /// Excecution du mapping correspondant a l'url
+        executeMapping(fullUrl,req,resp);
     }
 
 /// Fonctionalites
-    
+    public void executeMapping(String fullurl,HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
+        /// Message a afficher ; par defaut indiquant que l'url n'est associer a aucun controller
+        View viewResult = ControllerPrinter.errorMappingView(fullurl);
+        /// Recuperer le mapping associer a l'url demander
+        Mapping mapping = UrlMapping.getMappingWithFullUrl(fullurl,getUrlMapping());
+        if (mapping != null) {
+            /// Excuter le mapping et recuperer le String de retour
+            viewResult = mapping.getViewResult();
+        }
+        viewResult.dispatch(req, resp);
+    }
     public void scann_controllers(){
         MappingBuilder.scann_controllers(
             getController_package(),
             getUrlMapping()
         );
-    }
-    
-    void printControllers(PrintWriter out){
-        out.println("PACKAGE : "+this.getController_package());
-        out.println("CONTROLLERS :");
-        Set<String> urls = getUrlMapping().keySet();
-        for (String url : urls) {
-            printController(
-                url,
-                out
-            );
-        }
-    }
-    void printController(String url , PrintWriter out){
-        printController(
-            url,
-            UrlMapping.getMapping(url, getUrlMapping()),
-            out
-        );
-    }
-    void printController(String url , Mapping mapping , PrintWriter out ){
-        if (mapping == null) {
-            System.out.println("\t Aucun mapping ne correspond a l'url :"+url);
-        }
-        else {
-            out.println("\t-("+url+") "+mapping);
-        }
     }
 /// Getteurs et Setteurs
     public String getController_package() {

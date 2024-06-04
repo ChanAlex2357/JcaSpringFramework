@@ -1,4 +1,4 @@
-package jca.springframework;
+package jca.springframework.scanner;
 
 import java.lang.reflect.Method;
 

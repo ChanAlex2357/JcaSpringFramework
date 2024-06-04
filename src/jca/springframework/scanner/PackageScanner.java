@@ -1,4 +1,4 @@
-package jca.springframework;
+package jca.springframework.scanner;
 
 import java.io.File;
 import jca.springframework.annotations.Controller;
