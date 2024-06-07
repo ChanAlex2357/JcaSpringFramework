@@ -7,6 +7,6 @@ public class InvalidPackageException extends FrameworkException {
         super(errorMessage(packageName),null);
     }
     static private String errorMessage(String packageName){
-        return "Le package de controller <"+packageName+"> n'existe pas";
+        return "Le package !! <"+packageName+"> !! n'existe pas";
     }
 }

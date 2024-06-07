@@ -23,6 +23,10 @@ public class PackageScanner {
       ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
       /// Recuperer les resources correspondant du package dans le contexte actuelle
       Enumeration<URL> resources = classLoader.getResources(package_name.replace('.', '/'));
+      /// Gerer l'exception dans le cas du 
+      if (!resources.hasMoreElements()) {
+        throw new InvalidPackageException(package_name);
+      }
       /// Tant que la resource possede un element on va le scanner 
       while (resources.hasMoreElements()) {
           /// Recuperer l'element present dans la ressource
@@ -35,7 +39,7 @@ public class PackageScanner {
           }
       }
     } catch (Exception e) {
-        e.printStackTrace();
+        throw new InvalidPackageException(package_name);
     }
     return classes;
   }
@@ -64,7 +68,7 @@ public class PackageScanner {
   private static void scanDirectoriesClasses(File directory, String packageName , List<Class<?>> classes) throws InvalidPackageException {
       /// Tester si le dossier du package existe
       if (!directory.exists()) {
-          throw new InvalidPackageException(packageName);
+          return;
       }
       /// Recuperer la liste des fichiers du dossier
       File[] files = directory.listFiles();
