@@ -1,9 +1,6 @@
 package jca.springframework.controller;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletResponse;
@@ -21,20 +18,20 @@ public class FrontController extends HttpServlet{
     /// Le package des controllers
     private String controller_package;
     /// Mapping des controller
-    private HashMap<String,Mapping> urlMapping;
+    private HashMap< String , Mapping > urlMapping;
 
-    private List<FrameworkException> initExceptions;
+    private static FrameworkException initException = null ;
 
-    List<FrameworkException> getInitExceptions() {
-        return initExceptions;
+    static public FrameworkException getInitException() {
+        return initException;
     }
-    void setInitExceptions(List<FrameworkException> initExceptions) {
-        this.initExceptions = initExceptions;
+    static private void setInitException(FrameworkException initException) {
+        FrontController.initException = initException;
     }
     @Override
     public void init() throws ServletException {
         super.init();
-        setInitExceptions(new ArrayList<>());
+        // setInitException(new ArrayList<>());
         /// Recuperer le nom de package des controller 
         this.setController_package(getServletConfig().getInitParameter("package-name"));
         /// Iitialiser la liste a 0
@@ -52,7 +49,7 @@ public class FrontController extends HttpServlet{
     }
 
     protected void processRequest(HttpServletRequest req, HttpServletResponse resp)throws ServletException, IOException {
-        if ( getInitExceptions().size() == 0) {
+if ( getInitException() != null) {
             /// Recuperer l'url demander
             String fullUrl = req.getRequestURL().toString();
             /// Excecution du mapping correspondant a l'url
@@ -60,10 +57,9 @@ public class FrontController extends HttpServlet{
         }
         /// Si il y a des exceptions a l'init on afficher les erreurs
         else {
-            View excptionView = new ExceptionView(getInitExceptions());
+            View excptionView = new ExceptionView(getInitException());
             excptionView.dispatch(req, resp);
         }
-        
     }
 
 /// Fonctionalites
@@ -86,11 +82,11 @@ public class FrontController extends HttpServlet{
                 getUrlMapping()
             );
             /// Si le Url Mapping reste null alors il n'y a aucun controller
-            if (getUrlMapping() == null) {
+            if (getUrlMapping().size() == 0) {
                 throw new NotControllerPackageException(getController_package());
             }
         } catch (FrameworkException e) {
-            getInitExceptions().add(e);
+            setInitException(e);
         }
     }
 /// Getteurs et Setteurs
