@@ -110,3 +110,22 @@ Envoyer des données du controller vers view
 ### Test
 
 Les méthodes des controlleurs qui seront annotées ont pour type de retour "String" ou "ModelView"
+
+## Sprint 5
+
+**Objectif** : Gestion des exceptions
+
+### Côté Framework
+
+- Erreur pour un url demander qui n'existe pas
+- Erreur pour un url gerer par plusieurs controlleurs
+- Erreur pour package inexistant ou ne contient aucun controlleur
+- Erreur pour type de retour non valide
+
+### Test
+
+- Creation de methodes avec un meme url
+- web.xml
+  - package inexistant
+  - package sans controlleur
+- Methode avec un type de retour invalid
