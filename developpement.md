@@ -49,7 +49,7 @@ et envoyer le framework sur git.
 
 ## Sprint 2
 
-**Objectif** : Récupérer la classe et la méthode associées à une URL donnée
+**O B J E C T I F** : Récupérer la classe et la méthode associées à une URL donnée
 
 ### Coté Framework
 
@@ -72,7 +72,7 @@ et envoyer le framework sur git.
 
 ## Sprint 3
 
-**Objectif** : Arriver a executer la methode correspondant a l'url demander
+**O B J E C T I F** : Arriver a executer la methode correspondant a l'url demander
 
 ### Coté Framework
 
@@ -91,7 +91,7 @@ et envoyer le framework sur git.
 
 ## Sprint 4
 
-**Objectif**:
+**O B J E C T I F**:
 Envoyer des données du controller vers view
 
 ### Côté Framework
@@ -113,7 +113,7 @@ Les méthodes des controlleurs qui seront annotées ont pour type de retour "Str
 
 ## Sprint 5
 
-**Objectif** : Gestion des exceptions
+**O B J E C T I F** : Gestion des exceptions
 
 ### Côté Framework
 
@@ -129,3 +129,18 @@ Les méthodes des controlleurs qui seront annotées ont pour type de retour "Str
   - package inexistant
   - package sans controlleur
 - Methode avec un type de retour invalid
+
+## Sprint 6
+
+**O B J E C T I F** : envoyer des donner depuis view vers controller
+
+### FRAMEWORK
+
+- Creation d'annotation Request Param
+  - Rerpresente le nom du parametre a recuperer
+- Scanner le parametre des methodes
+- Recuperer le nombre de parametre et leurs nom lors du scan
+- Recuperer a partir de l'annotation
+- Front Controller
+  - Recuperer les parametres dans le request grace au noms
+  - Executer la methode du controller avec les parameters envoyees
