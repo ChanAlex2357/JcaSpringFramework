@@ -1,6 +1,7 @@
 package jca.springframework.controller;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
 import java.util.HashMap;
 import java.util.List;
 
@@ -9,6 +10,7 @@ import jca.springframework.annotations.Get;
 import jca.springframework.controller.exception.DuplicateUrlException;
 import jca.springframework.scanner.MethodScanner;
 import jca.springframework.scanner.PackageScanner;
+import jca.springframework.scanner.ParameterScanner;
 import jca.springframework.scanner.exception.InvalidPackageException;
 
 public class MappingBuilder {
@@ -31,7 +33,10 @@ public class MappingBuilder {
                 Get getConfig =  MethodScanner.getGetAnnotation(method);
                 if ( getConfig != null) {
                     ///  Creation de l'objet mapping controller -> method 
-                    Mapping mapping = new Mapping(controller.getName(),method.getName());
+                    Mapping mapping = new Mapping(
+                        controller.getName(), // Le nom du controller
+                        method
+                    );
                     /// Ajouter a la liste de url mapping correspondant
                     String url = getConfig.url();
                     if( urlMapping.get(url) != null){

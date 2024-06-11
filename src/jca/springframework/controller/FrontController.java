@@ -68,7 +68,7 @@ if ( getInitException() != null) {
         try {
             /// Recuperer le mapping associer a l'url demander
             Mapping mapping = UrlMapping.getMappingWithFullUrl(fullurl,getUrlMapping());
-            viewResult = mapping.getViewResult();
+            viewResult = mapping.getViewResult(req);
         } catch (FrameworkException e) {
             viewResult = e.getExceptionView();
         }
