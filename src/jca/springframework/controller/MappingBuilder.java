@@ -10,7 +10,6 @@ import jca.springframework.annotations.Get;
 import jca.springframework.controller.exception.DuplicateUrlException;
 import jca.springframework.scanner.MethodScanner;
 import jca.springframework.scanner.PackageScanner;
-import jca.springframework.scanner.ParameterScanner;
 import jca.springframework.scanner.exception.InvalidPackageException;
 
 public class MappingBuilder {

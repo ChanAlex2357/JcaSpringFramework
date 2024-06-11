@@ -5,8 +5,11 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.net.http.HttpRequest;
+import java.util.ArrayList;
+import java.util.List;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jca.springframework.scanner.RequestScanner;
 import jca.springframework.view.View;
 import jca.springframework.view.ViewBuilder;
 import jca.springframework.view.exception.InvalidReturnException;
@@ -78,12 +81,15 @@ public class Mapping {
         catch (InvocationTargetException e){}
         return resultObject;
     }
+    /// Recuperation des donnees necessaires
     private Object[] getParameterValues(HttpServletRequest req){
-        Object[] values = null;
+        List<Object> values = new ArrayList<>(); 
+        String value = null;
         for ( Parameter parameter : getMappingParameter().getParameters()) {
-            
+            value =  RequestScanner.getParameterValue(parameter, req);
+            values.add(value);
         }
-        return values;
+        return values.toArray();
     }
 
     public View getViewResult(HttpServletRequest req)throws InvalidReturnException{
