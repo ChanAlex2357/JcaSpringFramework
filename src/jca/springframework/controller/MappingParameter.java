@@ -4,8 +4,8 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 
 public class MappingParameter {
-    Parameter[] parameters;
-    Class<?>[] parameterTypes;
+    Parameter[] parameters=null;
+    Class<?>[] parameterTypes = null;
     public MappingParameter(Method method){
         setParameters(method.getParameters());
         setParameterTypes(method.getParameterTypes());

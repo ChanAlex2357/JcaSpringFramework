@@ -4,7 +4,6 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
-import java.net.http.HttpRequest;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -70,11 +69,10 @@ public class Mapping {
         Object controller =  getControllerInstance();
         /// recuperer l'objet methode correspondant avec des parametres null 
         try {
-
             Class<?>[] parameterTypes = getMappingParameter().getParameterTypes();
             Method controllerMethod = controller.getClass().getMethod(getMethodeControllerName(),parameterTypes);
-            Object[] parameterValues = getParameterValues(req);
-            resultObject = controllerMethod.invoke(controller, parameterValues);
+            List<Object> parameterValues = getParameterValues(req);
+            resultObject = controllerMethod.invoke(controller,parameterValues.toArray());
         }
         catch (NoSuchMethodException | SecurityException e){}
         catch (IllegalAccessException e){} 
@@ -82,14 +80,14 @@ public class Mapping {
         return resultObject;
     }
     /// Recuperation des donnees necessaires
-    private Object[] getParameterValues(HttpServletRequest req){
+    private List<Object> getParameterValues(HttpServletRequest req){
         List<Object> values = new ArrayList<>(); 
-        String value = null;
+        String value = "DEFAULT ";
         for ( Parameter parameter : getMappingParameter().getParameters()) {
             value =  RequestScanner.getParameterValue(parameter, req);
             values.add(value);
         }
-        return values.toArray();
+        return values;
     }
 
     public View getViewResult(HttpServletRequest req)throws InvalidReturnException{

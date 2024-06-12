@@ -49,7 +49,7 @@ public class FrontController extends HttpServlet{
     }
 
     protected void processRequest(HttpServletRequest req, HttpServletResponse resp)throws ServletException, IOException {
-if ( getInitException() != null) {
+        if ( getInitException() == null) {
             /// Recuperer l'url demander
             String fullUrl = req.getRequestURL().toString();
             /// Excecution du mapping correspondant a l'url

@@ -1,7 +1,6 @@
 package jca.springframework.controller;
 
 import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
 import java.util.HashMap;
 import java.util.List;
 
@@ -19,7 +18,6 @@ public class MappingBuilder {
         scann_controllers(controllerPackage,urlMapping);
         return urlMapping; 
     }
-    
     static public void scann_controllers(String controllerPackage , HashMap<String,Mapping> urlMapping)throws InvalidPackageException, DuplicateUrlException {
         /// Recuperer la liste de tous les controllers du contexte
         List<Class<?>> controllersClasses = PackageScanner.findAnnotedClasses(
