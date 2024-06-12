@@ -11,7 +11,7 @@ public class RequestScanner {
         if (value == null) {
             try {
                 Param param = ParamScanner.getParameterParam(parameter);
-                value = param.name();
+                value = request.getParameter(param.name());
             }
             catch (Exception err) {
                 /*
