@@ -18,7 +18,6 @@ public class MappingBuilder {
         scann_controllers(controllerPackage,urlMapping);
         return urlMapping; 
     }
-    
     static public void scann_controllers(String controllerPackage , HashMap<String,Mapping> urlMapping)throws InvalidPackageException, DuplicateUrlException {
         /// Recuperer la liste de tous les controllers du contexte
         List<Class<?>> controllersClasses = PackageScanner.findAnnotedClasses(
@@ -31,7 +30,10 @@ public class MappingBuilder {
                 Get getConfig =  MethodScanner.getGetAnnotation(method);
                 if ( getConfig != null) {
                     ///  Creation de l'objet mapping controller -> method 
-                    Mapping mapping = new Mapping(controller.getName(),method.getName());
+                    Mapping mapping = new Mapping(
+                        controller.getName(), // Le nom du controller
+                        method
+                    );
                     /// Ajouter a la liste de url mapping correspondant
                     String url = getConfig.url();
                     if( urlMapping.get(url) != null){
