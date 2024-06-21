@@ -65,7 +65,7 @@ public class Mapping {
         return controllerInstance;
     }
 
-    public Object getMethodResult(HttpServletRequest req) throws IllegalArgumentException, FrameworkException ,IllegalArgumentException, FrameworkException{
+    public Object getMethodResult(HttpServletRequest req) throws IllegalArgumentException, FrameworkException ,IllegalArgumentException, FrameworkException, InstantiationException{
         Object resultObject = null;
         Object controller =  getControllerInstance();
         /// recuperer l'objet methode correspondant avec des parametres null 
@@ -81,7 +81,7 @@ public class Mapping {
         return resultObject;
     }
     /// Recuperation des donnees necessaires
-    private List<Object> getParameterValues(HttpServletRequest req) throws IllegalArgumentException, IllegalAccessException, FrameworkException{
+    private List<Object> getParameterValues(HttpServletRequest req) throws IllegalArgumentException, IllegalAccessException, FrameworkException, InstantiationException, InvocationTargetException, SecurityException{
         List<Object> values = new ArrayList<>(); 
         Object value = "DEFAULT ";
         for ( Parameter parameter : getMappingParameter().getParameters()) {
@@ -91,7 +91,7 @@ public class Mapping {
         return values;
     }
 
-    public View getViewResult(HttpServletRequest req)throws IllegalArgumentException, FrameworkException{
+    public View getViewResult(HttpServletRequest req)throws IllegalArgumentException, FrameworkException, InstantiationException{
         /// Recuperer l'objet de retour de la methode du controller
         Object methodResult = getMethodResult(req);
         /// Traitement du resultat

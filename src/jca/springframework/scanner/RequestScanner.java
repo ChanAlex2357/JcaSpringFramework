@@ -1,8 +1,7 @@
 package jca.springframework.scanner;
 
-import java.io.ObjectStreamClass;
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Parameter;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -10,7 +9,7 @@ import jca.springframework.annotations.Param;
 import jca.springframework.exception.FrameworkException;
 
 public class RequestScanner {
-    public static Object getParameterValue(Parameter parameter,HttpServletRequest request) throws FrameworkException, IllegalArgumentException, IllegalAccessException{
+    public static Object getParameterValue(Parameter parameter,HttpServletRequest request) throws FrameworkException, IllegalArgumentException, IllegalAccessException, InstantiationException, InvocationTargetException, SecurityException{
         Object value = null;
         if (PrimitiveScanner.isPrimitifType(parameter)) {
             value = getPrmitiveParameterValue(parameter, request);
@@ -20,12 +19,23 @@ public class RequestScanner {
         }
         return value;
     }
-    private static String buildParameterName(String parameterName,String prefix , String suffix,String delimiter){
-        return prefix+delimiter+parameterName+delimiter+suffix;
+    public static String buildParameterName(String parameterName,String prefix , String suffix,String delimiter){
+        String result = "";
+        // Ajout du prefix
+        if (prefix != null) {
+            result += prefix+delimiter;
+        }
+        // Le nom du parametre
+        result += parameterName;
+        // Ajout du suffix
+        if (suffix != null) {
+            result += delimiter+suffix;
+        }
+        return result;
     }
     public static String getRequestParameter(Parameter parameter,HttpServletRequest request,String prefix , String suffix,String delimiter){
         /// Pattern de paramName
-        String paramName = buildParameterName(delimiter, prefix, parameter.getName(), delimiter);
+        String paramName = buildParameterName(parameter.getName(),prefix,suffix,delimiter);
         /// Recuperer sans annotation
         String parameterValue = request.getParameter(paramName);
         if (parameterValue == null) {
@@ -44,7 +54,7 @@ public class RequestScanner {
         return parameterValue;
     }
     public static String getRequestParameter(Parameter parameter,HttpServletRequest request){
-        return getRequestParameter(parameter, request,"","","");
+        return getRequestParameter(parameter, request,null,null,"");
     }
     
     private static Object getPrmitiveParameterValue(Parameter parameter , HttpServletRequest request){
@@ -57,18 +67,22 @@ public class RequestScanner {
         return result; 
     }
 
-    private static Object getObjectParameterValue(Parameter parameter , HttpServletRequest request) throws FrameworkException, IllegalArgumentException, IllegalAccessException{
+    private static Object getObjectParameterValue(Parameter parameter , HttpServletRequest request) throws FrameworkException, IllegalArgumentException, IllegalAccessException, InstantiationException, InvocationTargetException, SecurityException{
         // Le resultat attendue
         Object result = null;
         // Recuperer la class type du parametre de la fonction du controller 
         Class<?> parameterType = parameter.getType();
         try {
             // Cree une instance
-            result = parameterType.getConstructor(null);
+            Object[] nullist = null;
+            Class<?>[] nulliz = null;
+            result = parameterType.getConstructor(nulliz).newInstance(nullist);
             // Recuperer la valeur de chaque attribut
             for(Field attribute : parameterType.getDeclaredFields()){
-                String parameterValue = getRequestParameter(parameter,request,"",attribute.getName(),".");
-                attribute.set(result,PrimitiveScanner.parsePrimitive(attribute.getClass(), parameterValue));
+                attribute.setAccessible(true);
+                String parameterValue = getRequestParameter(parameter,request,null,attribute.getName(),".");
+                attribute.set(result,PrimitiveScanner.parsePrimitive(attribute.getType(), parameterValue));
+                attribute.setAccessible(false);
             }
         } catch ( NoSuchMethodException err ) {
             throw new FrameworkException("La class "+parameterType+" doit posseder un constructeur vide\n", err);

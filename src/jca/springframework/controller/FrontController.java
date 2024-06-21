@@ -71,6 +71,10 @@ public class FrontController extends HttpServlet{
             viewResult = mapping.getViewResult(req);
         } catch (FrameworkException e) {
             viewResult = e.getExceptionView();
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace(resp.getWriter());
+        } catch (InstantiationException e) {
+            e.printStackTrace(resp.getWriter());
         }
         
         viewResult.dispatch(req, resp);
