@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jca.springframework.exception.FrameworkException;
 import jca.springframework.scanner.RequestScanner;
 import jca.springframework.view.View;
 import jca.springframework.view.ViewBuilder;
@@ -64,7 +65,7 @@ public class Mapping {
         return controllerInstance;
     }
 
-    public Object getMethodResult(HttpServletRequest req){
+    public Object getMethodResult(HttpServletRequest req) throws IllegalArgumentException, FrameworkException ,IllegalArgumentException, FrameworkException, InstantiationException{
         Object resultObject = null;
         Object controller =  getControllerInstance();
         /// recuperer l'objet methode correspondant avec des parametres null 
@@ -80,9 +81,9 @@ public class Mapping {
         return resultObject;
     }
     /// Recuperation des donnees necessaires
-    private List<Object> getParameterValues(HttpServletRequest req){
+    private List<Object> getParameterValues(HttpServletRequest req) throws IllegalArgumentException, IllegalAccessException, FrameworkException, InstantiationException, InvocationTargetException, SecurityException{
         List<Object> values = new ArrayList<>(); 
-        String value = "DEFAULT ";
+        Object value = "DEFAULT ";
         for ( Parameter parameter : getMappingParameter().getParameters()) {
             value =  RequestScanner.getParameterValue(parameter, req);
             values.add(value);
@@ -90,7 +91,7 @@ public class Mapping {
         return values;
     }
 
-    public View getViewResult(HttpServletRequest req)throws InvalidReturnException{
+    public View getViewResult(HttpServletRequest req)throws IllegalArgumentException, FrameworkException, InstantiationException{
         /// Recuperer l'objet de retour de la methode du controller
         Object methodResult = getMethodResult(req);
         /// Traitement du resultat
