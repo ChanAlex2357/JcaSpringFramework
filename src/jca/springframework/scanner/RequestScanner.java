@@ -8,7 +8,7 @@ import jca.springframework.annotations.Param;
 public class RequestScanner {
     public static Object getParameterValue(Parameter parameter,HttpServletRequest request){
         Object value = null;
-        if (ParamScanner.isPrimitifType(parameter)) {
+        if (PrimitiveScanner.isPrimitifType(parameter)) {
             value = getPrmitiveParameterValue(parameter, request);
         }
         return value;
@@ -30,18 +30,7 @@ public class RequestScanner {
         }
         // Recuperer la class type du parametre de la fonction du controller 
         Class<?> parameterType = parameter.getType();
-        if (parameterType.equals(String.class)){
-            /// Pas de caste si c'est un string
-            result = parameterValue;
-        }
-        else if (parameterType.equals(int.class)) {
-            /// Integer cast
-            result = Integer.parseInt(parameterValue);
-        }
-        else if (parameterType.equals(double.class)) {
-            /// Double cast
-            result = Double.parseDouble(parameterValue);
-        }
+        result = PrimitiveScanner.parsePrimitive(parameterType, parameterValue);
         return result; 
     }
 }

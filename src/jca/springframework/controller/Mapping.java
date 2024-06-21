@@ -82,7 +82,7 @@ public class Mapping {
     /// Recuperation des donnees necessaires
     private List<Object> getParameterValues(HttpServletRequest req){
         List<Object> values = new ArrayList<>(); 
-        String value = "DEFAULT ";
+        Object value = "DEFAULT ";
         for ( Parameter parameter : getMappingParameter().getParameters()) {
             value =  RequestScanner.getParameterValue(parameter, req);
             values.add(value);
