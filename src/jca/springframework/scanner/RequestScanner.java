@@ -3,6 +3,7 @@ package jca.springframework.scanner;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Parameter;
+import java.util.PrimitiveIterator;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jca.springframework.annotations.Param;
@@ -81,6 +82,9 @@ public class RequestScanner {
             for(Field attribute : parameterType.getDeclaredFields()){
                 attribute.setAccessible(true);
                 String parameterValue = getRequestParameter(parameter,request,null,attribute.getName(),".");
+                if (parameterValue == null) {
+                    continue;
+                }
                 attribute.set(result,PrimitiveScanner.parsePrimitive(attribute.getType(), parameterValue));
                 attribute.setAccessible(false);
             }
