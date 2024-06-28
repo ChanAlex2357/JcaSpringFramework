@@ -3,8 +3,6 @@ package jca.springframework.scanner;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Parameter;
-import java.util.PrimitiveIterator;
-
 import jakarta.servlet.http.HttpServletRequest;
 import jca.springframework.annotations.Param;
 import jca.springframework.exception.FrameworkException;
@@ -34,31 +32,30 @@ public class RequestScanner {
         }
         return result;
     }
-    public static String getRequestParameter(Parameter parameter,HttpServletRequest request,String prefix , String suffix,String delimiter){
+    public static String getRequestParameter(Parameter parameter,HttpServletRequest request,String prefix , String suffix,String delimiter) throws FrameworkException{
         /// Pattern de paramName
         String paramName = buildParameterName(parameter.getName(),prefix,suffix,delimiter);
         /// Recuperer sans annotation
         String parameterValue = request.getParameter(paramName);
         if (parameterValue == null) {
             /// Recuperer la valeur par annotation
-            try {
                 Param param = ParamScanner.getParameterParam(parameter);
+                if (param == null) {
+                    throw new FrameworkException("[ ETU 002434 ] : Un parametre ne contient pas de param \n", null);
+                }
                 paramName = buildParameterName(param.name(), prefix, suffix, delimiter);
                 parameterValue = request.getParameter(paramName);
-            }
-            catch (Exception err) {
                 /*
                  * Exception pour un param qui n'est pas implementer
                 */
-            }
         }
         return parameterValue;
     }
-    public static String getRequestParameter(Parameter parameter,HttpServletRequest request){
+    public static String getRequestParameter(Parameter parameter,HttpServletRequest request) throws FrameworkException{
         return getRequestParameter(parameter, request,null,null,"");
     }
     
-    private static Object getPrmitiveParameterValue(Parameter parameter , HttpServletRequest request){
+    private static Object getPrmitiveParameterValue(Parameter parameter , HttpServletRequest request) throws FrameworkException{
         // Le resultat attendue
         Object result = null;
         String parameterValue = getRequestParameter(parameter, request);
