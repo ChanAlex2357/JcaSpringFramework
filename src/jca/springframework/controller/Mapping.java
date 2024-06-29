@@ -10,6 +10,9 @@ import java.util.List;
 import jakarta.servlet.http.HttpServletRequest;
 import jca.springframework.exception.FrameworkException;
 import jca.springframework.scanner.RequestScanner;
+import jca.springframework.scanner.SessionScanner;
+import jca.springframework.session.WebSession;
+import jca.springframework.session.WebSessionParser;
 import jca.springframework.view.View;
 import jca.springframework.view.ViewBuilder;
 import jca.springframework.view.exception.InvalidReturnException;
@@ -74,6 +77,12 @@ public class Mapping {
             Method controllerMethod = controller.getClass().getMethod(getMethodeControllerName(),parameterTypes);
             List<Object> parameterValues = getParameterValues(req);
             resultObject = controllerMethod.invoke(controller,parameterValues.toArray());
+            
+            if (getMappingParameter().sessionUsage) {
+                // Recuperer le web session
+                WebSession webSession = SessionScanner.getWebSessionInstance(parameterValues);
+                WebSessionParser.WebSessionToHttpSession(webSession,req);
+            }
         }
         catch (NoSuchMethodException | SecurityException e){}
         catch (IllegalAccessException e){} 

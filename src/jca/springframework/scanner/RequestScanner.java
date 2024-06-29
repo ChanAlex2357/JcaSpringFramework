@@ -6,12 +6,17 @@ import java.lang.reflect.Parameter;
 import jakarta.servlet.http.HttpServletRequest;
 import jca.springframework.annotations.Param;
 import jca.springframework.exception.FrameworkException;
+import jca.springframework.session.WebSessionParser;
 
 public class RequestScanner {
     public static Object getParameterValue(Parameter parameter,HttpServletRequest request) throws FrameworkException, IllegalArgumentException, IllegalAccessException, InstantiationException, InvocationTargetException, SecurityException{
         Object value = null;
         if (PrimitiveScanner.isPrimitifType(parameter)) {
             value = getPrmitiveParameterValue(parameter, request);
+        }
+        else if (SessionScanner.isSessionParameter(parameter)) {
+            // Cree une webSession a partir de httpServlet
+            value = WebSessionParser.HttpSessionToWebSession(request);
         }
         else {
             value = getObjectParameterValue(parameter, request);
@@ -55,7 +60,6 @@ public class RequestScanner {
         result = PrimitiveScanner.parsePrimitive(parameterType, parameterValue);
         return result; 
     }
-
     private static Object getObjectParameterValue(Parameter parameter , HttpServletRequest request) throws FrameworkException, IllegalArgumentException, IllegalAccessException, InstantiationException, InvocationTargetException, SecurityException{
         // Le resultat attendue
         Object result = null;
