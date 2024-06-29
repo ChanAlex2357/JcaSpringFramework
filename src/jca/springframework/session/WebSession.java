@@ -1,8 +1,5 @@
 package jca.springframework.session;
-
 import java.util.HashMap;
-
-import jakarta.servlet.http.HttpSession;
 
 public class WebSession {
     private HashMap<String,Object> sessionValues;
@@ -10,12 +7,6 @@ public class WebSession {
     WebSession(){
         setSessionValues(new HashMap<String,Object>());
     }
-    WebSession(HashMap<String,Object> mapValues){
-        setSessionValues(mapValues);
-    }
-    WebSession(HttpSession session){
-    }
-
     public HashMap<String, Object> getSessionValues() {
         return sessionValues;
     }
