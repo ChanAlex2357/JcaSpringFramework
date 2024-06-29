@@ -8,7 +8,8 @@ public class PrimitiveScanner {
         String.class,
         int.class,
         double.class,
-        boolean.class
+        boolean.class,
+        float.class
     };
     public static boolean isPrimitifType(Parameter parameter){
         boolean result = false;
@@ -40,6 +41,11 @@ public class PrimitiveScanner {
         else if (typeOrigin.equals(boolean.class)){
             result = Boolean.parseBoolean(value);
         }
+        // Float
+        else if (typeOrigin.equals(float.class)) {
+            result = Float.parseFloat(value);
+        }
+        
         return result;
     }
 }
