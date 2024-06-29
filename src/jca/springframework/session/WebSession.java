@@ -18,10 +18,10 @@ public class WebSession {
 // Fuctions
 
     public void add(String key, Object value){
-
+        getSessionValues().put(key, value);
     }
     public void remove(String key){
-
+        getSessionValues().put(key, null);
     }
     public Object get(String key){
         Object result = getSessionValues().get(key);
@@ -32,7 +32,7 @@ public class WebSession {
         return result; 
     }
     public void update(String key , Object value){
-
+        getSessionValues().replace(key, value);
     }
     
 }
