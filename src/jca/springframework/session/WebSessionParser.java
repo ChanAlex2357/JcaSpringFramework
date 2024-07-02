@@ -18,7 +18,6 @@ public class WebSessionParser {
             String key = keys.nextElement();
             webSession.getSessionValues().put(key, session.getAttribute(key));
         }
-        session.setAttribute(null, keys);
         return webSession;
     }
 
