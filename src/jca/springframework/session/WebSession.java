@@ -1,38 +1,27 @@
 package jca.springframework.session;
-import java.util.HashMap;
+
+import jakarta.servlet.http.HttpSession;
 
 public class WebSession {
-    private HashMap<String,Object> sessionValues;
+    private HttpSession session;
 
-    WebSession(){
-        setSessionValues(new HashMap<String,Object>());
+    WebSession(HttpSession session){
+        setSession(session);
     }
-    public HashMap<String, Object> getSessionValues() {
-        return sessionValues;
+    public HttpSession getSession() {
+        return this.session;
     }
-
-    private void setSessionValues(HashMap<String, Object> sessionValues) {
-        this.sessionValues = sessionValues;
+    void setSession(HttpSession session){
+        this.session = session;
     }
-
 // Fuctions
-
     public void add(String key, Object value){
-        getSessionValues().put(key, value);
+        getSession().setAttribute(key, value);
     }
     public void remove(String key){
-        getSessionValues().put(key, null);
+        getSession().removeAttribute(key);
     }
-    public Object get(String key){
-        Object result = getSessionValues().get(key);
-            
-        if (result == null) {
-            // Exception pour un valeur qui n'existe pas
-        }
-        return result; 
+    public Object get(String key) {
+        return getSession().getAttribute(key); 
     }
-    public void update(String key , Object value){
-        getSessionValues().replace(key, value);
-    }
-    
 }
