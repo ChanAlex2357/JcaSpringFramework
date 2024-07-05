@@ -28,7 +28,7 @@ public class MappingParameter {
     }
     void checkSessionUsage(){
         for (Class<?> class1 : parameterTypes) {
-            if (SessionScanner.isSessionParameter(class1)) {
+            if (SessionScanner.isSessionClass(class1)) {
                 sessionUsage = true;
                 break;
             }
