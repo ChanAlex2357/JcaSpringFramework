@@ -16,7 +16,7 @@ if [ -d "$OUTPUT_DIR" ]; then
   rm -rf $OUTPUT_DIR
 fi
 # Copier les fichier compiles
-cp -R $BIN_DIR $OUTPUT_DIR 
+cp -R $BIN_DIR $OUTPUT_DIR
 
 # Créer le dossier lib s'il n'existe pas déjà
 mkdir -p $OUTPUT_DIR/lib

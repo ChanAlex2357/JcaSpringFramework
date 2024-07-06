@@ -1,6 +1,7 @@
 package jca.springframework.controller;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
@@ -10,6 +11,9 @@ import java.util.List;
 import jakarta.servlet.http.HttpServletRequest;
 import jca.springframework.exception.FrameworkException;
 import jca.springframework.scanner.RequestScanner;
+import jca.springframework.scanner.SessionScanner;
+import jca.springframework.session.WebSession;
+import jca.springframework.session.WebSessionParser;
 import jca.springframework.view.View;
 import jca.springframework.view.ViewBuilder;
 import jca.springframework.view.exception.InvalidReturnException;
@@ -28,6 +32,7 @@ public class Mapping {
         setClassControllerName(classControllerName);
         setMethodeControllerName(method.getName());
         setMappingParameter(new MappingParameter(method));
+
     }
     public String getClassControllerName() {
         return classControllerName;
@@ -48,7 +53,7 @@ public class Mapping {
         this.mappingParameter = mappingParameter;
     }
 
-    public Object getControllerInstance(){
+    public Object getControllerInstance(HttpServletRequest request){
         Object controllerInstance = null;
         try {
             /// Recuperer la class correspondant au nom du controller du mapping
@@ -59,6 +64,19 @@ public class Mapping {
             /// Cree une nouvelle instance avec le constructeur
             Object[] nullish = null;
             controllerInstance = defaultConstructor.newInstance(nullish);
+            for(Field attribut : clazz.getDeclaredFields()){
+                // Tester si l'attribut est une session
+                if (SessionScanner.isSessionField(attribut)) {
+                    attribut.setAccessible(true);
+
+                    // Instancier une session
+                    WebSession session = WebSessionParser.HttpSessionToWebSession(request);
+                    attribut.set(controllerInstance, session);
+                    
+                    attribut.setAccessible(false);
+                    break;
+                }
+            }
         } catch (Exception e) {
             /// Exception pour un controller qui n'existe pas
         }
@@ -67,7 +85,7 @@ public class Mapping {
 
     public Object getMethodResult(HttpServletRequest req) throws IllegalArgumentException, FrameworkException ,IllegalArgumentException, FrameworkException, InstantiationException{
         Object resultObject = null;
-        Object controller =  getControllerInstance();
+        Object controller =  getControllerInstance(req);
         /// recuperer l'objet methode correspondant avec des parametres null 
         try {
             Class<?>[] parameterTypes = getMappingParameter().getParameterTypes();

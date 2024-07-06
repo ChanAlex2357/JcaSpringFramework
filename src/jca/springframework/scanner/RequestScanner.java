@@ -6,12 +6,17 @@ import java.lang.reflect.Parameter;
 import jakarta.servlet.http.HttpServletRequest;
 import jca.springframework.annotations.Param;
 import jca.springframework.exception.FrameworkException;
+import jca.springframework.session.WebSessionParser;
 
 public class RequestScanner {
     public static Object getParameterValue(Parameter parameter,HttpServletRequest request) throws FrameworkException, IllegalArgumentException, IllegalAccessException, InstantiationException, InvocationTargetException, SecurityException{
         Object value = null;
         if (PrimitiveScanner.isPrimitifType(parameter)) {
             value = getPrmitiveParameterValue(parameter, request);
+        }
+        else if (SessionScanner.isSessionParameter(parameter)) {
+            // Cree une webSession a partir de httpServlet
+            value = WebSessionParser.HttpSessionToWebSession(request);
         }
         else {
             value = getObjectParameterValue(parameter, request);
@@ -33,22 +38,13 @@ public class RequestScanner {
         return result;
     }
     public static String getRequestParameter(Parameter parameter,HttpServletRequest request,String prefix , String suffix,String delimiter) throws FrameworkException{
-        /// Pattern de paramName
-        String paramName = buildParameterName(parameter.getName(),prefix,suffix,delimiter);
-        /// Recuperer sans annotation
-        String parameterValue = request.getParameter(paramName);
-        if (parameterValue == null) {
-            /// Recuperer la valeur par annotation
-                Param param = ParamScanner.getParameterParam(parameter);
-                if (param == null) {
-                    throw new FrameworkException("[ ETU 002434 ] : Un parametre ne contient pas de param \n", null);
-                }
-                paramName = buildParameterName(param.name(), prefix, suffix, delimiter);
-                parameterValue = request.getParameter(paramName);
-                /*
-                 * Exception pour un param qui n'est pas implementer
-                */
+        /// Recuperer la valeur par annotation
+        Param param = ParamScanner.getParameterParam(parameter);
+        if (param == null) {
+            throw new FrameworkException("[ ETU 002434 ] : Un parametre ne contient pas de param \n", null);
         }
+        String paramName = buildParameterName(param.name(), prefix, suffix, delimiter);
+        String parameterValue = request.getParameter(paramName);
         return parameterValue;
     }
     public static String getRequestParameter(Parameter parameter,HttpServletRequest request) throws FrameworkException{
@@ -64,7 +60,6 @@ public class RequestScanner {
         result = PrimitiveScanner.parsePrimitive(parameterType, parameterValue);
         return result; 
     }
-
     private static Object getObjectParameterValue(Parameter parameter , HttpServletRequest request) throws FrameworkException, IllegalArgumentException, IllegalAccessException, InstantiationException, InvocationTargetException, SecurityException{
         // Le resultat attendue
         Object result = null;
