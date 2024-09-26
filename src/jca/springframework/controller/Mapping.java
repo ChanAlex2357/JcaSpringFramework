@@ -124,13 +124,12 @@ public class Mapping {
         Object methodResult = getMethodResult(req);
         /// Traitement du resultat
 
-        View view = ViewBuilder.getViewOf(methodResult);
+        View view = ViewBuilder.getViewOf(methodResult,getMappingAnnotation());
         /// La vue est null si le resultat ne corespond a aucun format valide
         if ( view == null) {
             throw new InvalidReturnException(this);
         }
         return view;
     }
-
-    public 
+    
 }
