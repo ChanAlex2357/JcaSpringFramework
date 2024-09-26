@@ -1,18 +1,20 @@
 package jca.springframework.controller;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 
 import jca.springframework.annotations.Controller;
 import jca.springframework.annotations.Get;
+import jca.springframework.annotations.MappingAnnotation;
+import jca.springframework.annotations.RestApi;
 import jca.springframework.controller.exception.DuplicateUrlException;
 import jca.springframework.scanner.MethodScanner;
 import jca.springframework.scanner.PackageScanner;
 import jca.springframework.scanner.exception.InvalidPackageException;
 
 public class MappingBuilder {
-
     static public HashMap<String,Mapping> scann_controllers(String controllerPackage)throws InvalidPackageException, DuplicateUrlException {
         HashMap<String,Mapping> urlMapping = new HashMap<String,Mapping>();
         scann_controllers(controllerPackage,urlMapping);
@@ -27,20 +29,28 @@ public class MappingBuilder {
         for (Class<?> controller : controllersClasses) {
             Method[] controllerMethods = controller.getDeclaredMethods();
             for (Method method : controllerMethods) {
-                Get getConfig =  MethodScanner.getGetAnnotation(method);
-                if ( getConfig != null) {
-                    ///  Creation de l'objet mapping controller -> method 
-                    Mapping mapping = new Mapping(
-                        controller.getName(), // Le nom du controller
-                        method
-                    );
-                    /// Ajouter a la liste de url mapping correspondant
-                    String url = getConfig.url();
-                    if( urlMapping.get(url) != null){
-                        throw new DuplicateUrlException(url,urlMapping.get(url),mapping);
-                    } 
-                    urlMapping.put(url,mapping);
+                MappingAnnotation mappingAnnotation = MethodScanner.geMappingAnnotation(method);
+                Mapping mapping;
+                
+                /*
+                * Verification de l'etat de l'url
+                * - Si l'url est null alors la methode n'est pas une methode de control de requete
+                * - Si l'utl existe deja dans la liste des url mapping alors il y a duplication de control de requete dans le controller 
+                */
+                if( mappingAnnotation == null){
+                    break;
                 }
+                String url = mappingAnnotation.getUrl();
+                ///  Creation de l'objet mapping controller -> method 
+                mapping = new Mapping(
+                    controller.getName(), // Le nom du controller
+                    method,               // La methode a appeler
+                    mappingAnnotation
+                );
+                if(urlMapping.get(url) != null){
+                    throw new DuplicateUrlException(url,urlMapping.get(url),mapping);
+                }
+                urlMapping.put(url,mapping);
             }
         }
     }
