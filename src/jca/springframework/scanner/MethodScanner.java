@@ -1,10 +1,6 @@
 package jca.springframework.scanner;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
-
 import jca.springframework.annotations.Get;
 import jca.springframework.annotations.MappingAnnotation;
 import jca.springframework.annotations.RestApi;

@@ -1,14 +1,11 @@
 package jca.springframework.controller;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 
 import jca.springframework.annotations.Controller;
-import jca.springframework.annotations.Get;
 import jca.springframework.annotations.MappingAnnotation;
-import jca.springframework.annotations.RestApi;
 import jca.springframework.controller.exception.DuplicateUrlException;
 import jca.springframework.scanner.MethodScanner;
 import jca.springframework.scanner.PackageScanner;
