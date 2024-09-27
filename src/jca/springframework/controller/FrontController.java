@@ -18,7 +18,7 @@ public class FrontController extends HttpServlet{
     /// Le package des controllers
     private String controller_package;
     /// Mapping des controller
-    private HashMap< String , Mapping > urlMapping;
+    private HashMap<String , Mapping> urlMapping;
 
     private static FrameworkException initException = null ;
 
@@ -49,14 +49,14 @@ public class FrontController extends HttpServlet{
     }
 
     protected void processRequest(HttpServletRequest req, HttpServletResponse resp)throws ServletException, IOException {
+        String fullUrl = req.getRequestURL().toString();
         if ( getInitException() == null) {
-            /// Recuperer l'url demander
-            String fullUrl = req.getRequestURL().toString();
             /// Excecution du mapping correspondant a l'url
             executeMapping(fullUrl,req,resp);    
         }
         /// Si il y a des exceptions a l'init on afficher les erreurs
         else {
+            UrlMapping.showUrlMaps(resp, urlMapping);
             View excptionView = new ExceptionView(getInitException());
             excptionView.dispatch(req, resp);
         }

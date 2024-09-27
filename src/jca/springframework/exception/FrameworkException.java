@@ -14,5 +14,4 @@ public class FrameworkException extends Exception{
     public View getExceptionView(){
         return new ExceptionView(this);
     }
-
 }

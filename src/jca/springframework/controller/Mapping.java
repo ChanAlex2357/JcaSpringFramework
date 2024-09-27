@@ -27,7 +27,7 @@ public class Mapping {
 
     @Override
     public String toString() {
-        return getClassControllerName() +" => "+getMethodeControllerName();
+        return getClassControllerName() +" => "+getMethodeControllerName()+" [ "+getMappingAnnotation().getAnnotation().getClass()+" ]";
     }
     public Mapping(String classControllerName,Method method,MappingAnnotation mappingAnnotation)
     {

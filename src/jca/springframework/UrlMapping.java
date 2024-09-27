@@ -1,11 +1,21 @@
 package jca.springframework;
 
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.HashMap;
 
+import jakarta.servlet.http.HttpServletResponse;
 import jca.springframework.controller.Mapping;
 import jca.springframework.controller.exception.UnhandledUrlException;
 
 public class UrlMapping {
+    static public void showUrlMaps(HttpServletResponse response , HashMap<String,Mapping> urlMaps) throws IOException{
+        PrintWriter writer = response.getWriter();
+        for (String  url : urlMaps.keySet()) {
+            writer.println("- "+url+" : "+urlMaps.get(url));
+        }
+        writer.flush(); 
+    }
     static public Mapping getMapping(String url , HashMap<String,Mapping> urlMaps) throws UnhandledUrlException{
         Mapping mapping = urlMaps.get(url);
         /// gerer si l'url n'est pas gerer par des controller
