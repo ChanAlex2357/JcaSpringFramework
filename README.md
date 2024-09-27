@@ -1,18 +1,18 @@
-# JcaSpringFramework
+## Getting Started
 
-Ceci est framework inspirer de spring pour implementer un systeme MVC dans un projet web
+Welcome to the VS Code Java world. Here is a guideline to help you get started to write Java code in Visual Studio Code.
 
-## Prerequis
+## Folder Structure
 
-- le fichier jar du framework **jca-spring-framework.jar** doit etre dans inclue dans la lib du projet ou considerer dans le classpath
-- un servlet doit etre declarer dans web.xml qui va traiter toutes les requetes entrantes :
-  - servlet-class  : **jca.springframework.controller.FrontController**
-  - url-pattern : " / "
-- Declarer dans le web.xml init-param le nom du package de controller en tant que **package-name**
+The workspace contains two folders by default, where:
 
-### Type de retour valide
+- `src`: the folder to maintain sources
+- `lib`: the folder to maintain dependencies
 
-Les methodes d'un controller doivent avoir un type de retour parmi la liste suivante pour etre valide :
+Meanwhile, the compiled output files will be generated in the `bin` folder by default.
 
-- **String** , pour afficher que du texte
-- **ModelAndView** , pour gerer un model dans une view (dispatch)
+> If you want to customize the folder structure, open `.vscode/settings.json` and update the related settings there.
+
+## Dependency Management
+
+The `JAVA PROJECTS` view allows you to manage your dependencies. More details can be found [here](https://github.com/microsoft/vscode-java-dependency#manage-dependencies).

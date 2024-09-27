@@ -9,6 +9,8 @@ import jakarta.servlet.http.HttpServletResponse;
 public class ModelAndView extends View{
     public ModelAndView (String viewPath){
         super(viewPath);
+    }public ModelAndView(){
+        super(null);
     }
     @Override
     public void dispatch(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

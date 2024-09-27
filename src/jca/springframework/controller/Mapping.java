@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jca.springframework.annotations.MappingAnnotation;
 import jca.springframework.exception.FrameworkException;
 import jca.springframework.scanner.RequestScanner;
 import jca.springframework.scanner.SessionScanner;
@@ -19,21 +20,23 @@ import jca.springframework.view.ViewBuilder;
 import jca.springframework.view.exception.InvalidReturnException;
 
 public class Mapping {
-    String classControllerName;
-    String methodeControllerName;
-    MappingParameter mappingParameter;
+    private String classControllerName;
+    private String methodeControllerName;
+    private MappingParameter mappingParameter;
+    private MappingAnnotation mappingAnnotation;
 
     @Override
     public String toString() {
-        return getClassControllerName() +" => "+getMethodeControllerName();
+        return getClassControllerName() +" => "+getMethodeControllerName()+" [ "+getMappingAnnotation().getAnnotation().getClass()+" ]";
     }
-    public Mapping(String classControllerName,Method method)
+    public Mapping(String classControllerName,Method method,MappingAnnotation mappingAnnotation)
     {
         setClassControllerName(classControllerName);
         setMethodeControllerName(method.getName());
+        setMappingAnnotation(mappingAnnotation);
         setMappingParameter(new MappingParameter(method));
-
     }
+// GET AND SET
     public String getClassControllerName() {
         return classControllerName;
     }
@@ -52,7 +55,13 @@ public class Mapping {
     public void setMappingParameter(MappingParameter mappingParameter) {
         this.mappingParameter = mappingParameter;
     }
-
+    public MappingAnnotation getMappingAnnotation() {
+        return mappingAnnotation;
+    }
+    public void setMappingAnnotation(MappingAnnotation mappingAnnotation) {
+        this.mappingAnnotation = mappingAnnotation;
+    }
+// FUNCTIONALITIES
     public Object getControllerInstance(HttpServletRequest request){
         Object controllerInstance = null;
         try {
@@ -113,11 +122,13 @@ public class Mapping {
         /// Recuperer l'objet de retour de la methode du controller
         Object methodResult = getMethodResult(req);
         /// Traitement du resultat
-        View view = ViewBuilder.getViewOf(methodResult);
+
+        View view = ViewBuilder.getViewOf(methodResult,getMappingAnnotation());
         /// La vue est null si le resultat ne corespond a aucun format valide
         if ( view == null) {
             throw new InvalidReturnException(this);
         }
         return view;
     }
+    
 }

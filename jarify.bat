@@ -23,8 +23,8 @@ if not exist "%OUTPUT_DIR%\lib" (
   mkdir "%OUTPUT_DIR%\lib"
 )
 
-REM Copier les dépendances de la bibliothèque dans le dossier lib
-xcopy /Y "lib\*.jar" "%OUTPUT_DIR%\lib"
+@REM REM Copier les dépendances de la bibliothèque dans le dossier lib
+@REM xcopy /Y "lib\*.jar" "%OUTPUT_DIR%\lib"
 
 
 REM Copier le readme dans la distribution

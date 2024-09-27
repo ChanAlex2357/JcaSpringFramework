@@ -23,5 +23,6 @@ public class StringView extends View{
     public void dispatch(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         /// Afficher le contenue
         resp.getWriter().println(getContent());
+        resp.getWriter().flush();
     }
 }
