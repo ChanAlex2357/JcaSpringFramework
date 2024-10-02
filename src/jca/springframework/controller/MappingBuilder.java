@@ -4,7 +4,7 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 
-import jca.springframework.annotations.Controller;
+import jca.springframework.annotations.classe.Controller;
 import jca.springframework.annotations.MappingAnnotation;
 import jca.springframework.controller.exception.DuplicateUrlException;
 import jca.springframework.scanner.MethodScanner;

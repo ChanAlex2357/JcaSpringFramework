@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import jca.springframework.annotations.MappingAnnotation;
-import jca.springframework.annotations.RestApi;
+import jca.springframework.annotations.method.RestApi;
 
 public class ViewBuilder {
     final static Gson gson = new GsonBuilder().create();

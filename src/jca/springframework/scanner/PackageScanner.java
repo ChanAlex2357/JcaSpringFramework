@@ -1,7 +1,7 @@
 package jca.springframework.scanner;
 
 import java.io.File;
-import jca.springframework.annotations.Controller;
+import jca.springframework.annotations.classe.Controller;
 import jca.springframework.scanner.exception.InvalidPackageException;
 
 import java.lang.annotation.Annotation;

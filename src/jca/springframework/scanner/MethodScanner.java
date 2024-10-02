@@ -1,9 +1,10 @@
 package jca.springframework.scanner;
 
 import java.lang.reflect.Method;
-import jca.springframework.annotations.Get;
+
 import jca.springframework.annotations.MappingAnnotation;
-import jca.springframework.annotations.RestApi;
+import jca.springframework.annotations.method.Get;
+import jca.springframework.annotations.method.RestApi;
 
 public class MethodScanner {
     private static final Class<Get> GET_ANNOTATION = Get.class;

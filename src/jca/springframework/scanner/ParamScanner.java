@@ -2,7 +2,7 @@ package jca.springframework.scanner;
 
 import java.lang.reflect.Parameter;
 
-import jca.springframework.annotations.Param;
+import jca.springframework.annotations.parameter.Param;
 
 public class ParamScanner {
     static public boolean isParameterParam(Parameter  parameter){
