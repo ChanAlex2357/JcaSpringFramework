@@ -2,9 +2,7 @@ package jca.springframework.view;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-
-import jca.springframework.annotations.MappingAnnotation;
-import jca.springframework.annotations.method.RestApi;
+import jca.springframework.mapping.MappingAnnotation;
 
 public class ViewBuilder {
     final static Gson gson = new GsonBuilder().create();
@@ -29,7 +27,7 @@ public class ViewBuilder {
 
         return view;
     }
-    static public View getJsonView( Object obj){
+    static public View getJsonView(Object obj){
         View view= null;
         
         if (obj instanceof ModelAndView){
@@ -44,7 +42,7 @@ public class ViewBuilder {
     }
     static public View getViewOf(Object obj , MappingAnnotation mappingAnnotation){
         View resultView = null;
-        if (mappingAnnotation.getAnnotation() instanceof RestApi) {
+        if (mappingAnnotation.isApiMethode()) {
             resultView = getJsonView(obj);
         }
         else {
