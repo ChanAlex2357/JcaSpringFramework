@@ -4,8 +4,11 @@ import java.util.HashMap;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletResponse;
-import jca.springframework.UrlMapping;
+import jca.springframework.controller.exception.RequestMethodCallException;
 import jca.springframework.exception.FrameworkException;
+import jca.springframework.mapping.Mapping;
+import jca.springframework.mapping.MappingBuilder;
+import jca.springframework.mapping.UrlMapping;
 import jca.springframework.scanner.exception.NotControllerPackageException;
 import jca.springframework.view.ExceptionView;
 import jca.springframework.view.View;
@@ -31,7 +34,6 @@ public class FrontController extends HttpServlet{
     @Override
     public void init() throws ServletException {
         super.init();
-        // setInitException(new ArrayList<>());
         /// Recuperer le nom de package des controller 
         this.setController_package(getServletConfig().getInitParameter("package-name"));
         /// Iitialiser la liste a 0
@@ -50,16 +52,13 @@ public class FrontController extends HttpServlet{
 
     protected void processRequest(HttpServletRequest req, HttpServletResponse resp)throws ServletException, IOException {
         String fullUrl = req.getRequestURL().toString();
-        if ( getInitException() == null) {
-            /// Excecution du mapping correspondant a l'url
-            executeMapping(fullUrl,req,resp);    
-        }
-        /// Si il y a des exceptions a l'init on afficher les erreurs
-        else {
-            UrlMapping.showUrlMaps(resp, urlMapping);
+        if ( getInitException() != null) {
+            // UrlMapping.showUrlMaps(resp, urlMapping);
             View excptionView = new ExceptionView(getInitException());
             excptionView.dispatch(req, resp);
-        }
+        }        
+/// Excecution du mapping correspondant a l'url
+        executeMapping(fullUrl,req,resp);    
     }
 
 /// Fonctionalites
@@ -68,6 +67,11 @@ public class FrontController extends HttpServlet{
         try {
             /// Recuperer le mapping associer a l'url demander
             Mapping mapping = UrlMapping.getMappingWithFullUrl(fullurl,getUrlMapping());
+            // Verification de la conformite de la methode utiliser pour l'appel de la methode de controller
+            if (!mapping.getMappingAnnotation().getVerb().equals( req.getMethod())) {
+                throw  new RequestMethodCallException(mapping, req.getMethod());
+            }
+            // Recuperer le resultat de la requete
             viewResult = mapping.getViewResult(req);
         } catch (FrameworkException e) {
             viewResult = e.getExceptionView();
@@ -76,7 +80,7 @@ public class FrontController extends HttpServlet{
         } catch (InstantiationException e) {
             e.printStackTrace(resp.getWriter());
         }
-        
+        // Affichage du resultat 
         viewResult.dispatch(req, resp);
     }
     private void scann_controllers(){
