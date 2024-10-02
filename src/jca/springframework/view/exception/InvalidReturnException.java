@@ -1,7 +1,7 @@
 package jca.springframework.view.exception;
 
-import jca.springframework.controller.Mapping;
 import jca.springframework.exception.FrameworkException;
+import jca.springframework.mapping.Mapping;
 
 public class InvalidReturnException extends FrameworkException{
     
