@@ -56,9 +56,11 @@ public class FrontController extends HttpServlet{
             // UrlMapping.showUrlMaps(resp, urlMapping);
             View excptionView = new ExceptionView(getInitException());
             excptionView.dispatch(req, resp);
-        }        
-/// Excecution du mapping correspondant a l'url
-        executeMapping(fullUrl,req,resp);    
+        }
+        else {
+            /// Excecution du mapping correspondant a l'url
+            executeMapping(fullUrl,req,resp);    
+        }
     }
 
 /// Fonctionalites
