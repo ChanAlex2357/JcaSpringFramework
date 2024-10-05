@@ -30,7 +30,7 @@ public class UrlMapping {
             String[] parts = fullurl.split("/");
             url += parts[4];
             for (int i = 5; i < parts.length; i++) {
-                url+= parts[i];
+                url+= "/"+parts[i];
             }
         } catch (Exception e) {
             url += "index";
