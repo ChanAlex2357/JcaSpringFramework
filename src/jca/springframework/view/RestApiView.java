@@ -6,12 +6,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 class RestApiView extends View{
-
-    String jsonResponse;
-    public RestApiView(String json) {
-        super(null);
-        setJsonResponse(json);
-    }
+    private final String jsonAttributeName = "jsonString";
+    
 
     @Override
     public void dispatch(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -20,11 +16,20 @@ class RestApiView extends View{
     }
 
     public String getJsonResponse() {
-        return jsonResponse;
+        return this.getObject(getJsonAttributeName()).toString() ;
     }
 
     public void setJsonResponse(String jsonResponse) {
-        this.jsonResponse = jsonResponse;
+        addObject(getJsonAttributeName(), jsonResponse);
     }
     
-}
+    public String getJsonAttributeName() {
+        return jsonAttributeName;
+    }
+
+    public RestApiView(String json) {
+        super(null);
+        
+        setJsonResponse(json);
+    }
+}   

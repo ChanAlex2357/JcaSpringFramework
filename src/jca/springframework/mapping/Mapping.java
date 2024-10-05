@@ -1,4 +1,4 @@
-package jca.springframework.controller;
+package jca.springframework.mapping;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.servlet.http.HttpServletRequest;
-import jca.springframework.annotations.MappingAnnotation;
 import jca.springframework.exception.FrameworkException;
 import jca.springframework.scanner.RequestScanner;
 import jca.springframework.scanner.SessionScanner;
@@ -22,12 +21,12 @@ import jca.springframework.view.exception.InvalidReturnException;
 public class Mapping {
     private String classControllerName;
     private String methodeControllerName;
-    private MappingParameter mappingParameter;
-    private MappingAnnotation mappingAnnotation;
+    private MappingParameter mappingParameter;      // Liste des parametres de la methode
+    private MappingAnnotation mappingAnnotation;    // Configuration de l'annotation de la methode
 
     @Override
     public String toString() {
-        return getClassControllerName() +" => "+getMethodeControllerName()+" [ "+getMappingAnnotation().getAnnotation().getClass()+" ]";
+        return getClassControllerName() +" => "+getMethodeControllerName()+" [ "+getMappingAnnotation()+" ]";
     }
     public Mapping(String classControllerName,Method method,MappingAnnotation mappingAnnotation)
     {
@@ -77,11 +76,9 @@ public class Mapping {
                 // Tester si l'attribut est une session
                 if (SessionScanner.isSessionField(attribut)) {
                     attribut.setAccessible(true);
-
                     // Instancier une session
                     WebSession session = WebSessionParser.HttpSessionToWebSession(request);
                     attribut.set(controllerInstance, session);
-                    
                     attribut.setAccessible(false);
                     break;
                 }

@@ -34,6 +34,9 @@ public abstract class View {
     public void addObject(String name,Object value){
         getData().put(name, value);
     }
+    public Object getObject(String name){
+        return getData().get(name);
+    }
 
     
     

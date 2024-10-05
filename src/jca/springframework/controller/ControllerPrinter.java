@@ -4,8 +4,9 @@ import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Set;
 
-import jca.springframework.UrlMapping;
 import jca.springframework.controller.exception.UnhandledUrlException;
+import jca.springframework.mapping.Mapping;
+import jca.springframework.mapping.UrlMapping;
 
 public class ControllerPrinter {
     static public void printControllers(String controllerPackage , HashMap<String,Mapping> urlMapping,PrintWriter out){

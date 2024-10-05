@@ -1,4 +1,4 @@
-package jca.springframework.annotations;
+package jca.springframework.annotations.method;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -7,6 +7,4 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface RestApi {
-    public String url();
-}
+public @interface RestApi {}

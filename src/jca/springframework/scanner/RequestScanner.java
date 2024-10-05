@@ -4,7 +4,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Parameter;
 import jakarta.servlet.http.HttpServletRequest;
-import jca.springframework.annotations.Param;
+import jca.springframework.annotations.parameter.Param;
 import jca.springframework.exception.FrameworkException;
 import jca.springframework.session.WebSessionParser;
 

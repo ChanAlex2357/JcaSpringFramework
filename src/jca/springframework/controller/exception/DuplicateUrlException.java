@@ -1,7 +1,7 @@
 package jca.springframework.controller.exception;
 
-import jca.springframework.controller.Mapping;
 import jca.springframework.exception.FrameworkException;
+import jca.springframework.mapping.Mapping;
 
 public class DuplicateUrlException extends FrameworkException{
     public DuplicateUrlException(String url,Mapping old , Mapping newer){
