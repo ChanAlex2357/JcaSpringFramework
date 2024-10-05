@@ -7,7 +7,10 @@ public class MappingAnnotation {
     private String verb;
     private boolean isApiMethode;
 
-
+    @Override
+    public String toString() {
+        return "[ "+url+" ; "+verb+" ; "+isApiMethode+" ]";
+    }
     public boolean isApiMethode() {
         return isApiMethode;
     }
@@ -21,7 +24,7 @@ public class MappingAnnotation {
     public MappingAnnotation ( Method method ){
         setUrl(MethodScanner.getMethodeUrl(method));
         setVerb(MethodScanner.getMethodeVerb(method));
-        setApiMethode(isApiMethode);
+        setApiMethode(method);
     }
     public String getUrl() {
         return url;
