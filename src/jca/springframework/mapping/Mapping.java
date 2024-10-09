@@ -6,7 +6,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jca.springframework.exception.FrameworkException;
@@ -19,6 +21,7 @@ import jca.springframework.view.ViewBuilder;
 import jca.springframework.view.exception.InvalidReturnException;
 
 public class Mapping {
+    private Set<> verbMapping = new HashSet<>();
     private String classControllerName;
     private String methodeControllerName;
     private MappingParameter mappingParameter;      // Liste des parametres de la methode
