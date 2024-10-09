@@ -7,13 +7,13 @@ import java.util.HashMap;
 import jakarta.servlet.http.HttpServletResponse;
 import jca.springframework.controller.exception.UnhandledUrlException;
 
-public class UrlMapping {
+public class UrlMapping  {
     static public void showUrlMaps(HttpServletResponse response , HashMap<String,Mapping> urlMaps) throws IOException{
         PrintWriter writer = response.getWriter();
         for (String  url : urlMaps.keySet()) {
             writer.println("- "+url+" : "+urlMaps.get(url));
         }
-        writer.flush(); 
+        writer.flush();
     }
     static public Mapping getMapping(String url , HashMap<String,Mapping> urlMaps) throws UnhandledUrlException{
         Mapping mapping = urlMaps.get(url);

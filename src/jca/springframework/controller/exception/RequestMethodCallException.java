@@ -1,19 +1,16 @@
 package jca.springframework.controller.exception;
 
 import jca.springframework.exception.FrameworkException;
-import jca.springframework.mapping.Mapping;
 
 public class RequestMethodCallException extends FrameworkException {
 
-    public RequestMethodCallException( Mapping mapping , String requestMethod ) {
-        super(createMessage(mapping, requestMethod), null);
+    public RequestMethodCallException(  String url, String requestMethod ) {
+        super(createMessage(url,requestMethod), null);
     }
 
-    private static String createMessage(Mapping mapping , String requstMethod){
-        String url = mapping.getMappingAnnotation().getUrl();
-        String verb = mapping.getMappingAnnotation().getVerb();
+    private static String createMessage( String url, String requestMethod){
 
-        return "La methode "+requstMethod+" utilisee pour l'appel de l'url : "+url+"; Excepted methode "+verb+"";
+        return "La methode "+requestMethod+" utilisee pour l'appel de l'url : "+url+" n'est pas possible";
     }
 
 }

@@ -1,134 +1,58 @@
 package jca.springframework.mapping;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jca.springframework.controller.exception.RequestMethodCallException;
 import jca.springframework.exception.FrameworkException;
-import jca.springframework.scanner.RequestScanner;
-import jca.springframework.scanner.SessionScanner;
-import jca.springframework.session.WebSession;
-import jca.springframework.session.WebSessionParser;
 import jca.springframework.view.View;
-import jca.springframework.view.ViewBuilder;
-import jca.springframework.view.exception.InvalidReturnException;
 
 public class Mapping {
-    private Set<> verbMapping = new HashSet<>();
-    private String classControllerName;
-    private String methodeControllerName;
-    private MappingParameter mappingParameter;      // Liste des parametres de la methode
-    private MappingAnnotation mappingAnnotation;    // Configuration de l'annotation de la methode
-
-    @Override
-    public String toString() {
-        return getClassControllerName() +" => "+getMethodeControllerName()+" [ "+getMappingAnnotation()+" ]";
+    private String url;
+    private Set<MappingClassMethode> verbMapping ;
+    
+    public Mapping(String url){
+        setUrl(url);
+        setVerbMapping(new HashSet<MappingClassMethode>());
     }
-    public Mapping(String classControllerName,Method method,MappingAnnotation mappingAnnotation)
-    {
-        setClassControllerName(classControllerName);
-        setMethodeControllerName(method.getName());
-        setMappingAnnotation(mappingAnnotation);
-        setMappingParameter(new MappingParameter(method));
+    public Mapping(String url,MappingClassMethode mappingClassMethode){
+        setUrl(url);
+        setVerbMapping(new HashSet<MappingClassMethode>());
+        getVerbMapping().add(mappingClassMethode);
     }
-// GET AND SET
-    public String getClassControllerName() {
-        return classControllerName;
+    public Set<MappingClassMethode> getVerbMapping() {
+        return verbMapping;
     }
-    public void setClassControllerName(String classControllerName) {
-        this.classControllerName = classControllerName;
+    public void setVerbMapping(Set<MappingClassMethode> verbMapping) {
+        this.verbMapping = verbMapping;
     }
-    public String getMethodeControllerName() {
-        return methodeControllerName;
+    public View getViewResult(HttpServletRequest req) throws IllegalArgumentException, InstantiationException, FrameworkException {
+        // Verification de la conformite de la methode utiliser pour l'appel de la methode de controller
+        MappingClassMethode mappingClassMethode = this.getMappingClassMethode(req.getMethod());
+        // Recuperer le resultat de la requete
+        return mappingClassMethode.getViewResult(req);
+        
     }
-    public void setMethodeControllerName(String methodeControllerName) {
-        this.methodeControllerName = methodeControllerName;
-    }
-    public MappingParameter getMappingParameter() {
-        return mappingParameter;
-    }
-    public void setMappingParameter(MappingParameter mappingParameter) {
-        this.mappingParameter = mappingParameter;
-    }
-    public MappingAnnotation getMappingAnnotation() {
-        return mappingAnnotation;
-    }
-    public void setMappingAnnotation(MappingAnnotation mappingAnnotation) {
-        this.mappingAnnotation = mappingAnnotation;
-    }
-// FUNCTIONALITIES
-    public Object getControllerInstance(HttpServletRequest request){
-        Object controllerInstance = null;
-        try {
-            /// Recuperer la class correspondant au nom du controller du mapping
-            Class<?> clazz = Class.forName(getClassControllerName());
-            /// Recuperer le constructeur vide
-            Class<?>[] nullist = null;
-            Constructor<?> defaultConstructor = clazz.getConstructor(nullist);
-            /// Cree une nouvelle instance avec le constructeur
-            Object[] nullish = null;
-            controllerInstance = defaultConstructor.newInstance(nullish);
-            for(Field attribut : clazz.getDeclaredFields()){
-                // Tester si l'attribut est une session
-                if (SessionScanner.isSessionField(attribut)) {
-                    attribut.setAccessible(true);
-                    // Instancier une session
-                    WebSession session = WebSessionParser.HttpSessionToWebSession(request);
-                    attribut.set(controllerInstance, session);
-                    attribut.setAccessible(false);
-                    break;
-                }
+    public MappingClassMethode getMappingClassMethode(String requestMethod) throws RequestMethodCallException {
+        MappingClassMethode mappingCorrespondance = null;
+        for (MappingClassMethode mappingClassMethode : verbMapping) {
+            if ( mappingClassMethode.getVerb().equals(requestMethod)) {
+                mappingCorrespondance = mappingClassMethode;
             }
-        } catch (Exception e) {
-            /// Exception pour un controller qui n'existe pas
         }
-        return controllerInstance;
+
+        if (!getVerbMapping().isEmpty() && mappingCorrespondance==null) {
+            throw new RequestMethodCallException(getUrl(),requestMethod);
+        }
+        return mappingCorrespondance;
+    }
+    public String getUrl() {
+        return url;
+    }
+    public void setUrl(String url) {
+        this.url = url;
     }
 
-    public Object getMethodResult(HttpServletRequest req) throws IllegalArgumentException, FrameworkException ,IllegalArgumentException, FrameworkException, InstantiationException{
-        Object resultObject = null;
-        Object controller =  getControllerInstance(req);
-        /// recuperer l'objet methode correspondant avec des parametres null 
-        try {
-            Class<?>[] parameterTypes = getMappingParameter().getParameterTypes();
-            Method controllerMethod = controller.getClass().getMethod(getMethodeControllerName(),parameterTypes);
-            List<Object> parameterValues = getParameterValues(req);
-            resultObject = controllerMethod.invoke(controller,parameterValues.toArray());
-        }
-        catch (NoSuchMethodException | SecurityException e){}
-        catch (IllegalAccessException e){} 
-        catch (InvocationTargetException e){}
-        return resultObject;
-    }
-    /// Recuperation des donnees necessaires
-    private List<Object> getParameterValues(HttpServletRequest req) throws IllegalArgumentException, IllegalAccessException, FrameworkException, InstantiationException, InvocationTargetException, SecurityException{
-        List<Object> values = new ArrayList<>(); 
-        Object value = "DEFAULT ";
-        for ( Parameter parameter : getMappingParameter().getParameters()) {
-            value =  RequestScanner.getParameterValue(parameter, req);
-            values.add(value);
-        }
-        return values;
-    }
-
-    public View getViewResult(HttpServletRequest req)throws IllegalArgumentException, FrameworkException, InstantiationException{
-        /// Recuperer l'objet de retour de la methode du controller
-        Object methodResult = getMethodResult(req);
-        /// Traitement du resultat
-
-        View view = ViewBuilder.getViewOf(methodResult,getMappingAnnotation());
-        /// La vue est null si le resultat ne corespond a aucun format valide
-        if ( view == null) {
-            throw new InvalidReturnException(this);
-        }
-        return view;
-    }
     
 }
