@@ -46,7 +46,7 @@ public class MappingClassMethode {
     public String getVerb(){
         return this.getMappingAnnotation().getVerb();
     }
-    
+
     // FUNCTIONALITIES
     public Object getControllerInstance(HttpServletRequest request){
         Object controllerInstance = null;
@@ -120,13 +120,12 @@ public class MappingClassMethode {
     }
     @Override
     public boolean equals(Object obj) {
-        // TODO Auto-generated method stub
-        return super.equals(obj);
+        boolean equality = this.getVerb().equals(((MappingClassMethode)obj).getVerb());
+        return equality;
     }
     @Override
     public int hashCode() {
-        // TODO Auto-generated method stub
-        return super.hashCode();
+        return Integer.valueOf(getVerb());
     }
     
 }
