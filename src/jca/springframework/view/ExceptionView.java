@@ -6,6 +6,9 @@ import java.util.List;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jca.springframework.exception.FrameworkException;
 
 public class ExceptionView extends StringView{
@@ -20,6 +23,9 @@ public class ExceptionView extends StringView{
     private static String getExceptionContent(FrameworkException exception){
         return "\n[!! ERROR !!]\n"+exception.getMessage();
     }
+    public static String prepareExceptionBody(FrameworkException exception){
+        return "<h1></h1>";
+    }
     private static String getExceptionContent(List<FrameworkException> exceptions){
         String message = "";
 
@@ -28,16 +34,17 @@ public class ExceptionView extends StringView{
         }
         return message;
     }
-
+    public void setStatusCode(int statusCode) {
+        this.statusCode = statusCode;
+    }
+    public int getStatusCode() {
+        return statusCode;
+    }
     @Override
     public void dispatch(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        resp.setStatus(this.getStatus());
+        resp.setStatus(getStatusCode());
+        resp.getWriter().println("STATUS CODE -  ["+this.getStatusCode()+"]");
+        resp.getWriter().flush();
         super.dispatch(req, resp);
-    }
-    public int getStatus() {
-        return status;
-    }
-    public void setStatus(int status) {
-        this.status = status;
     }
 }

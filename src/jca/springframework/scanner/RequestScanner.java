@@ -41,7 +41,7 @@ public class RequestScanner {
         /// Recuperer la valeur par annotation
         Param param = ParamScanner.getParameterParam(parameter);
         if (param == null) {
-            throw new FrameworkException("[ ETU 002434 ] : Un parametre ne contient pas de param \n", null);
+            throw new FrameworkException("[ ETU 002434 ] : Un parametre ne contient pas de param", null);
         }
         String paramName = buildParameterName(param.name(), prefix, suffix, delimiter);
         String parameterValue = request.getParameter(paramName);
