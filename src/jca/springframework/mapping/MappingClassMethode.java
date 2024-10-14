@@ -46,7 +46,9 @@ public class MappingClassMethode {
     public String getVerb(){
         return this.getMappingAnnotation().getVerb();
     }
-
+    public String getMethodeAction(){
+        return this.getClassMethode().getMethodeControllerName();
+    }
     // FUNCTIONALITIES
     public Object getControllerInstance(HttpServletRequest request){
         Object controllerInstance = null;
@@ -125,7 +127,7 @@ public class MappingClassMethode {
     }
     @Override
     public int hashCode() {
-        return Integer.valueOf(getVerb());
+        return getVerb().hashCode() *  getMethodeAction().hashCode();
     }
     
 }

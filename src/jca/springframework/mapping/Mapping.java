@@ -21,6 +21,10 @@ public class Mapping {
         setVerbMapping(new HashSet<MappingClassMethode>());
         getVerbMapping().add(mappingClassMethode);
     }
+
+    public void addMappingClassMethode(MappingClassMethode mappingClassMethode){
+        getVerbMapping().add(mappingClassMethode);
+    }
     public Set<MappingClassMethode> getVerbMapping() {
         return verbMapping;
     }
