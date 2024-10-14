@@ -20,6 +20,9 @@ public class ExceptionView extends StringView{
     private static String getExceptionContent(FrameworkException exception){
         return "\n[!! ERROR !!]\n"+exception.getMessage();
     }
+    public static String prepareExceptionBody(FrameworkException exception){
+        return "<h1></h1>";
+    }
     private static String getExceptionContent(List<FrameworkException> exceptions){
         String message = "";
 
@@ -37,6 +40,8 @@ public class ExceptionView extends StringView{
     @Override
     public void dispatch(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.setStatus(getStatusCode());
+        resp.getWriter().println("STATUS CODE -  ["+this.getStatusCode()+"]");
+        resp.getWriter().flush();
         super.dispatch(req, resp);
     }
 }
