@@ -2,14 +2,13 @@ package jca.springframework.view;
 
 import java.io.IOException;
 import java.util.List;
-
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jca.springframework.exception.FrameworkException;
 
 public class ExceptionView extends StringView{
-    int statusCode = 500;
+    private int statusCode = 500;
     public ExceptionView(FrameworkException exception){
         super(getExceptionContent(exception));
     }

@@ -27,7 +27,7 @@ public class MappingParameter {
         this.parameterTypes = parameterTypes;
     }
     void checkSessionUsage(){
-        for (Class<?> class1 : parameterTypes) {
+        for (Class<?> class1 : this.getParameterTypes()) {
             if (SessionScanner.isSessionClass(class1)) {
                 sessionUsage = true;
                 break;

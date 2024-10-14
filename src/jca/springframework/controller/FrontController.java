@@ -4,7 +4,6 @@ import java.util.HashMap;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletResponse;
-import jca.springframework.controller.exception.RequestMethodCallException;
 import jca.springframework.exception.FrameworkException;
 import jca.springframework.mapping.Mapping;
 import jca.springframework.mapping.MappingBuilder;
@@ -69,10 +68,6 @@ public class FrontController extends HttpServlet{
         try {
             /// Recuperer le mapping associer a l'url demander
             Mapping mapping = UrlMapping.getMappingWithFullUrl(fullurl,getUrlMapping());
-            // Verification de la conformite de la methode utiliser pour l'appel de la methode de controller
-            if (!mapping.getMappingAnnotation().getVerb().equals( req.getMethod())) {
-                throw  new RequestMethodCallException(mapping, req.getMethod());
-            }
             // Recuperer le resultat de la requete
             viewResult = mapping.getViewResult(req);
         } catch (FrameworkException e) {
