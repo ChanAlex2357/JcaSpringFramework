@@ -18,7 +18,7 @@ import jca.springframework.view.View;
 import jca.springframework.view.ViewBuilder;
 import jca.springframework.view.exception.InvalidReturnException;
 
-public class MappingClassMethode {
+public class VerbAction {
     private MappingAnnotation mappingAnnotation;
     private ClassMethode classMethode;
     
@@ -34,12 +34,12 @@ public class MappingClassMethode {
     public void setMappingAnnotation(MappingAnnotation mappingAnnotation) {
         this.mappingAnnotation = mappingAnnotation;
     }
-    public MappingClassMethode(MappingAnnotation mappingAnnotation, String classControllerName , Method methodeController){
+    public VerbAction(MappingAnnotation mappingAnnotation, String classControllerName , Method methodeController){
         this.setMappingAnnotation(mappingAnnotation);
         this.setClassMethode(new ClassMethode(classControllerName, methodeController));
     }
     
-    public MappingClassMethode(MappingAnnotation mappingAnnotation, ClassMethode classMethode) {
+    public VerbAction(MappingAnnotation mappingAnnotation, ClassMethode classMethode) {
         this.setMappingAnnotation(mappingAnnotation);
         this.setClassMethode(classMethode);
     }
@@ -122,7 +122,7 @@ public class MappingClassMethode {
     }
     @Override
     public boolean equals(Object obj) {
-        boolean equality = this.getVerb().equals(((MappingClassMethode)obj).getVerb());
+        boolean equality = this.getVerb().equals(((VerbAction)obj).getVerb());
         return equality;
     }
     @Override

@@ -10,37 +10,37 @@ import jca.springframework.view.View;
 
 public class Mapping {
     private String url;
-    private Set<MappingClassMethode> verbMapping ;
+    private Set<VerbAction> verbMapping ;
     
     public Mapping(String url){
         setUrl(url);
-        setVerbMapping(new HashSet<MappingClassMethode>());
+        setVerbMapping(new HashSet<VerbAction>());
     }
-    public Mapping(String url,MappingClassMethode mappingClassMethode){
+    public Mapping(String url,VerbAction mappingClassMethode){
         setUrl(url);
-        setVerbMapping(new HashSet<MappingClassMethode>());
+        setVerbMapping(new HashSet<VerbAction>());
         getVerbMapping().add(mappingClassMethode);
     }
 
-    public void addMappingClassMethode(MappingClassMethode mappingClassMethode){
+    public void addMappingClassMethode(VerbAction mappingClassMethode){
         getVerbMapping().add(mappingClassMethode);
     }
-    public Set<MappingClassMethode> getVerbMapping() {
+    public Set<VerbAction> getVerbMapping() {
         return verbMapping;
     }
-    public void setVerbMapping(Set<MappingClassMethode> verbMapping) {
+    public void setVerbMapping(Set<VerbAction> verbMapping) {
         this.verbMapping = verbMapping;
     }
     public View getViewResult(HttpServletRequest req) throws IllegalArgumentException, InstantiationException, FrameworkException {
         // Verification de la conformite de la methode utiliser pour l'appel de la methode de controller
-        MappingClassMethode mappingClassMethode = this.getMappingClassMethode(req.getMethod());
+        VerbAction mappingClassMethode = this.getMappingClassMethode(req.getMethod());
         // Recuperer le resultat de la requete
         return mappingClassMethode.getViewResult(req);
         
     }
-    public MappingClassMethode getMappingClassMethode(String requestMethod) throws RequestMethodCallException {
-        MappingClassMethode mappingCorrespondance = null;
-        for (MappingClassMethode mappingClassMethode : verbMapping) {
+    public VerbAction getMappingClassMethode(String requestMethod) throws RequestMethodCallException {
+        VerbAction mappingCorrespondance = null;
+        for (VerbAction mappingClassMethode : verbMapping) {
             if ( mappingClassMethode.getVerb().equals(requestMethod)) {
                 mappingCorrespondance = mappingClassMethode;
             }

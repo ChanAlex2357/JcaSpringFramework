@@ -24,7 +24,7 @@ public class MappingBuilder {
             Method[] controllerMethods = controller.getDeclaredMethods();
             /// Traitement de chaque methode de controller
             for (Method method : controllerMethods) {
-                MappingClassMethode mappingClassMethode = createMapping(controller , method);
+                VerbAction mappingClassMethode = createMapping(controller , method);
                 String url = mappingClassMethode.getMappingAnnotation().getUrl();
                 /*
                     * Verification de l'etat de l'url
@@ -50,11 +50,11 @@ public class MappingBuilder {
         }
     }
 
-    static public MappingClassMethode createMapping(Class<?> controller , Method method){
+    static public VerbAction createMapping(Class<?> controller , Method method){
         MappingAnnotation mappingAnnotation = new MappingAnnotation(method);
-        MappingClassMethode mapping;
+        VerbAction mapping;
         ///  Creation de l'objet mapping controller -> method 
-        mapping = new MappingClassMethode(
+        mapping = new VerbAction(
             mappingAnnotation,   
             controller.getName(),       // Le nom du controller
             method                      // La methode a appeler
