@@ -23,8 +23,7 @@ public class FrameworkException extends Exception{
         return message;
     }
     public View getExceptionView(){
-        ExceptionView view = new ExceptionView(this); 
-        view.setStatusCode(this.getException_status());
+        ExceptionView view = new ExceptionView(this);
         return view;
     }
 }
