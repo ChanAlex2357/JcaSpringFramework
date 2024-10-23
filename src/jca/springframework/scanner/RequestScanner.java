@@ -24,6 +24,9 @@ public class RequestScanner {
             // Cree une webSession a partir de httpServlet
             value = WebSessionParser.HttpSessionToWebSession(request);
         }
+        else if (PartUtils.isPartParameter(parameter)) {
+            value = getPartParameterValue(parameter,request);
+        }
         else {
             value = getObjectParameterValue(parameter, request);
         }
@@ -121,5 +124,13 @@ public class RequestScanner {
         // Instaciaion de l'attribut pour l'objet
         FileMapping fileMapping = new FileMapping(part);
         attribute.set(obj, fileMapping);
+    }
+
+    private static Object getPartParameterValue(Parameter parameter , HttpServletRequest request) throws IOException, ServletException, FrameworkException {
+        String parameterName = getRequestParameter(parameter, request);
+        Part part = request.getPart(parameterName);
+        FileMapping fileMapping = new FileMapping(part);
+        return fileMapping;
+        
     }
 }

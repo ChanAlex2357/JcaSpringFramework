@@ -3,11 +3,16 @@ package jca.springframework.utils;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
+import java.lang.reflect.Parameter;
+
 import jca.springframework.mapping.FileMapping;
 import jakarta.servlet.http.Part;
 import jca.springframework.constants.FrameworkConstante;
 
 public class PartUtils {
+    public static boolean isPartParameter(Parameter parameter){
+        return parameter.getType().equals( FileMapping.class);
+    }
     public static byte[] getFileBytes(Part part) throws IOException {
         // On récupère la taille du fichier
         long fileSize = part.getSize();
