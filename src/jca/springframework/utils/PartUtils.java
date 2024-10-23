@@ -3,7 +3,7 @@ package jca.springframework.utils;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
-
+import jca.springframework.mapping.FileMapping;
 import jakarta.servlet.http.Part;
 import jca.springframework.constants.FrameworkConstante;
 
@@ -47,5 +47,9 @@ public class PartUtils {
         else {
             return null;
         }
+    }
+
+    public static boolean isPartAttribute(Field attriibute){
+        return attriibute.getType().equals(FileMapping.class);
     }
 }

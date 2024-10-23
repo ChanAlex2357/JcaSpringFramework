@@ -15,6 +15,4 @@ public class ParamScanner {
         }
         return paramResult;
     }
-
-    
 }

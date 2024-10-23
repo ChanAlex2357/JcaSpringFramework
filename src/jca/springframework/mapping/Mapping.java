@@ -1,8 +1,10 @@
 package jca.springframework.mapping;
 
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
+import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jca.springframework.controller.exception.RequestMethodCallException;
 import jca.springframework.exception.FrameworkException;
@@ -31,7 +33,7 @@ public class Mapping {
     public void setVerbMapping(Set<VerbAction> verbMapping) {
         this.verbMapping = verbMapping;
     }
-    public View getViewResult(HttpServletRequest req) throws IllegalArgumentException, InstantiationException, FrameworkException {
+    public View getViewResult(HttpServletRequest req) throws IllegalArgumentException, InstantiationException, FrameworkException, IOException, ServletException {
         // Verification de la conformite de la methode utiliser pour l'appel de la methode de controller
         VerbAction mappingClassMethode = this.getMappingClassMethode(req.getMethod());
         // Recuperer le resultat de la requete
