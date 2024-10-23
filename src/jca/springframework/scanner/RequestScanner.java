@@ -1,15 +1,21 @@
 package jca.springframework.scanner;
 
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Parameter;
+
+import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.Part;
 import jca.springframework.annotations.parameter.Param;
 import jca.springframework.exception.FrameworkException;
+import jca.springframework.mapping.FileMapping;
 import jca.springframework.session.WebSessionParser;
+import jca.springframework.utils.PartUtils;
 
 public class RequestScanner {
-    public static Object getParameterValue(Parameter parameter,HttpServletRequest request) throws FrameworkException, IllegalArgumentException, IllegalAccessException, InstantiationException, InvocationTargetException, SecurityException{
+    public static Object getParameterValue(Parameter parameter,HttpServletRequest request) throws FrameworkException, IllegalArgumentException, IllegalAccessException, InstantiationException, InvocationTargetException, SecurityException, IOException, ServletException{
         Object value = null;
         if (PrimitiveScanner.isPrimitifType(parameter)) {
             value = getPrmitiveParameterValue(parameter, request);
@@ -60,7 +66,7 @@ public class RequestScanner {
         result = PrimitiveScanner.parsePrimitive(parameterType, parameterValue);
         return result; 
     }
-    private static Object getObjectParameterValue(Parameter parameter , HttpServletRequest request) throws FrameworkException, IllegalArgumentException, IllegalAccessException, InstantiationException, InvocationTargetException, SecurityException{
+    private static Object getObjectParameterValue(Parameter parameter , HttpServletRequest request) throws FrameworkException, IllegalArgumentException, IllegalAccessException, InstantiationException, InvocationTargetException, SecurityException, IOException, ServletException{
         // Le resultat attendue
         Object result = null;
         // Recuperer la class type du parametre de la fonction du controller 
@@ -72,17 +78,48 @@ public class RequestScanner {
             result = parameterType.getConstructor(nulliz).newInstance(nullist);
             // Recuperer la valeur de chaque attribut
             for(Field attribute : parameterType.getDeclaredFields()){
-                attribute.setAccessible(true);
-                String parameterValue = getRequestParameter(parameter,request,null,attribute.getName(),".");
-                if (parameterValue == null) {
-                    continue;
-                }
-                attribute.set(result,PrimitiveScanner.parsePrimitive(attribute.getType(), parameterValue));
-                attribute.setAccessible(false);
+                setObjectParameterValue(result, parameter, attribute, request);
             }
         } catch ( NoSuchMethodException err ) {
             throw new FrameworkException("La class "+parameterType+" doit posseder un constructeur vide\n", err);
         }
         return result; 
+    }
+    private static void setObjectParameterValue(Object obj , Parameter parameter , Field attribute , HttpServletRequest request) throws IllegalArgumentException, IllegalAccessException, FrameworkException, IOException, ServletException {
+        
+        attribute.setAccessible(true);
+        // Tester si il suit la convention de fichier
+        if ( PartUtils.isPartAttribute(attribute) ) {
+            setObjectPartValue( obj, parameter, request, attribute );
+        }
+        else {
+            setObjectPrimitiveValue(obj,parameter, request, attribute);
+        }
+        attribute.setAccessible(false);
+    }
+    
+    private static void setObjectPrimitiveValue(Object obj, Parameter parameter , HttpServletRequest request , Field attribute) throws IllegalArgumentException, IllegalAccessException, FrameworkException{
+        String parameterValue = getRequestParameter(parameter,request,null,attribute.getName(),".");
+        if (parameterValue == null) {
+            return;
+        }
+        attribute.set(obj,PrimitiveScanner.parsePrimitive(attribute.getType(), parameterValue));
+    }
+    
+    private static void setObjectPartValue(Object obj , Parameter parameter , HttpServletRequest request , Field attribute) throws IOException, ServletException, IllegalArgumentException, IllegalAccessException, FrameworkException{
+        String attributeName = attribute.getName();
+        // Recuperer l'objet part correspondant  
+        Part part = request.getPart(attributeName);
+        if (part == null) {
+            part = request.getPart(
+                getRequestParameter(parameter, request, null,attributeName, ".")
+            );
+            if (part == null) {
+                return;
+            }
+        }
+        // Instaciaion de l'attribut pour l'objet
+        FileMapping fileMapping = new FileMapping(part);
+        attribute.set(obj, fileMapping);
     }
 }
