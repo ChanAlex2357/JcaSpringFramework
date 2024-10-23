@@ -31,15 +31,10 @@ public class StringUtils {
         return attributeName.startsWith(FrameworkConstante.FILE_BYTES_CONVENTION);
     }
 
-
-    public static String extractPartName(String attributeName){
-        if (isConventionnalFilename(attributeName)) {
-            return getSubstring(attributeName,FrameworkConstante.FILE_FILENAME_CONVENTION);
-        }
-        else if (isConventionnalBytes(attributeName)) {
-            return getSubstring(attributeName, FrameworkConstante.FILE_BYTES_CONVENTION);
-        }
-        return null;
-
+    public static boolean isConventionnalPartAttribute(Field attribute){
+        return isConventionnalFilename(attribute) || isConventionnalBytes(attribute);
+    }
+    public static boolean isConventionnalPartAttribute(String attribute){
+        return isConventionnalFilename(attribute) || isConventionnalBytes(attribute);
     }
 }
