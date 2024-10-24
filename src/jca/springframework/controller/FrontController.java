@@ -2,6 +2,7 @@ package jca.springframework.controller;
 import java.io.IOException;
 import java.util.HashMap;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletResponse;
 import jca.springframework.exception.FrameworkException;
@@ -16,6 +17,7 @@ import jakarta.servlet.http.HttpServletRequest;
  * FrontController
  * Joue le role du servlet principale qui va recuperer tout les requetes entrantes
  */
+@MultipartConfig
 public class FrontController extends HttpServlet{
     /// Le package des controllers
     private String controller_package;

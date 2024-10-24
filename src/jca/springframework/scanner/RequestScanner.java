@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Parameter;
+import java.util.Base64;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -13,6 +14,7 @@ import jca.springframework.exception.FrameworkException;
 import jca.springframework.mapping.FileMapping;
 import jca.springframework.session.WebSessionParser;
 import jca.springframework.utils.PartUtils;
+import jca.springframework.utils.StringUtils;
 
 public class RequestScanner {
     public static Object getParameterValue(Parameter parameter,HttpServletRequest request) throws FrameworkException, IllegalArgumentException, IllegalAccessException, InstantiationException, InvocationTargetException, SecurityException, IOException, ServletException{
@@ -46,21 +48,33 @@ public class RequestScanner {
         }
         return result;
     }
-    public static String getRequestParameter(Parameter parameter,HttpServletRequest request,String prefix , String suffix,String delimiter) throws FrameworkException{
+    public static String buildParameterName(Parameter parameter)throws FrameworkException{
+        return buildParameterName(parameter, null, null,"");
+    }
+    public static String buildParameterName(Parameter parameter , String prefix, String suffix , String delimiter) throws FrameworkException {
         /// Recuperer la valeur par annotation
         Param param = ParamScanner.getParameterParam(parameter);
         if (param == null) {
             throw new FrameworkException("[ ETU 002434 ] : Un parametre ne contient pas de param", null);
         }
         String paramName = buildParameterName(param.name(), prefix, suffix, delimiter);
+        return paramName;
+    }
+    public static String getRequestParameter(Parameter parameter,HttpServletRequest request,String prefix , String suffix,String delimiter) throws FrameworkException, IOException, ServletException{
+        String paramName = buildParameterName(parameter, prefix, suffix, delimiter);
         String parameterValue = request.getParameter(paramName);
+        if (parameterValue == null) {
+            Part part = PartUtils.getPartValue(request, paramName);
+            byte[] bytes = PartUtils.getFileBytes(part);
+            return StringUtils.encode(bytes);
+        }
         return parameterValue;
     }
-    public static String getRequestParameter(Parameter parameter,HttpServletRequest request) throws FrameworkException{
+    public static String getRequestParameter(Parameter parameter,HttpServletRequest request) throws FrameworkException, IOException, ServletException{
         return getRequestParameter(parameter, request,null,null,"");
     }
     
-    private static Object getPrmitiveParameterValue(Parameter parameter , HttpServletRequest request) throws FrameworkException{
+    private static Object getPrmitiveParameterValue(Parameter parameter , HttpServletRequest request) throws FrameworkException, IOException, ServletException{
         // Le resultat attendue
         Object result = null;
         String parameterValue = getRequestParameter(parameter, request);
@@ -101,7 +115,7 @@ public class RequestScanner {
         attribute.setAccessible(false);
     }
     
-    private static void setObjectPrimitiveValue(Object obj, Parameter parameter , HttpServletRequest request , Field attribute) throws IllegalArgumentException, IllegalAccessException, FrameworkException{
+    private static void setObjectPrimitiveValue(Object obj, Parameter parameter , HttpServletRequest request , Field attribute) throws IllegalArgumentException, IllegalAccessException, FrameworkException, IOException, ServletException{
         String parameterValue = getRequestParameter(parameter,request,null,attribute.getName(),".");
         if (parameterValue == null) {
             return;
@@ -127,7 +141,7 @@ public class RequestScanner {
     }
 
     private static Object getPartParameterValue(Parameter parameter , HttpServletRequest request) throws IOException, ServletException, FrameworkException {
-        String parameterName = getRequestParameter(parameter, request);
+        String parameterName = buildParameterName(parameter);
         Part part = request.getPart(parameterName);
         FileMapping fileMapping = new FileMapping(part);
         return fileMapping;
