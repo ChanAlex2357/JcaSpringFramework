@@ -1,6 +1,7 @@
 package jca.springframework.utils;
 
 import java.lang.reflect.Field;
+import java.util.Base64;
 
 import jca.springframework.constants.FrameworkConstante;
 
@@ -36,5 +37,9 @@ public class StringUtils {
     }
     public static boolean isConventionnalPartAttribute(String attribute){
         return isConventionnalFilename(attribute) || isConventionnalBytes(attribute);
+    }
+
+    public static String encode(byte[] stringbytes){
+        return Base64.getEncoder().encodeToString(stringbytes);
     }
 }

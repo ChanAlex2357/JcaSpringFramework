@@ -6,10 +6,15 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Parameter;
 
 import jca.springframework.mapping.FileMapping;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.Part;
 import jca.springframework.constants.FrameworkConstante;
 
 public class PartUtils {
+    public static Part getPartValue(HttpServletRequest request , String attributeName) throws IOException, ServletException{
+        return request.getPart(attributeName);
+    }
     public static boolean isPartParameter(Parameter parameter){
         return parameter.getType().equals( FileMapping.class);
     }
@@ -40,19 +45,6 @@ public class PartUtils {
 
     }
 
-    public static Object extractPartValueByAttrbute(Part part, Field attribute) throws IOException{
-        if (StringUtils.isConventionnalFilename(attribute)) {
-            return part.getName();
-        }
-        else if(StringUtils.isConventionnalBytes(attribute))
-        {
-            byte[] bytes = PartUtils.getFileBytes(part);
-            return bytes;
-        }
-        else {
-            return null;
-        }
-    }
 
     public static boolean isPartAttribute(Field attriibute){
         return attriibute.getType().equals(FileMapping.class);
