@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Parameter;
-import java.util.Base64;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -14,7 +13,6 @@ import jca.springframework.exception.FrameworkException;
 import jca.springframework.mapping.FileMapping;
 import jca.springframework.session.WebSessionParser;
 import jca.springframework.utils.PartUtils;
-import jca.springframework.utils.StringUtils;
 
 public class RequestScanner {
     public static Object getParameterValue(Parameter parameter,HttpServletRequest request) throws FrameworkException, IllegalArgumentException, IllegalAccessException, InstantiationException, InvocationTargetException, SecurityException, IOException, ServletException{
@@ -63,11 +61,6 @@ public class RequestScanner {
     public static String getRequestParameter(Parameter parameter,HttpServletRequest request,String prefix , String suffix,String delimiter) throws FrameworkException, IOException, ServletException{
         String paramName = buildParameterName(parameter, prefix, suffix, delimiter);
         String parameterValue = request.getParameter(paramName);
-        if (parameterValue == null) {
-            Part part = PartUtils.getPartValue(request, paramName);
-            byte[] bytes = PartUtils.getFileBytes(part);
-            return StringUtils.encode(bytes);
-        }
         return parameterValue;
     }
     public static String getRequestParameter(Parameter parameter,HttpServletRequest request) throws FrameworkException, IOException, ServletException{
@@ -128,12 +121,7 @@ public class RequestScanner {
         // Recuperer l'objet part correspondant  
         Part part = request.getPart(attributeName);
         if (part == null) {
-            part = request.getPart(
-                getRequestParameter(parameter, request, null,attributeName, ".")
-            );
-            if (part == null) {
-                return;
-            }
+            return;
         }
         // Instaciaion de l'attribut pour l'objet
         FileMapping fileMapping = new FileMapping(part);
