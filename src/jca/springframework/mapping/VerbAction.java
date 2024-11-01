@@ -1,5 +1,6 @@
 package jca.springframework.mapping;
 
+import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -8,6 +9,7 @@ import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import java.util.List;
 
+import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jca.springframework.exception.FrameworkException;
 import jca.springframework.scanner.RequestScanner;
@@ -78,7 +80,7 @@ public class VerbAction {
         return controllerInstance;
     }
 
-    public Object getMethodResult(HttpServletRequest req) throws IllegalArgumentException, FrameworkException ,IllegalArgumentException, FrameworkException, InstantiationException{
+    public Object getMethodResult(HttpServletRequest req) throws IllegalArgumentException, FrameworkException ,IllegalArgumentException, FrameworkException, InstantiationException, IOException, ServletException{
         Object resultObject = null;
         Object controller =  getControllerInstance(req);
         /// recuperer l'objet methode correspondant avec des parametres null 
@@ -94,7 +96,7 @@ public class VerbAction {
         return resultObject;
     }
     /// Recuperation des donnees necessaires
-    private List<Object> getParameterValues(HttpServletRequest req) throws IllegalArgumentException, IllegalAccessException, FrameworkException, InstantiationException, InvocationTargetException, SecurityException{
+    private List<Object> getParameterValues(HttpServletRequest req) throws IllegalArgumentException, IllegalAccessException, FrameworkException, InstantiationException, InvocationTargetException, SecurityException, IOException, ServletException{
         List<Object> values = new ArrayList<>(); 
         Object value = "DEFAULT ";
         for ( Parameter parameter : getClassMethode().getMappingParameter().getParameters()) {
@@ -104,7 +106,7 @@ public class VerbAction {
         return values;
     }
 
-    public View getViewResult(HttpServletRequest req)throws IllegalArgumentException, FrameworkException, InstantiationException{
+    public View getViewResult(HttpServletRequest req)throws IllegalArgumentException, FrameworkException, InstantiationException, IOException, ServletException{
         /// Recuperer l'objet de retour de la methode du controller
         Object methodResult = getMethodResult(req);
         /// Traitement du resultat
@@ -116,6 +118,7 @@ public class VerbAction {
         }
         return view;
     }
+
     @Override
     public String toString() {
         return getClassMethode().getClassControllerName() +" => "+getClassMethode().getMethodeControllerName()+" [ "+getMappingAnnotation()+" ]";
