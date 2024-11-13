@@ -9,8 +9,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jca.springframework.builder.ObjectParameterBuilder;
 import jca.springframework.builder.PartParameterBuilder;
 import jca.springframework.builder.PrimitiveParameterBuilder;
+import jca.springframework.builder.exception.FieldsValidationException;
 import jca.springframework.exception.FrameworkException;
-import jca.springframework.scanner.exception.FieldsValidationException;
 import jca.springframework.session.WebSessionParser;
 import jca.springframework.utils.PartUtils;
 

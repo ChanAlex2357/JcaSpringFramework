@@ -1,6 +1,5 @@
 package jca.springframework.builder.exception;
 
-import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 
 import jca.springframework.exception.FrameworkException;

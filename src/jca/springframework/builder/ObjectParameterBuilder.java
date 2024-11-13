@@ -7,12 +7,12 @@ import java.lang.reflect.Parameter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.Part;
+import jca.springframework.builder.exception.FieldsValidationException;
 import jca.springframework.builder.exception.NoDefaultConstructeurException;
 import jca.springframework.exception.FrameworkException;
 import jca.springframework.mapping.FileMapping;
 import jca.springframework.scanner.PrimitiveScanner;
 import jca.springframework.scanner.ValidationScanner;
-import jca.springframework.scanner.exception.FieldsValidationException;
 import jca.springframework.utils.PartUtils;
 
 public class ObjectParameterBuilder extends ParameterBuilder {
@@ -52,9 +52,6 @@ public class ObjectParameterBuilder extends ParameterBuilder {
 
     protected void setObjectPrimitiveValue(Object obj, Parameter parameter , HttpServletRequest request , Field attribute , ValidationScanner validationScanner) throws IllegalArgumentException, IllegalAccessException, FrameworkException, IOException, ServletException{
         String parameterValue = getRequestParameter(parameter,request,null,attribute.getName(),".");
-        if (parameterValue == null) {
-            return;
-        }
         Object value = PrimitiveScanner.parsePrimitive(attribute.getType(), parameterValue);
         setAttributeValue(obj, attribute, value, validationScanner);
     }

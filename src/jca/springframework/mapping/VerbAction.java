@@ -11,10 +11,10 @@ import java.util.List;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
+import jca.springframework.builder.exception.FieldsValidationException;
 import jca.springframework.exception.FrameworkException;
 import jca.springframework.scanner.RequestScanner;
 import jca.springframework.scanner.SessionScanner;
-import jca.springframework.scanner.exception.FieldsValidationException;
 import jca.springframework.session.WebSession;
 import jca.springframework.session.WebSessionParser;
 import jca.springframework.view.View;

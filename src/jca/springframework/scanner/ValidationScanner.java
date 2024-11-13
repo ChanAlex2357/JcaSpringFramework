@@ -8,8 +8,8 @@ import java.util.List;
 import jca.springframework.annotations.attribut.validation.Max;
 import jca.springframework.annotations.attribut.validation.Min;
 import jca.springframework.annotations.attribut.validation.Required;
-import jca.springframework.scanner.exception.FieldValidationException;
-import jca.springframework.scanner.exception.FieldsValidationException;
+import jca.springframework.builder.exception.FieldValidationException;
+import jca.springframework.builder.exception.FieldsValidationException;
 import jca.springframework.utils.AnnotationUtils;
 
 public class ValidationScanner {
@@ -90,7 +90,7 @@ public class ValidationScanner {
     }
 
     public FieldsValidationException getValidationExceptions(){
-        if (this.getValidationExceptions() == null) {
+        if (this.validationException  == null) {
             this.validationException = new FieldsValidationException(getFieldValidationExceptions()); 
         }
         return this.validationException;

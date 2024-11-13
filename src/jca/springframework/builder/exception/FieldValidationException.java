@@ -1,4 +1,4 @@
-package jca.springframework.scanner.exception;
+package jca.springframework.builder.exception;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;

@@ -1,4 +1,4 @@
-package jca.springframework.scanner.exception;
+package jca.springframework.builder.exception;
 
 import java.util.List;
 
