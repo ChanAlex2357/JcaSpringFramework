@@ -51,6 +51,10 @@ public class VerbAction {
     public String getMethodeAction(){
         return this.getClassMethode().getMethodeControllerName();
     }
+    public String getUrl(){
+        return this.getMappingAnnotation().getUrl();
+    }
+    
     // FUNCTIONALITIES
     public Object getControllerInstance(HttpServletRequest request){
         Object controllerInstance = null;

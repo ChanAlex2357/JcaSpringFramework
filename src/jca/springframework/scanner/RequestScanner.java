@@ -6,10 +6,10 @@ import java.lang.reflect.Parameter;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
+import jca.springframework.builder.ObjectParameterBuilder;
+import jca.springframework.builder.PartParameterBuilder;
+import jca.springframework.builder.PrimitiveParameterBuilder;
 import jca.springframework.exception.FrameworkException;
-import jca.springframework.parameterbuilder.ObjectParameterBuilder;
-import jca.springframework.parameterbuilder.PartParameterBuilder;
-import jca.springframework.parameterbuilder.PrimitiveParameterBuilder;
 import jca.springframework.session.WebSessionParser;
 import jca.springframework.utils.PartUtils;
 

@@ -1,4 +1,4 @@
-package jca.springframework.parameterbuilder;
+package jca.springframework.builder;
 
 import java.io.IOException;
 import java.lang.reflect.Parameter;
