@@ -97,10 +97,11 @@ public class VerbAction {
     }
     /// Recuperation des donnees necessaires
     private List<Object> getParameterValues(HttpServletRequest req) throws IllegalArgumentException, IllegalAccessException, FrameworkException, InstantiationException, InvocationTargetException, SecurityException, IOException, ServletException{
-        List<Object> values = new ArrayList<>(); 
+        List<Object> values = new ArrayList<>();
+        RequestScanner requestScanner = new RequestScanner();
         Object value = "DEFAULT ";
         for ( Parameter parameter : getClassMethode().getMappingParameter().getParameters()) {
-            value =  RequestScanner.getParameterValue(parameter, req);
+            value =  requestScanner.getParameterValue(parameter, req);
             values.add(value);
         }
         return values;
