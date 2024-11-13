@@ -7,14 +7,15 @@ import jca.springframework.annotations.classe.Controller;
 import jca.springframework.controller.exception.DuplicateUrlException;
 import jca.springframework.scanner.PackageScanner;
 import jca.springframework.scanner.exception.InvalidPackageException;
+import jca.springframework.scanner.exception.MultipleVerbException;
 
 public class MappingBuilder {
-    static public HashMap<String,Mapping> scann_controllers(String controllerPackage)throws InvalidPackageException, DuplicateUrlException {
+    static public HashMap<String,Mapping> scann_controllers(String controllerPackage)throws InvalidPackageException, DuplicateUrlException, MultipleVerbException {
         HashMap<String,Mapping> urlMapping = new HashMap<String,Mapping>();
         scann_controllers(controllerPackage,urlMapping);
         return urlMapping; 
     }
-    static public void scann_controllers(String controllerPackage , HashMap<String,Mapping> urlMapping)throws InvalidPackageException, DuplicateUrlException {
+    static public void scann_controllers(String controllerPackage , HashMap<String,Mapping> urlMapping)throws InvalidPackageException, DuplicateUrlException, MultipleVerbException {
         Mapping mapping = null;
         /// Recuperer la liste de tous les controllers du contexte
         List<Class<?>> controllersClasses = PackageScanner.findAnnotedClasses(controllerPackage,Controller.class );
@@ -41,16 +42,16 @@ public class MappingBuilder {
                     boolean added = mapping.getVerbMapping().add(mappingClassMethode);
                     if (!added) {
                         // Exception de methode identique
+                        throw new DuplicateUrlException(url,urlMapping.get(url),mapping);
                     }
                 }
-                // if(urlMapping.get(url) != null){throw new DuplicateUrlException(url,urlMapping.get(url),mapping);}
                 
                 urlMapping.put(url,mapping);
             }
         }
     }
 
-    static public VerbAction createMapping(Class<?> controller , Method method){
+    static public VerbAction createMapping(Class<?> controller , Method method) throws MultipleVerbException{
         MappingAnnotation mappingAnnotation = new MappingAnnotation(method);
         VerbAction mapping;
         ///  Creation de l'objet mapping controller -> method 
