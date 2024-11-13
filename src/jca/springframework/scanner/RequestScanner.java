@@ -37,7 +37,7 @@ public class RequestScanner {
             value = getPartBuilder().getPartParameterValue(parameter,request);
         }
         else {
-            value = getObjectBuilder(). getObjectParameterValue(parameter, request);
+            value = getObjectBuilder().getObjectParameterValue(parameter, request);
         }
         return value;
     }

@@ -11,10 +11,12 @@ import jakarta.servlet.http.Part;
 import jca.springframework.exception.FrameworkException;
 import jca.springframework.mapping.FileMapping;
 import jca.springframework.scanner.PrimitiveScanner;
+import jca.springframework.scanner.ValidationScanner;
 import jca.springframework.utils.PartUtils;
 
 public class ObjectParameterBuilder extends ParameterBuilder {
-    public Object getObjectParameterValue(Parameter parameter , HttpServletRequest request) throws FrameworkException, IllegalArgumentException, IllegalAccessException, InstantiationException, InvocationTargetException, SecurityException, IOException, ServletException{
+    public Object getObjectParameterValue(Parameter parameter , HttpServletRequest request ) throws FrameworkException, IllegalArgumentException, IllegalAccessException, InstantiationException, InvocationTargetException, SecurityException, IOException, ServletException{
+        ValidationScanner validationScanner = new ValidationScanner();
         // Le resultat attendue
         Object result = null;
         // Recuperer la class type du parametre de la fonction du controller 
@@ -26,7 +28,7 @@ public class ObjectParameterBuilder extends ParameterBuilder {
             result = parameterType.getConstructor(nulliz).newInstance(nullist);
             // Recuperer la valeur de chaque attribut
             for(Field attribute : parameterType.getDeclaredFields()){
-                setObjectParameterValue(result, parameter, attribute, request);
+                setObjectParameterValue(result, parameter, attribute, request , validationScanner);
             }
         } catch ( NoSuchMethodException err ) {
             throw new FrameworkException("La class "+parameterType+" doit posseder un constructeur vide\n", err);
@@ -34,25 +36,26 @@ public class ObjectParameterBuilder extends ParameterBuilder {
         return result; 
     }
 
-    protected void setObjectParameterValue(Object obj , Parameter parameter , Field attribute , HttpServletRequest request) throws IllegalArgumentException, IllegalAccessException, FrameworkException, IOException, ServletException {
-        
+    protected void setObjectParameterValue(Object obj , Parameter parameter , Field attribute , HttpServletRequest request, ValidationScanner validationScanner) throws IllegalArgumentException, IllegalAccessException, FrameworkException, IOException, ServletException {
         attribute.setAccessible(true);
         // Tester si il suit la convention de fichier
         if ( PartUtils.isPartAttribute(attribute) ) {
             setObjectPartValue( obj, parameter, request, attribute );
         }
         else {
-            setObjectPrimitiveValue(obj,parameter, request, attribute);
+            setObjectPrimitiveValue(obj,parameter, request, attribute, validationScanner);
         }
         attribute.setAccessible(false);
     }
 
-    private static void setObjectPrimitiveValue(Object obj, Parameter parameter , HttpServletRequest request , Field attribute) throws IllegalArgumentException, IllegalAccessException, FrameworkException, IOException, ServletException{
+    static void setObjectPrimitiveValue(Object obj, Parameter parameter , HttpServletRequest request , Field attribute , ValidationScanner validationScanner) throws IllegalArgumentException, IllegalAccessException, FrameworkException, IOException, ServletException{
         String parameterValue = getRequestParameter(parameter,request,null,attribute.getName(),".");
         if (parameterValue == null) {
             return;
         }
-        attribute.set(obj,PrimitiveScanner.parsePrimitive(attribute.getType(), parameterValue));
+        Object value = PrimitiveScanner.parsePrimitive(attribute.getType(), parameterValue);
+        validationScanner.checkValidationFieldValue(attribute, value);
+        attribute.set(obj,value);
     }
     
     private static void setObjectPartValue(Object obj , Parameter parameter , HttpServletRequest request , Field attribute) throws IOException, ServletException, IllegalArgumentException, IllegalAccessException, FrameworkException{
