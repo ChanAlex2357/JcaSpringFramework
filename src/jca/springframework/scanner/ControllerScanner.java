@@ -7,11 +7,12 @@ import jca.springframework.annotations.classe.Controller;
 import jca.springframework.builder.MappingBuilder;
 import jca.springframework.controller.exception.DuplicateUrlException;
 import jca.springframework.mapping.AdminUrlMapping;
+import jca.springframework.mapping.Mapping;
 import jca.springframework.scanner.exception.InvalidPackageException;
 import jca.springframework.scanner.exception.MultipleVerbException;
 
 public class ControllerScanner {
-
+    private String scannLog;
     AdminUrlMapping adminUrlMapping ;
     MappingBuilder mappingBuilder = new MappingBuilder(getAdminUrlMapping());
     public ControllerScanner(){
@@ -22,16 +23,24 @@ public class ControllerScanner {
         setAdminUrlMapping(adminUrlMapping);
         setMappingBuilder();
     }
-    public void scann_controllers(String controllerPackage)throws InvalidPackageException, DuplicateUrlException, MultipleVerbException{ 
+    public void scann_controllers(String controllerPackage)throws InvalidPackageException, DuplicateUrlException, MultipleVerbException {
         /// Recuperer la liste de tous les controllers du contexte
         List<Class<?>> controllersClasses = PackageScanner.findAnnotedClasses(controllerPackage,Controller.class );
+        addToLog("Finding controller Class :"+controllersClasses);
         /// Traitement de chaque classe de controller
         for (Class<?> controller : controllersClasses) {
             /// Recuperation des methodes de controller
+            addToLog("Traitement . . . "+controller.getName());
             Method[] controllerMethods = controller.getDeclaredMethods();
             /// Traitement de chaque methode de controller
             for (Method method : controllerMethods) {
-                getMappingBuilder().buildMapping(controller, method);
+                Mapping mapping =getMappingBuilder().buildMapping(controller, method);
+                String log = "Methode :" +method.getName()+" {";
+                String etat = "YES";
+                if (mapping == null) {
+                    etat = "NO";
+                }
+                addToLog(log+etat+" }");
             }
         }
     }
@@ -49,5 +58,16 @@ public class ControllerScanner {
     }
     public void setMappingBuilder(){
         setMappingBuilder(new MappingBuilder(getAdminUrlMapping()));
+    }
+    
+    public String getScannLog() {
+        return scannLog;
+    }
+    public void setScannLog(String scannLog) {
+        this.scannLog = scannLog;
+    }
+
+    public void addToLog(String log){
+        setScannLog( getScannLog()+"\n> "+log +"\n");
     }
 }

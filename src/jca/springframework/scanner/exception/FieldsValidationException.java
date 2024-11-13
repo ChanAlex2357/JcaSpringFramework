@@ -2,10 +2,13 @@ package jca.springframework.scanner.exception;
 
 import java.util.List;
 
-public class FieldsValidationException extends Exception {
+import jca.springframework.exception.FrameworkException;
+
+public class FieldsValidationException extends FrameworkException {
     private final List<FieldValidationException> fieldExceptions;
 
     public FieldsValidationException(List<FieldValidationException> fieldExceptions) {
+        super(null, null);
         this.fieldExceptions = fieldExceptions;
     }
 

@@ -1,15 +1,23 @@
 package jca.springframework.scanner.exception;
 
 import java.lang.reflect.Method;
-
 import jca.springframework.exception.FrameworkException;
 
-public class MultipleVerbException extends FrameworkException{
-    public MultipleVerbException (Method method){
-        super(errorMessage(method) , null);
+public class MultipleVerbException extends FrameworkException {
+
+    private final Method method;
+
+    public MultipleVerbException(Method method) {
+        super(null); // Utilisation du code 400 pour une mauvaise configuration
+        this.method = method;
     }
 
-    protected static String errorMessage(Method method) {
-        return "La methode "+method.getName()+" possede multiple declaration de metnod \"GET\" et \"POST\"";
+    @Override
+    public String getMessage() {
+        return "La méthode " + method.getName() + " possède plusieurs déclarations de verbes HTTP \"GET\" et \"POST\"";
+    }
+
+    public Method getMethod() {
+        return method;
     }
 }

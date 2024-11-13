@@ -14,6 +14,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jca.springframework.exception.FrameworkException;
 import jca.springframework.scanner.RequestScanner;
 import jca.springframework.scanner.SessionScanner;
+import jca.springframework.scanner.exception.FieldsValidationException;
 import jca.springframework.session.WebSession;
 import jca.springframework.session.WebSessionParser;
 import jca.springframework.view.View;
@@ -84,7 +85,7 @@ public class VerbAction {
         return controllerInstance;
     }
 
-    public Object getMethodResult(HttpServletRequest req) throws IllegalArgumentException, FrameworkException ,IllegalArgumentException, FrameworkException, InstantiationException, IOException, ServletException{
+    public Object getMethodResult(HttpServletRequest req) throws IllegalArgumentException, FrameworkException, InstantiationException, IOException, ServletException, FieldsValidationException{
         Object resultObject = null;
         Object controller =  getControllerInstance(req);
         /// recuperer l'objet methode correspondant avec des parametres null 
@@ -100,7 +101,7 @@ public class VerbAction {
         return resultObject;
     }
     /// Recuperation des donnees necessaires
-    private List<Object> getParameterValues(HttpServletRequest req) throws IllegalArgumentException, IllegalAccessException, FrameworkException, InstantiationException, InvocationTargetException, SecurityException, IOException, ServletException{
+    private List<Object> getParameterValues(HttpServletRequest req) throws IllegalArgumentException, IllegalAccessException, FrameworkException, InstantiationException, InvocationTargetException, SecurityException, IOException, ServletException, FieldsValidationException{
         List<Object> values = new ArrayList<>();
         RequestScanner requestScanner = new RequestScanner();
         Object value = "DEFAULT ";

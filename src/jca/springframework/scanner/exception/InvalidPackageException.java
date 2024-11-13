@@ -3,10 +3,20 @@ package jca.springframework.scanner.exception;
 import jca.springframework.exception.FrameworkException;
 
 public class InvalidPackageException extends FrameworkException {
-    public InvalidPackageException(String packageName){
-        super(errorMessage(packageName),null);
+
+    private final String packageName;
+
+    public InvalidPackageException(String packageName) {
+        super(null); // On passe null pour le message car on le génère dans getMessage
+        this.packageName = packageName;
     }
-    static private String errorMessage(String packageName){
-        return "Le package !! <"+packageName+"> !! n'existe pas";
+
+    @Override
+    public String getMessage() {
+        return "Le package !! <" + packageName + "> !! n'existe pas";
+    }
+
+    public String getPackageName() {
+        return packageName;
     }
 }

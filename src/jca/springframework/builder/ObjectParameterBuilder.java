@@ -4,18 +4,19 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Parameter;
-
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.Part;
+import jca.springframework.builder.exception.NoDefaultConstructeurException;
 import jca.springframework.exception.FrameworkException;
 import jca.springframework.mapping.FileMapping;
 import jca.springframework.scanner.PrimitiveScanner;
 import jca.springframework.scanner.ValidationScanner;
+import jca.springframework.scanner.exception.FieldsValidationException;
 import jca.springframework.utils.PartUtils;
 
 public class ObjectParameterBuilder extends ParameterBuilder {
-    public Object getObjectParameterValue(Parameter parameter , HttpServletRequest request ) throws FrameworkException, IllegalArgumentException, IllegalAccessException, InstantiationException, InvocationTargetException, SecurityException, IOException, ServletException{
+    public Object getObjectParameterValue(Parameter parameter , HttpServletRequest request ) throws FrameworkException, IllegalArgumentException, IllegalAccessException, InstantiationException, InvocationTargetException, SecurityException, IOException, ServletException, FieldsValidationException{
         ValidationScanner validationScanner = new ValidationScanner();
         // Le resultat attendue
         Object result = null;
@@ -31,8 +32,9 @@ public class ObjectParameterBuilder extends ParameterBuilder {
                 setObjectParameterValue(result, parameter, attribute, request , validationScanner);
             }
         } catch ( NoSuchMethodException err ) {
-            throw new FrameworkException("La class "+parameterType+" doit posseder un constructeur vide\n", err);
+            throw new NoDefaultConstructeurException(parameterType,err);
         }
+        validationScanner.thowExceptionIfNeeded();
         return result; 
     }
 
@@ -40,7 +42,7 @@ public class ObjectParameterBuilder extends ParameterBuilder {
         attribute.setAccessible(true);
         // Tester si il suit la convention de fichier
         if ( PartUtils.isPartAttribute(attribute) ) {
-            setObjectPartValue( obj, parameter, request, attribute );
+            setObjectPartValue( obj, parameter, request, attribute ,validationScanner);
         }
         else {
             setObjectPrimitiveValue(obj,parameter, request, attribute, validationScanner);
@@ -48,17 +50,17 @@ public class ObjectParameterBuilder extends ParameterBuilder {
         attribute.setAccessible(false);
     }
 
-    static void setObjectPrimitiveValue(Object obj, Parameter parameter , HttpServletRequest request , Field attribute , ValidationScanner validationScanner) throws IllegalArgumentException, IllegalAccessException, FrameworkException, IOException, ServletException{
+    protected void setObjectPrimitiveValue(Object obj, Parameter parameter , HttpServletRequest request , Field attribute , ValidationScanner validationScanner) throws IllegalArgumentException, IllegalAccessException, FrameworkException, IOException, ServletException{
         String parameterValue = getRequestParameter(parameter,request,null,attribute.getName(),".");
         if (parameterValue == null) {
             return;
         }
         Object value = PrimitiveScanner.parsePrimitive(attribute.getType(), parameterValue);
-        validationScanner.checkValidationFieldValue(attribute, value);
-        attribute.set(obj,value);
+        setAttributeValue(obj, attribute, value, validationScanner);
     }
+
     
-    private static void setObjectPartValue(Object obj , Parameter parameter , HttpServletRequest request , Field attribute) throws IOException, ServletException, IllegalArgumentException, IllegalAccessException, FrameworkException{
+    protected void setObjectPartValue(Object obj , Parameter parameter , HttpServletRequest request , Field attribute , ValidationScanner validationScanner) throws IOException, ServletException, IllegalArgumentException, IllegalAccessException, FrameworkException{
         String attributeName = attribute.getName();
         // Recuperer l'objet part correspondant  
         Part part = request.getPart(attributeName);
@@ -67,6 +69,11 @@ public class ObjectParameterBuilder extends ParameterBuilder {
         }
         // Instaciaion de l'attribut pour l'objet
         FileMapping fileMapping = new FileMapping(part);
-        attribute.set(obj, fileMapping);
+        setAttributeValue(obj,attribute, fileMapping,validationScanner);
+    }
+
+    protected void setAttributeValue(Object obj , Field attribute , Object value , ValidationScanner validationScanner) throws IllegalArgumentException, IllegalAccessException{
+        validationScanner.checkValidationFieldValue(attribute, value);
+        attribute.set(obj, value);
     }
 }

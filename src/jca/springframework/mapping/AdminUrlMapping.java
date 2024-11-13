@@ -5,7 +5,7 @@ import java.util.HashMap;
 import jca.springframework.controller.exception.DuplicateUrlException;
 
 public class AdminUrlMapping {
-
+    String controllerPackage ;
     HashMap<String,Mapping> urlMapping;
     public AdminUrlMapping(){
         setUrlMapping(new HashMap<String,Mapping>());
@@ -43,6 +43,7 @@ public class AdminUrlMapping {
         }
         else {
             mapping = new Mapping(url,verbAction);
+            getUrlMapping().put(url, mapping);
         }
         return mapping;
     }

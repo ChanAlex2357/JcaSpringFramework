@@ -9,20 +9,19 @@ import jca.springframework.mapping.VerbAction;
 import jca.springframework.scanner.exception.MultipleVerbException;
 
 public class MappingBuilder {
-    AdminUrlMapping adminUrlMapping;
+    private AdminUrlMapping adminUrlMapping;
+    private VerbActionBuilder verbActionBuilder;
     public MappingBuilder (AdminUrlMapping adminUrlMapping){
         setAdminUrlMapping(adminUrlMapping);
+        setVerbActionBuilder(new VerbActionBuilder());
     }
-    private VerbActionBuilder verbActionBuilder;
-    public VerbActionBuilder getVerbActionBuilder() {
-        return verbActionBuilder;
-    }
-    public void setVerbActionBuilder(VerbActionBuilder verbActionBuilder) {
-        this.verbActionBuilder = verbActionBuilder;
-    }
+    
     public Mapping buildMapping(Class<?> controller , Method method) throws MultipleVerbException, DuplicateUrlException{
         // Creation du VerbAction
         VerbAction verbAction = verbActionBuilder.buildVerbAction(controller , method);
+        if (verbAction.getUrl() == null ) {
+            return null;
+        }
         // Ajouter le VerbAction au mapping correspondant
         return getAdminUrlMapping().addMappingVerb(verbAction);
     }
@@ -34,5 +33,11 @@ public class MappingBuilder {
             adminUrlMapping = new AdminUrlMapping();
         }
         this.adminUrlMapping = adminUrlMapping;
+    }
+    public VerbActionBuilder getVerbActionBuilder() {
+        return verbActionBuilder;
+    }
+    public void setVerbActionBuilder(VerbActionBuilder verbActionBuilder) {
+        this.verbActionBuilder = verbActionBuilder;
     }
 }

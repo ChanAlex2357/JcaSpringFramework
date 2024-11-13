@@ -6,6 +6,7 @@ import java.lang.reflect.Parameter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jca.springframework.annotations.parameter.Param;
+import jca.springframework.builder.exception.NoParamAnnotationException;
 import jca.springframework.exception.FrameworkException;
 import jca.springframework.scanner.ParamScanner;
 
@@ -31,7 +32,7 @@ public class ParameterBuilder {
         /// Recuperer la valeur par annotation
         Param param = ParamScanner.getParameterParam(parameter);
         if (param == null) {
-            throw new FrameworkException("[ ETU 002434 ] : Un parametre ne contient pas de param", null);
+            throw new NoParamAnnotationException(parameter, null);
         }
         String paramName = buildParameterName(param.name(), prefix, suffix, delimiter);
         return paramName;

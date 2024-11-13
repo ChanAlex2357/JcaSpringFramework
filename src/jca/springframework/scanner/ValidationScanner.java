@@ -13,7 +13,12 @@ import jca.springframework.scanner.exception.FieldsValidationException;
 import jca.springframework.utils.AnnotationUtils;
 
 public class ValidationScanner {
-    private List<FieldValidationException> exceptionList;    
+    private List<FieldValidationException> exceptionList;
+    private FieldsValidationException validationException;
+
+    public ValidationScanner(){
+        setFieldValidationExceptions(new ArrayList<FieldValidationException>());
+    }
     
     // Récupérer les annotations pour un attribut donné
     public List<Annotation> getValidationField(Field field) {
@@ -85,6 +90,15 @@ public class ValidationScanner {
     }
 
     public FieldsValidationException getValidationExceptions(){
-        return new FieldsValidationException(getFieldValidationExceptions());
+        if (this.getValidationExceptions() == null) {
+            this.validationException = new FieldsValidationException(getFieldValidationExceptions()); 
+        }
+        return this.validationException;
+    }
+
+    public void thowExceptionIfNeeded() throws FieldsValidationException{
+        if (this.getFieldValidationExceptions().size() > 0) {
+            throw this.getValidationExceptions();
+        }
     }
 }

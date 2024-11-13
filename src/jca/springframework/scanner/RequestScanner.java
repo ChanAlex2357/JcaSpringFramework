@@ -10,6 +10,7 @@ import jca.springframework.builder.ObjectParameterBuilder;
 import jca.springframework.builder.PartParameterBuilder;
 import jca.springframework.builder.PrimitiveParameterBuilder;
 import jca.springframework.exception.FrameworkException;
+import jca.springframework.scanner.exception.FieldsValidationException;
 import jca.springframework.session.WebSessionParser;
 import jca.springframework.utils.PartUtils;
 
@@ -24,7 +25,7 @@ public class RequestScanner {
         setPrimitiveBuilder(new PrimitiveParameterBuilder());
     }
     
-    public Object getParameterValue(Parameter parameter,HttpServletRequest request) throws FrameworkException, IllegalArgumentException, IllegalAccessException, InstantiationException, InvocationTargetException, SecurityException, IOException, ServletException{
+    public Object getParameterValue(Parameter parameter,HttpServletRequest request) throws FrameworkException, IllegalArgumentException, IllegalAccessException, InstantiationException, InvocationTargetException, SecurityException, IOException, ServletException, FieldsValidationException{
         Object value = null;
         if (PrimitiveScanner.isPrimitifType(parameter)) {
             value = getPrimitiveBuilder().getPrmitiveParameterValue(parameter, request);

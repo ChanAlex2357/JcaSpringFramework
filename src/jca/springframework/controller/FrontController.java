@@ -82,12 +82,13 @@ public class FrontController extends HttpServlet{
         viewResult.dispatch(req, resp);
     }
     private void scann_controllers(){
-        ControllerScanner controllerScanner = new ControllerScanner(adminUrlMapping);
+        ControllerScanner controllerScanner = new ControllerScanner(getAdminUrlMapping());
         try {
             controllerScanner.scann_controllers( getController_package() );
             /// Si le Url Mapping reste null alors il n'y a aucun controller
             if (getUrlMapping().size() == 0) {
-                throw new NotControllerPackageException(getController_package());
+                controllerScanner.addToLog(getUrlMapping().toString());
+                throw new NotControllerPackageException(getController_package(),controllerScanner.getScannLog());
             }
         } catch (FrameworkException e) { setInitException(e); }
     }
@@ -99,12 +100,13 @@ public class FrontController extends HttpServlet{
         this.controller_package = controller_package;
     }
     public HashMap<String, Mapping> getUrlMapping() {
+
         return getAdminUrlMapping().getUrlMapping();
     }
     public AdminUrlMapping getAdminUrlMapping() {
         return adminUrlMapping;
     }
-    public void setAdminUrlMapping(AdminUrlMapping urlMapping) {
-        this.adminUrlMapping = urlMapping;
+    public void setAdminUrlMapping(AdminUrlMapping adminUrlMapping) {
+        this.adminUrlMapping = adminUrlMapping;
     }
 }
