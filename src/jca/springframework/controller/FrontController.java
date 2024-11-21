@@ -5,6 +5,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletResponse;
+import jca.springframework.builder.exception.FieldsValidationException;
 import jca.springframework.exception.FrameworkException;
 import jca.springframework.mapping.AdminUrlMapping;
 import jca.springframework.mapping.Mapping;
@@ -71,7 +72,17 @@ public class FrontController extends HttpServlet{
             Mapping mapping = UrlMapping.getMappingWithFullUrl(fullurl,getUrlMapping());
             // Recuperer le resultat de la requete
             viewResult = mapping.getViewResult(req);
-        } catch (FrameworkException e) {
+        }
+        // Gerer exception en cas de validation Exception 
+        catch (FieldsValidationException validationException) {
+            // Instancier les message d'erreurs
+            validationException.setErrorAttributes(req);
+            // Recuperer la source de l'appel
+            String source =  req.getHeader("Referer");
+            // Renvoyer la requete vers la source
+            req.getRequestDispatcher(source).forward(req, resp);
+        }
+         catch (FrameworkException e) {
             viewResult = e.getExceptionView();
         } catch (IllegalArgumentException e) {
             e.printStackTrace(resp.getWriter());
