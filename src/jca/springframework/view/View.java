@@ -13,7 +13,6 @@ public abstract class View {
     public View(String viewPath){
         intView(viewPath,new HashMap<>());
     }
-
     private void intView(String viewPath,HashMap<String,Object> data){
         setViewPath(viewPath);
         setData(data);
