@@ -13,6 +13,7 @@ import jca.springframework.mapping.UrlMapping;
 import jca.springframework.scanner.ControllerScanner;
 import jca.springframework.scanner.exception.NotControllerPackageException;
 import jca.springframework.view.ExceptionView;
+import jca.springframework.view.ValidationRefererView;
 import jca.springframework.view.View;
 import jakarta.servlet.http.HttpServletRequest;
 /**
@@ -75,12 +76,8 @@ public class FrontController extends HttpServlet{
         }
         // Gerer exception en cas de validation Exception 
         catch (FieldsValidationException validationException) {
-            // Instancier les message d'erreurs
-            validationException.setErrorAttributes(req);
-            // Recuperer la source de l'appel
-            String source =  req.getHeader("Referer");
-            // Renvoyer la requete vers la source
-            req.getRequestDispatcher(source).forward(req, resp);
+            // Renvoyer vers la view qui gere les erreurs de validations et redirige vers la page appelante
+            viewResult = new ValidationRefererView(req, validationException);
         }
          catch (FrameworkException e) {
             viewResult = e.getExceptionView();
