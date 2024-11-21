@@ -6,6 +6,7 @@ import java.util.HashMap;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jca.springframework.utils.StringUtils;
 
 public abstract class View {
     HashMap<String,Object> data;
@@ -18,6 +19,9 @@ public abstract class View {
         setData(data);
     }
 
+    protected void setViewPathAsControllerUrl(){
+        setViewPath(StringUtils.getControllerUrl(this.getViewPath()));
+    }
     public HashMap<String, Object> getData() {
         return data;
     }

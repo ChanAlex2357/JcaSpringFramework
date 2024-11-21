@@ -42,4 +42,18 @@ public class StringUtils {
     public static String encode(byte[] stringbytes){
         return Base64.getEncoder().encodeToString(stringbytes);
     }
+
+    public static String getControllerUrl(String fullurl) {
+        String url = "";
+        try {
+            String[] parts = fullurl.split("/");
+            url += parts[4];
+            for (int i = 5; i < parts.length; i++) {
+                url+= "/"+parts[i];
+            }
+        } catch (Exception e) {
+            url += "index";
+        }
+        return url;
+    }
 }

@@ -1,4 +1,4 @@
-package jca.springframework.builder.view;
+package jca.springframework.builder.viewbuilder;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
