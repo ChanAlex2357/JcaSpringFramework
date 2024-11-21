@@ -12,7 +12,7 @@ import java.util.List;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jca.springframework.builder.exception.FieldsValidationException;
-import jca.springframework.builder.view.ViewBuilder;
+import jca.springframework.builder.viewbuilder.ViewBuilder;
 import jca.springframework.exception.FrameworkException;
 import jca.springframework.scanner.RequestScanner;
 import jca.springframework.scanner.SessionScanner;

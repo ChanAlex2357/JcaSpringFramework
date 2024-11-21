@@ -1,4 +1,4 @@
-package jca.springframework.builder.view;
+package jca.springframework.builder.viewbuilder;
 
 import jca.springframework.mapping.MappingAnnotation;
 import jca.springframework.view.ModelAndView;
