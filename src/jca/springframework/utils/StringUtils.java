@@ -56,4 +56,15 @@ public class StringUtils {
         }
         return url;
     }
+
+    public static String replacements(String base , String [] ids , String[] vals) {
+        for (int i = 0; i < vals.length; i++) {
+            replacement(base ,ids[i],vals[i]);
+        }
+        return base;
+    }
+    public static String replacement(String base , String id , String val) {
+        base.replace(id,val);
+        return base;
+    }
 }
