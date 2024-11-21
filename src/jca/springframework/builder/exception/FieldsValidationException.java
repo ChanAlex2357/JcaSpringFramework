@@ -2,8 +2,8 @@ package jca.springframework.builder.exception;
 
 import java.util.List;
 
-import jakarta.servlet.http.HttpServletRequest;
 import jca.springframework.exception.FrameworkException;
+import jca.springframework.view.View;
 
 public class FieldsValidationException extends FrameworkException {
     private final List<FieldValidationException> fieldExceptions;
@@ -27,11 +27,9 @@ public class FieldsValidationException extends FrameworkException {
         return message.toString();
     }
 
-
-    public void setErrorAttributes(HttpServletRequest request) {
-
+    public void setErrorAttributes(View view){
         for (FieldValidationException fieldValidationException : fieldExceptions) {
-            fieldValidationException.setErrorAttribut(request);   
+            fieldValidationException.setErrorAttribut(view);
         }
     }
 }
