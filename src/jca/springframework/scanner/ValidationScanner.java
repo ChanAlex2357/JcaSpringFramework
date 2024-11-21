@@ -10,7 +10,6 @@ import jca.springframework.annotations.attribut.validation.Min;
 import jca.springframework.annotations.attribut.validation.Required;
 import jca.springframework.builder.exception.FieldValidationException;
 import jca.springframework.builder.exception.FieldsValidationException;
-import jca.springframework.utils.AnnotationUtils;
 
 public class ValidationScanner {
     private List<FieldValidationException> exceptionList;
@@ -50,28 +49,31 @@ public class ValidationScanner {
     }
     // Vérifier les annotations d'un attribut et ajouter les exceptions dans une liste si nécessaire
     public void checkValidationFieldValue(Field field, Object value) {
+        String message = null;
         for (Annotation annotation : getValidationField(field)) {
-            if (annotation instanceof Required && value == null) {
-                addFieldException(field, annotation, value);
+            if (annotation instanceof Required && (value == null || value == "" )) {
+                message = ((Required) annotation).message();
+            } else if ( 
+                annotation instanceof Min && // Verifier l'instance min 
+                value instanceof Integer && (Integer) value < ((Min) annotation).value()) // Comparaison de valeur au min 
+            {
+                message = ((Min) annotation).message().replace("{value}", String.valueOf(((Min) annotation).value()));
             } else if (
-                annotation instanceof Min && 
-                value instanceof Integer && 
-                (Integer) value < ((Min) annotation).value()
+                annotation instanceof Max && // Verifier si Max
+                value instanceof Integer && (Integer) value > ((Max) annotation).value() // Conparaison avec Max
             ) {
-                addFieldException(field, annotation, value);
-            } else if (
-                annotation instanceof Max && 
-                value instanceof Integer && 
-                (Integer) value > ((Max) annotation).value()
-            ) {
-                addFieldException(field, annotation, value);
+                message = ((Max) annotation).message().replace("{value}", String.valueOf(((Max) annotation).value()));
             }
+            else {
+                // Si La validation est correcte ou ne suit aucune des logics de la liste alors on passe a la validation suivante
+                continue;
+            }
+            addFieldException(field, annotation, value , message);
         }
     }
 
-    protected void addFieldException(Field field , Annotation annotation , Object value){
-        String message = AnnotationUtils.getValidationMessage(annotation, value);
-        getFieldValidationExceptions().add(new FieldValidationException(field, annotation,message));
+    protected void addFieldException(Field field , Annotation annotation , Object value , String message){
+        getFieldValidationExceptions().add(new FieldValidationException(field, annotation,value,message));
     }
     
     // Vérifier toutes les annotations d'un tableau de champs

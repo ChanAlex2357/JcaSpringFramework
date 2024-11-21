@@ -35,6 +35,4 @@ public abstract class FrameworkException extends Exception{
         ExceptionView view = new ExceptionView(this);
         return view;
     }
-
-    abstract public String getMessage();
 }
