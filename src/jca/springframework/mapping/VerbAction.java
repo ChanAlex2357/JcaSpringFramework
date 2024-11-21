@@ -12,13 +12,13 @@ import java.util.List;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jca.springframework.builder.exception.FieldsValidationException;
+import jca.springframework.builder.view.ViewBuilder;
 import jca.springframework.exception.FrameworkException;
 import jca.springframework.scanner.RequestScanner;
 import jca.springframework.scanner.SessionScanner;
 import jca.springframework.session.WebSession;
 import jca.springframework.session.WebSessionParser;
 import jca.springframework.view.View;
-import jca.springframework.view.ViewBuilder;
 import jca.springframework.view.exception.InvalidReturnException;
 
 public class VerbAction {
@@ -116,8 +116,7 @@ public class VerbAction {
         /// Recuperer l'objet de retour de la methode du controller
         Object methodResult = getMethodResult(req);
         /// Traitement du resultat
-
-        View view = ViewBuilder.getViewOf(methodResult,getMappingAnnotation());
+        View view =  ViewBuilder.getBuilder(getMappingAnnotation()).buildView(methodResult, getMappingAnnotation());
         /// La vue est null si le resultat ne corespond a aucun format valide
         if ( view == null) {
             throw new InvalidReturnException(this);
