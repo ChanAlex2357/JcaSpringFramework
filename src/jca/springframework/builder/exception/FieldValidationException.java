@@ -3,6 +3,8 @@ package jca.springframework.builder.exception;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 
 public class FieldValidationException extends Exception {
     private final Field field;
@@ -27,5 +29,11 @@ public class FieldValidationException extends Exception {
     @Override
     public String getMessage() {
         return message;
+    }
+    protected String getErrorName(){
+        return "error"+getField().getName().toUpperCase();
+    }
+    public void setErrorAttribut(HttpServletRequest request) {
+        request.setAttribute(this.getErrorName(),this.getMessage());
     }
 }
