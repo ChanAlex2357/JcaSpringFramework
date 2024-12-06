@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import jca.springframework.mapping.MappingAnnotation;
+import jca.springframework.scanner.ValidationScanner;
 import jca.springframework.view.ModelAndView;
 import jca.springframework.view.RestApiView;
 import jca.springframework.view.View;
@@ -14,11 +15,14 @@ public class JsonViewBuilder extends ViewBuilder {
         return gson;
     }
     @Override
-    public View buildView(Object obj, MappingAnnotation mappingAnnotation) {
+    public View buildView(Object obj, MappingAnnotation mappingAnnotation, ValidationScanner validationScanner) {
         View view= null;
         if (obj instanceof ModelAndView){
             ModelAndView modelAndView = (ModelAndView) obj;
-            view = new RestApiView( getGson().toJson(modelAndView.getData()));
+            view = modelAndView.getAsView(validationScanner);
+            if (view == null) {
+                view = new RestApiView( getGson().toJson(modelAndView.getData()));
+            }
         }
         else {
             view = new RestApiView( getGson().toJson(obj) );            

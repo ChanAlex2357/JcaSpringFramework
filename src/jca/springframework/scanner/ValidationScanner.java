@@ -112,4 +112,8 @@ public class ValidationScanner {
             throw this.getValidationExceptions();
         }
     }
+
+    public boolean isValidationErrorPresent(){
+        return !this.getFieldValidationExceptions().isEmpty();
+    }
 }

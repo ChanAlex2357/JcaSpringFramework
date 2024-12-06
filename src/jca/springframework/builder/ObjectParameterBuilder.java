@@ -16,8 +16,7 @@ import jca.springframework.scanner.ValidationScanner;
 import jca.springframework.utils.PartUtils;
 
 public class ObjectParameterBuilder extends ParameterBuilder {
-    public Object getObjectParameterValue(Parameter parameter , HttpServletRequest request ) throws FrameworkException, IllegalArgumentException, IllegalAccessException, InstantiationException, InvocationTargetException, SecurityException, IOException, ServletException, FieldsValidationException{
-        ValidationScanner validationScanner = new ValidationScanner();
+    public Object getObjectParameterValue(Parameter parameter , HttpServletRequest request , ValidationScanner validationScanner) throws FrameworkException, IllegalArgumentException, IllegalAccessException, InstantiationException, InvocationTargetException, SecurityException, IOException, ServletException, FieldsValidationException{
         // Le resultat attendue
         Object result = null;
         // Recuperer la class type du parametre de la fonction du controller 

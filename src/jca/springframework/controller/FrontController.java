@@ -5,7 +5,6 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletResponse;
-import jca.springframework.builder.exception.FieldsValidationException;
 import jca.springframework.exception.FrameworkException;
 import jca.springframework.mapping.AdminUrlMapping;
 import jca.springframework.mapping.Mapping;
@@ -13,7 +12,6 @@ import jca.springframework.mapping.UrlMapping;
 import jca.springframework.scanner.ControllerScanner;
 import jca.springframework.scanner.exception.NotControllerPackageException;
 import jca.springframework.view.ExceptionView;
-import jca.springframework.view.ValidationRefererView;
 import jca.springframework.view.View;
 import jakarta.servlet.http.HttpServletRequest;
 /**
@@ -73,11 +71,6 @@ public class FrontController extends HttpServlet{
             Mapping mapping = UrlMapping.getMappingWithFullUrl(fullurl,getUrlMapping());
             // Recuperer le resultat de la requete
             viewResult = mapping.getViewResult(req);
-        }
-        // Gerer exception en cas de validation Exception 
-        catch (FieldsValidationException validationException) {
-            // Renvoyer vers la view qui gere les erreurs de validations et redirige vers la page appelante
-            viewResult = new ValidationRefererView(req, validationException);
         }
          catch (FrameworkException e) {
             viewResult = e.getExceptionView();

@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jca.springframework.utils.StringUtils;
 
 public abstract class View {
+    String error;
     HashMap<String,Object> data;
     String viewPath;
     public View(String viewPath){
@@ -50,5 +51,11 @@ public abstract class View {
         for (String attributName : getData().keySet()) {
             req.setAttribute(attributName, getData().get(attributName));
         }
+    }
+    public String getError() {
+        return error;
+    }
+    public void setError(String error) {
+        this.error = error;
     }
 }

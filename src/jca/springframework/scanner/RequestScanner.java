@@ -25,7 +25,7 @@ public class RequestScanner {
         setPrimitiveBuilder(new PrimitiveParameterBuilder());
     }
     
-    public Object getParameterValue(Parameter parameter,HttpServletRequest request) throws FrameworkException, IllegalArgumentException, IllegalAccessException, InstantiationException, InvocationTargetException, SecurityException, IOException, ServletException, FieldsValidationException{
+    public Object getParameterValue(Parameter parameter,HttpServletRequest request , ValidationScanner validationScanner) throws FrameworkException, IllegalArgumentException, IllegalAccessException, InstantiationException, InvocationTargetException, SecurityException, IOException, ServletException, FieldsValidationException{
         Object value = null;
         if (PrimitiveScanner.isPrimitifType(parameter)) {
             value = getPrimitiveBuilder().getPrmitiveParameterValue(parameter, request);
@@ -38,7 +38,7 @@ public class RequestScanner {
             value = getPartBuilder().getPartParameterValue(parameter,request);
         }
         else {
-            value = getObjectBuilder().getObjectParameterValue(parameter, request);
+            value = getObjectBuilder().getObjectParameterValue(parameter, request , validationScanner);
         }
         return value;
     }
