@@ -8,7 +8,7 @@ import jca.springframework.annotations.attribut.validation.Required;
 import jca.springframework.utils.StringUtils;
 
 public class AnnotationChecker {
-    public static String check(Object value , Annotation annotation){
+    public  String check(Object value , Annotation annotation){
         String message = null;
         if (annotation instanceof Required) {
             System.out.println("AnnotationChecker.check() : Required");
@@ -20,21 +20,22 @@ public class AnnotationChecker {
         }
         return message;
     }
-    protected static String checkRequired(Object value , Annotation annotation){
+    protected  String checkRequired(Object value , Annotation annotation){
+        value = getRequiredForced(value);
         if (value == null || value == "" || value == "null") {
             return ((Required) annotation).message();
         }
         return null;
     }
 
-    protected Object getRequiredForced(Object value) {
+    protected  Object getRequiredForced(Object value) {
         if ((value instanceof String && value.equals("")) || (value instanceof Double && (Double) value == 0)) {
             return "";
         }
         return value;
     }
 
-    protected static String checkMin(Object value , Annotation annotation) {
+    protected  String checkMin(Object value , Annotation annotation) {
         boolean forced = false;
         if ( value instanceof String && value.equals("")) {
             value = "0"; 
@@ -57,7 +58,7 @@ public class AnnotationChecker {
         return null;
     }
 
-    protected static String checkMax(Object value , Annotation annotation){
+    protected  String checkMax(Object value , Annotation annotation){
         boolean forced = false;
         if ( value instanceof String && value.equals("")) {
             value = "0"; 

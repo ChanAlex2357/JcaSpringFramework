@@ -52,7 +52,7 @@ public class ValidationScanner {
         String message = null;
         // Get error message for each annotation field for validation
         for (Annotation annotation : getValidationField(field)) {
-            message = AnnotationChecker.check(value, annotation);
+            message = new AnnotationChecker().check(value, annotation);
             if (message != null) {
                 addFieldException(field, annotation, value , message);
             }
