@@ -50,6 +50,7 @@ public class ValidationScanner {
     // Vérifier les annotations d'un attribut et ajouter les exceptions dans une liste si nécessaire
     public void checkValidationFieldValue(Field field, Object value) {
         String message = null;
+        // Get error message for each annotation field for validation
         for (Annotation annotation : getValidationField(field)) {
             message = AnnotationChecker.check(value, annotation);
             if (message != null) {

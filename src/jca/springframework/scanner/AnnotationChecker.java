@@ -11,6 +11,7 @@ public class AnnotationChecker {
     public static String check(Object value , Annotation annotation){
         String message = null;
         if (annotation instanceof Required) {
+            System.out.println("AnnotationChecker.check() : Required");
             message = checkRequired(value, annotation);
         } else if ( annotation instanceof Min) {
             message = checkMin(value, annotation);
@@ -26,14 +27,22 @@ public class AnnotationChecker {
         return null;
     }
 
+    protected Object getRequiredForced(Object value) {
+        if ((value instanceof String && value.equals("")) || (value instanceof Double && (Double) value == 0)) {
+            return "";
+        }
+        return value;
+    }
+
     protected static String checkMin(Object value , Annotation annotation) {
         boolean forced = false;
         if ( value instanceof String && value.equals("")) {
             value = "0"; 
             forced = true;
         }
-        if ( value instanceof Integer && (Integer) value < ((Min) annotation).value()) // Comparaison de valeur au min 
-        {
+        if (value instanceof Number) {
+            double numericValue = ((Number) value).doubleValue();
+            if (numericValue < ((Min) annotation).value()) {
             if (forced) {
                 value = "";
             }
@@ -42,6 +51,7 @@ public class AnnotationChecker {
                 "{value}",
                 String.valueOf(((Min) annotation).value())
             );
+            }
         }
 
         return null;
@@ -53,14 +63,18 @@ public class AnnotationChecker {
             value = "0"; 
             forced = true;
         }
-        if (value instanceof Integer && (Integer) value > ((Max) annotation).value()) {
+        if (value instanceof Number) {
+            double numericValue = ((Number) value).doubleValue();
+            if (numericValue > ((Max) annotation).value()) {
             if (forced) {
                 value = "";
             }
             return StringUtils.replacement(
-            ((Max) annotation).message(),
-            "{value}",
-            String.valueOf(((Max) annotation).value()));
+                ((Max) annotation).message(),
+                "{value}",
+                String.valueOf(((Max) annotation).value())
+            );
+            }
         }
         return null;
     }
