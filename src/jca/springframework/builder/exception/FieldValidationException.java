@@ -34,8 +34,19 @@ public class FieldValidationException extends FrameworkException {
         return "value_"+getField().getName();
     }
     public void setErrorAttribut(View view) {
+        if (this.getValue() == null) {
+            return;
+        }
         // Ajouter le message d'erreur parmi les attributs de la requete
-        view.addObject(this.getErrorName(),this.getMessage());
+        if (this.getMessage() != null) {
+            view.addObject(this.getErrorName(),this.getMessage());
+        }
+        view.addObject(this.getValueName(),this.getValue());
+    }
+    public void setValidAttribute(View view) {
+        if (this.getValue() == null) {
+            return;
+        }
         view.addObject(this.getValueName(),this.getValue());
     }
 

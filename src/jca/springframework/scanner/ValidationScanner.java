@@ -4,7 +4,6 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
-
 import jca.springframework.annotations.attribut.validation.Max;
 import jca.springframework.annotations.attribut.validation.Min;
 import jca.springframework.annotations.attribut.validation.Required;
@@ -12,11 +11,10 @@ import jca.springframework.builder.exception.FieldValidationException;
 import jca.springframework.builder.exception.FieldsValidationException;
 
 public class ValidationScanner {
-    private List<FieldValidationException> exceptionList;
-    private FieldsValidationException validationException;
+    private FieldsValidationException fieldsValidationException;
 
     public ValidationScanner(){
-        setFieldValidationExceptions(new ArrayList<FieldValidationException>());
+        setValidationException(new FieldsValidationException());
     }
     
     // Récupérer les annotations pour un attribut donné
@@ -56,10 +54,16 @@ public class ValidationScanner {
             if (message != null) {
                 addFieldException(field, annotation, value , message);
             }
+            else {
+                addValidField(field, annotation, value);
+            }
         }
     }
     protected void addFieldException(Field field , Annotation annotation , Object value , String message){
-        getFieldValidationExceptions().add(new FieldValidationException(field, annotation,value,message));
+        getValidationException().getFieldExceptions().add(new FieldValidationException(field, annotation,value,message));
+    }
+    protected void addValidField(Field field , Annotation annotation , Object value){
+        getValidationException().getValidList().add(new FieldValidationException(field, annotation,value,null));
     }
     
     // Vérifier toutes les annotations d'un tableau de champs
@@ -68,29 +72,21 @@ public class ValidationScanner {
             checkValidationField(field, object);
         }
     }
-
-    protected List<FieldValidationException> getFieldValidationExceptions() {
-        return exceptionList;
-    }
-    
-    protected void setFieldValidationExceptions(List<FieldValidationException> exceptionList) {
-        this.exceptionList = exceptionList;
-    }
-
-    public FieldsValidationException getValidationExceptions(){
-        if (this.validationException  == null) {
-            this.validationException = new FieldsValidationException(getFieldValidationExceptions()); 
-        }
-        return this.validationException;
-    }
-
     // public void thowExceptionIfNeeded() throws FieldsValidationException{
-    //     if (this.getFieldValidationExceptions().size() > 0) {
+    //     if (this.getFieldValidationExceptionsList().size() > 0) {
     //         throw this.getValidationExceptions();
     //     }
     // }
 
     public boolean isValidationErrorPresent(){
-        return !this.getFieldValidationExceptions().isEmpty();
+        return !this.getValidationException().getFieldExceptions().isEmpty() || this.getValidationException().getFieldExceptions().size() > 0;
+    }
+
+    public FieldsValidationException getValidationException() {
+        return this.fieldsValidationException;
+    }
+
+    public void setValidationException(FieldsValidationException fieldsValidationException) {
+        this.fieldsValidationException = fieldsValidationException;
     }
 }

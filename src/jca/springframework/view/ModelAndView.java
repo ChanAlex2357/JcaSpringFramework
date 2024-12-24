@@ -18,7 +18,7 @@ public class ModelAndView extends View{
 
     public View checkError(ValidationScanner validationScanner){
         if (validationScanner.isValidationErrorPresent()){
-            return new ValidationView(validationScanner.getValidationExceptions(),this);
+            return new ValidationView(validationScanner,this);
         }
         return null;
     }

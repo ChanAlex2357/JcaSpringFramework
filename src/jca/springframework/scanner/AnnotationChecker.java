@@ -22,6 +22,7 @@ public class AnnotationChecker {
     }
     protected  String checkRequired(Object value , Annotation annotation){
         value = getRequiredForced(value);
+        System.out.println("AnnotationChecker.checkRequired() : " + value);
         if (value == null || value == "" || value == "null") {
             return ((Required) annotation).message();
         }
@@ -30,7 +31,7 @@ public class AnnotationChecker {
 
     protected  Object getRequiredForced(Object value) {
         if ((value instanceof String && value.equals("")) || (value instanceof Double && (Double) value == 0)) {
-            return "";
+            return null;
         }
         return value;
     }

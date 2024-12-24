@@ -64,7 +64,6 @@ public class StringUtils {
         return base;
     }
     public static String replacement(String base , String id , String val) {
-        base.replace(id,val);
-        return base;
+        return base.replace(id, val);
     }
 }
