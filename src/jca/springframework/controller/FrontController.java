@@ -34,6 +34,7 @@ public class FrontController extends HttpServlet{
     @Override
     public void init() throws ServletException {
         super.init();
+
         /// Recuperer le nom de package des controller 
         this.setController_package(getServletConfig().getInitParameter("package-name"));
         /// Iitialiser la liste a 0

@@ -19,7 +19,6 @@ import jca.springframework.scanner.SessionScanner;
 import jca.springframework.scanner.ValidationScanner;
 import jca.springframework.session.WebSession;
 import jca.springframework.session.WebSessionParser;
-import jca.springframework.view.ValidationView;
 import jca.springframework.view.View;
 import jca.springframework.view.exception.InvalidReturnException;
 

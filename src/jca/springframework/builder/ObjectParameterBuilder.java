@@ -33,7 +33,7 @@ public class ObjectParameterBuilder extends ParameterBuilder {
         } catch ( NoSuchMethodException err ) {
             throw new NoDefaultConstructeurException(parameterType,err);
         }
-        validationScanner.thowExceptionIfNeeded();
+        // validationScanner.thowExceptionIfNeeded();
         return result; 
     }
 

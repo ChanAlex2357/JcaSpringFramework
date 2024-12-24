@@ -10,7 +10,6 @@ import jca.springframework.annotations.attribut.validation.Min;
 import jca.springframework.annotations.attribut.validation.Required;
 import jca.springframework.builder.exception.FieldValidationException;
 import jca.springframework.builder.exception.FieldsValidationException;
-import jca.springframework.utils.StringUtils;
 
 public class ValidationScanner {
     private List<FieldValidationException> exceptionList;
@@ -52,35 +51,12 @@ public class ValidationScanner {
     public void checkValidationFieldValue(Field field, Object value) {
         String message = null;
         for (Annotation annotation : getValidationField(field)) {
-            if (annotation instanceof Required && (value == null || value == "" || value == "null")) {
-                message = ((Required) annotation).message();
-            } else if ( 
-                annotation instanceof Min && // Verifier l'instance min 
-                value instanceof Integer && (Integer) value < ((Min) annotation).value()) // Comparaison de valeur au min 
-            {
-                message = StringUtils.replacement(
-                    ((Min) annotation).message(),
-                    "{value}",
-                    String.valueOf(((Min) annotation).value())
-                );
-            } else if (
-                annotation instanceof Max && // Verifier si Max
-                value instanceof Integer && (Integer) value > ((Max) annotation).value() // Conparaison avec Max
-            ) {
-                message = StringUtils.replacement(
-                    ((Max) annotation).message(),
-                    "{value}",
-                    String.valueOf(((Max) annotation).value())
-                );
+            message = AnnotationChecker.check(value, annotation);
+            if (message != null) {
+                addFieldException(field, annotation, value , message);
             }
-            else {
-                // Si La validation est correcte ou ne suit aucune des logics de la liste alors on passe a la validation suivante
-                continue;
-            }
-            addFieldException(field, annotation, value , message);
         }
     }
-
     protected void addFieldException(Field field , Annotation annotation , Object value , String message){
         getFieldValidationExceptions().add(new FieldValidationException(field, annotation,value,message));
     }
@@ -107,11 +83,11 @@ public class ValidationScanner {
         return this.validationException;
     }
 
-    public void thowExceptionIfNeeded() throws FieldsValidationException{
-        if (this.getFieldValidationExceptions().size() > 0) {
-            throw this.getValidationExceptions();
-        }
-    }
+    // public void thowExceptionIfNeeded() throws FieldsValidationException{
+    //     if (this.getFieldValidationExceptions().size() > 0) {
+    //         throw this.getValidationExceptions();
+    //     }
+    // }
 
     public boolean isValidationErrorPresent(){
         return !this.getFieldValidationExceptions().isEmpty();
