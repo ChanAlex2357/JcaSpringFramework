@@ -31,11 +31,13 @@ public class PrimitiveScanner {
         }
         /// Integer cast
         else if (typeOrigin.equals(int.class)) {
-            result = Integer.parseInt(value);
+            try{result = Integer.parseInt(value);}
+            catch (Exception e){result = 0;}
         }
         /// Double cast
         else if (typeOrigin.equals(double.class)) {
-            result = Double.parseDouble(value);
+            try{result = Double.parseDouble(value);}
+            catch (Exception e){result = 0;}
         }
         // Boolean case
         else if (typeOrigin.equals(boolean.class)){
@@ -43,7 +45,8 @@ public class PrimitiveScanner {
         }
         // Float
         else if (typeOrigin.equals(float.class)) {
-            result = Float.parseFloat(value);
+            try { result = Float.parseFloat(value);}
+            catch (Exception e) {result =0;}
         }
         
         return result;

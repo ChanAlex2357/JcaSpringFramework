@@ -5,7 +5,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-class RestApiView extends View{
+public class RestApiView extends View{
     private final String jsonAttributeName = "jsonString";
     
 

@@ -38,7 +38,6 @@ public class Mapping {
         VerbAction mappingClassMethode = this.getMappingClassMethode(req.getMethod());
         // Recuperer le resultat de la requete
         return mappingClassMethode.getViewResult(req);
-        
     }
     public VerbAction getMappingClassMethode(String requestMethod) throws RequestMethodCallException {
         VerbAction mappingCorrespondance = null;

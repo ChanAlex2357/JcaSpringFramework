@@ -6,19 +6,23 @@ import java.util.HashMap;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jca.springframework.utils.StringUtils;
 
 public abstract class View {
+    String error;
     HashMap<String,Object> data;
     String viewPath;
     public View(String viewPath){
         intView(viewPath,new HashMap<>());
     }
-
     private void intView(String viewPath,HashMap<String,Object> data){
         setViewPath(viewPath);
         setData(data);
     }
 
+    protected void setViewPathAsControllerUrl(){
+        setViewPath(StringUtils.getControllerUrl(this.getViewPath()));
+    }
     public HashMap<String, Object> getData() {
         return data;
     }
@@ -47,5 +51,11 @@ public abstract class View {
         for (String attributName : getData().keySet()) {
             req.setAttribute(attributName, getData().get(attributName));
         }
+    }
+    public String getError() {
+        return error;
+    }
+    public void setError(String error) {
+        this.error = error;
     }
 }

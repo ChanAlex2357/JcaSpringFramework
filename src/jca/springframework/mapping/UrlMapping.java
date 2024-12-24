@@ -6,6 +6,7 @@ import java.util.HashMap;
 
 import jakarta.servlet.http.HttpServletResponse;
 import jca.springframework.controller.exception.UnhandledUrlException;
+import jca.springframework.utils.StringUtils;
 
 public class UrlMapping  {
     static public void showUrlMaps(HttpServletResponse response , HashMap<String,Mapping> urlMaps) throws IOException{
@@ -25,16 +26,7 @@ public class UrlMapping  {
     }
 
     static public Mapping getMappingWithFullUrl(String fullurl , HashMap<String,Mapping> urlMaps) throws UnhandledUrlException{
-        String url = "";
-        try {
-            String[] parts = fullurl.split("/");
-            url += parts[4];
-            for (int i = 5; i < parts.length; i++) {
-                url+= "/"+parts[i];
-            }
-        } catch (Exception e) {
-            url += "index";
-        }
+        String url = StringUtils.getControllerUrl(fullurl);
         return getMapping(url, urlMaps);
     }
 }

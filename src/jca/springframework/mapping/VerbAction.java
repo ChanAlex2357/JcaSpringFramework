@@ -12,13 +12,14 @@ import java.util.List;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jca.springframework.builder.exception.FieldsValidationException;
+import jca.springframework.builder.viewbuilder.ViewBuilder;
 import jca.springframework.exception.FrameworkException;
 import jca.springframework.scanner.RequestScanner;
 import jca.springframework.scanner.SessionScanner;
+import jca.springframework.scanner.ValidationScanner;
 import jca.springframework.session.WebSession;
 import jca.springframework.session.WebSessionParser;
 import jca.springframework.view.View;
-import jca.springframework.view.ViewBuilder;
 import jca.springframework.view.exception.InvalidReturnException;
 
 public class VerbAction {
@@ -85,14 +86,14 @@ public class VerbAction {
         return controllerInstance;
     }
 
-    public Object getMethodResult(HttpServletRequest req) throws IllegalArgumentException, FrameworkException, InstantiationException, IOException, ServletException, FieldsValidationException{
+    public Object getMethodResult(HttpServletRequest req,ValidationScanner validationScanner) throws IllegalArgumentException, FrameworkException, InstantiationException, IOException, ServletException, FieldsValidationException{
         Object resultObject = null;
         Object controller =  getControllerInstance(req);
         /// recuperer l'objet methode correspondant avec des parametres null 
         try {
             Class<?>[] parameterTypes = getClassMethode().getMappingParameter().getParameterTypes();
             Method controllerMethod = controller.getClass().getMethod(getClassMethode().getMethodeControllerName(),parameterTypes);
-            List<Object> parameterValues = getParameterValues(req);
+            List<Object> parameterValues = getParameterValues(req,validationScanner);
             resultObject = controllerMethod.invoke(controller,parameterValues.toArray());
         }
         catch (NoSuchMethodException | SecurityException e){}
@@ -101,23 +102,23 @@ public class VerbAction {
         return resultObject;
     }
     /// Recuperation des donnees necessaires
-    private List<Object> getParameterValues(HttpServletRequest req) throws IllegalArgumentException, IllegalAccessException, FrameworkException, InstantiationException, InvocationTargetException, SecurityException, IOException, ServletException, FieldsValidationException{
+    private List<Object> getParameterValues(HttpServletRequest req,ValidationScanner validationScanner) throws IllegalArgumentException, IllegalAccessException, FrameworkException, InstantiationException, InvocationTargetException, SecurityException, IOException, ServletException, FieldsValidationException{
         List<Object> values = new ArrayList<>();
         RequestScanner requestScanner = new RequestScanner();
         Object value = "DEFAULT ";
         for ( Parameter parameter : getClassMethode().getMappingParameter().getParameters()) {
-            value =  requestScanner.getParameterValue(parameter, req);
+            value =  requestScanner.getParameterValue(parameter, req , validationScanner);
             values.add(value);
         }
         return values;
     }
 
     public View getViewResult(HttpServletRequest req)throws IllegalArgumentException, FrameworkException, InstantiationException, IOException, ServletException{
+        ValidationScanner validationScanner = new ValidationScanner();
         /// Recuperer l'objet de retour de la methode du controller
-        Object methodResult = getMethodResult(req);
+        Object methodResult = getMethodResult(req,validationScanner);
         /// Traitement du resultat
-
-        View view = ViewBuilder.getViewOf(methodResult,getMappingAnnotation());
+        View view =  ViewBuilder.getBuilder(getMappingAnnotation()).buildView(methodResult, getMappingAnnotation(),validationScanner);
         /// La vue est null si le resultat ne corespond a aucun format valide
         if ( view == null) {
             throw new InvalidReturnException(this);

@@ -42,4 +42,28 @@ public class StringUtils {
     public static String encode(byte[] stringbytes){
         return Base64.getEncoder().encodeToString(stringbytes);
     }
+
+    public static String getControllerUrl(String fullurl) {
+        String url = "";
+        try {
+            String[] parts = fullurl.split("/");
+            url += parts[4];
+            for (int i = 5; i < parts.length; i++) {
+                url+= "/"+parts[i];
+            }
+        } catch (Exception e) {
+            url += "index";
+        }
+        return url;
+    }
+
+    public static String replacements(String base , String [] ids , String[] vals) {
+        for (int i = 0; i < vals.length; i++) {
+            replacement(base ,ids[i],vals[i]);
+        }
+        return base;
+    }
+    public static String replacement(String base , String id , String val) {
+        return base.replace(id, val);
+    }
 }
