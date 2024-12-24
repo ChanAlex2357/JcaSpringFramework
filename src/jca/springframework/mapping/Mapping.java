@@ -24,8 +24,8 @@ public class Mapping {
         getVerbMapping().add(mappingClassMethode);
     }
 
-    public void addMappingClassMethode(VerbAction mappingClassMethode){
-        getVerbMapping().add(mappingClassMethode);
+    public boolean addVerbAction(VerbAction mappingClassMethode){
+        return getVerbMapping().add(mappingClassMethode);
     }
     public Set<VerbAction> getVerbMapping() {
         return verbMapping;

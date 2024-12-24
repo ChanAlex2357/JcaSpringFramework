@@ -11,6 +11,7 @@ import java.util.List;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
+import jca.springframework.builder.exception.FieldsValidationException;
 import jca.springframework.exception.FrameworkException;
 import jca.springframework.scanner.RequestScanner;
 import jca.springframework.scanner.SessionScanner;
@@ -51,6 +52,10 @@ public class VerbAction {
     public String getMethodeAction(){
         return this.getClassMethode().getMethodeControllerName();
     }
+    public String getUrl(){
+        return this.getMappingAnnotation().getUrl();
+    }
+    
     // FUNCTIONALITIES
     public Object getControllerInstance(HttpServletRequest request){
         Object controllerInstance = null;
@@ -80,7 +85,7 @@ public class VerbAction {
         return controllerInstance;
     }
 
-    public Object getMethodResult(HttpServletRequest req) throws IllegalArgumentException, FrameworkException ,IllegalArgumentException, FrameworkException, InstantiationException, IOException, ServletException{
+    public Object getMethodResult(HttpServletRequest req) throws IllegalArgumentException, FrameworkException, InstantiationException, IOException, ServletException, FieldsValidationException{
         Object resultObject = null;
         Object controller =  getControllerInstance(req);
         /// recuperer l'objet methode correspondant avec des parametres null 
@@ -96,11 +101,12 @@ public class VerbAction {
         return resultObject;
     }
     /// Recuperation des donnees necessaires
-    private List<Object> getParameterValues(HttpServletRequest req) throws IllegalArgumentException, IllegalAccessException, FrameworkException, InstantiationException, InvocationTargetException, SecurityException, IOException, ServletException{
-        List<Object> values = new ArrayList<>(); 
+    private List<Object> getParameterValues(HttpServletRequest req) throws IllegalArgumentException, IllegalAccessException, FrameworkException, InstantiationException, InvocationTargetException, SecurityException, IOException, ServletException, FieldsValidationException{
+        List<Object> values = new ArrayList<>();
+        RequestScanner requestScanner = new RequestScanner();
         Object value = "DEFAULT ";
         for ( Parameter parameter : getClassMethode().getMappingParameter().getParameters()) {
-            value =  RequestScanner.getParameterValue(parameter, req);
+            value =  requestScanner.getParameterValue(parameter, req);
             values.add(value);
         }
         return values;

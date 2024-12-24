@@ -9,6 +9,7 @@ import jca.springframework.annotations.method.RestApi;
 import jca.springframework.annotations.method.Url;
 import jca.springframework.constants.AnnotationVerb;
 import jca.springframework.constants.MethodAnnotation;
+import jca.springframework.scanner.exception.MultipleVerbException;
 
 public class MethodScanner {
     private static boolean isAnnotedMethod(Method method , Class<? extends Annotation> annotationClass){
@@ -60,10 +61,13 @@ public class MethodScanner {
         if(annotation != null){ urlannotaion = (Url)annotation;}
         return urlannotaion;
     }
-    public static String getMethodeVerb(Method method) {
+    public static String getMethodeVerb(Method method) throws MultipleVerbException {
         String verb = null;
         Get getannotation = getGetAnnotation(method);
         Post postannotation = getPostAnnotation(method);
+        if (getannotation != null && postannotation != null) {
+            throw new MultipleVerbException(method);
+        } 
         // Verification pour GET
         verb = checkVerb(verb, getannotation, AnnotationVerb.GET);
         // Verification pour POST

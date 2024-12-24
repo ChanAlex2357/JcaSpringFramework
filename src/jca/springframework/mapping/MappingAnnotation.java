@@ -1,6 +1,7 @@
 package jca.springframework.mapping;
 import java.lang.reflect.Method;
 import jca.springframework.scanner.MethodScanner;
+import jca.springframework.scanner.exception.MultipleVerbException;
 
 public class MappingAnnotation {
     private String url;
@@ -21,7 +22,7 @@ public class MappingAnnotation {
         this.isApiMethode = api;
     }
     
-    public MappingAnnotation ( Method method ){
+    public MappingAnnotation ( Method method ) throws MultipleVerbException{
         setUrl(MethodScanner.getMethodeUrl(method));
         setVerb(MethodScanner.getMethodeVerb(method));
         setApiMethode(method);

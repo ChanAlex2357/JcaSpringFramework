@@ -6,9 +6,10 @@ import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletResponse;
 import jca.springframework.exception.FrameworkException;
+import jca.springframework.mapping.AdminUrlMapping;
 import jca.springframework.mapping.Mapping;
-import jca.springframework.mapping.MappingBuilder;
 import jca.springframework.mapping.UrlMapping;
+import jca.springframework.scanner.ControllerScanner;
 import jca.springframework.scanner.exception.NotControllerPackageException;
 import jca.springframework.view.ExceptionView;
 import jca.springframework.view.View;
@@ -22,10 +23,8 @@ public class FrontController extends HttpServlet{
     /// Le package des controllers
     private String controller_package;
     /// Mapping des controller
-    private HashMap<String , Mapping> urlMapping;
-
-    private static FrameworkException initException = null ;
-
+    private AdminUrlMapping adminUrlMapping;
+    private static FrameworkException initException = null;
     static public FrameworkException getInitException() {
         return initException;
     }
@@ -38,7 +37,7 @@ public class FrontController extends HttpServlet{
         /// Recuperer le nom de package des controller 
         this.setController_package(getServletConfig().getInitParameter("package-name"));
         /// Iitialiser la liste a 0
-        this.setUrlMapping(new HashMap<String,Mapping>());
+        this.setAdminUrlMapping(new AdminUrlMapping());
         /// Scanner la liste des controllers
         this.scann_controllers();
     }
@@ -83,18 +82,15 @@ public class FrontController extends HttpServlet{
         viewResult.dispatch(req, resp);
     }
     private void scann_controllers(){
+        ControllerScanner controllerScanner = new ControllerScanner(getAdminUrlMapping());
         try {
-            MappingBuilder.scann_controllers(
-                getController_package(),
-                getUrlMapping()
-            );
+            controllerScanner.scann_controllers( getController_package() );
             /// Si le Url Mapping reste null alors il n'y a aucun controller
             if (getUrlMapping().size() == 0) {
-                throw new NotControllerPackageException(getController_package());
+                controllerScanner.addToLog(getUrlMapping().toString());
+                throw new NotControllerPackageException(getController_package(),controllerScanner.getScannLog());
             }
-        } catch (FrameworkException e) {
-            setInitException(e);
-        }
+        } catch (FrameworkException e) { setInitException(e); }
     }
 /// Getteurs et Setteurs
     public String getController_package() {
@@ -104,9 +100,13 @@ public class FrontController extends HttpServlet{
         this.controller_package = controller_package;
     }
     public HashMap<String, Mapping> getUrlMapping() {
-        return urlMapping;
+
+        return getAdminUrlMapping().getUrlMapping();
     }
-    public void setUrlMapping(HashMap<String, Mapping> urlMapping) {
-        this.urlMapping = urlMapping;
+    public AdminUrlMapping getAdminUrlMapping() {
+        return adminUrlMapping;
+    }
+    public void setAdminUrlMapping(AdminUrlMapping adminUrlMapping) {
+        this.adminUrlMapping = adminUrlMapping;
     }
 }
