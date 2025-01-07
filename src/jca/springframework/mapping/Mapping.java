@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.naming.AuthenticationException;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
