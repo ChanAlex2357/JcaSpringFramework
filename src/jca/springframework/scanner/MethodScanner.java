@@ -103,6 +103,12 @@ public class MethodScanner {
 
     public static String getMethodeRoleAccess(Method method){
         String role = "public";
+
+        Auth authannotation = getAuthAnnotation(method);
+        if (authannotation != null) {
+            role = authannotation.role();
+        }
+
         return role;
     }
 }
