@@ -2,7 +2,7 @@ package jca.springframework.session;
 
 import jca.springframework.mapping.VerbAction;
 
-public class Authentication {
+public class Authentification {
     public final String AUTH_VARIBLE = "AUTH";
     public final String ROLE_VARIBLE = "ROLE_USER";
     public void auth(WebSession webSession,String role) {
