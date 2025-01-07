@@ -6,6 +6,7 @@ import jca.springframework.scanner.exception.MultipleVerbException;
 public class MappingAnnotation {
     private String url;
     private String verb;
+    private String roleAccess;
     private boolean isApiMethode;
 
     @Override
@@ -25,6 +26,7 @@ public class MappingAnnotation {
     public MappingAnnotation ( Method method ) throws MultipleVerbException{
         setUrl(MethodScanner.getMethodeUrl(method));
         setVerb(MethodScanner.getMethodeVerb(method));
+        setRoleAccess(MethodScanner.getMethodeRoleAccess(method));
         setApiMethode(method);
     }
     public String getUrl() {
@@ -38,5 +40,12 @@ public class MappingAnnotation {
     }
     public void setVerb(String verb) {
         this.verb = verb;
+    }
+
+    public void setRoleAccess(String roleAccess) {
+        this.roleAccess = roleAccess;
+    }
+    public String getRoleAccess() {
+        return roleAccess;
     }
 }
