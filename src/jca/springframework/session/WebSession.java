@@ -22,6 +22,6 @@ public class WebSession {
         getSession().removeAttribute(key);
     }
     public Object get(String key) {
-        return getSession().getAttribute(key); 
+        return getSession().getAttribute(key);
     }
 }

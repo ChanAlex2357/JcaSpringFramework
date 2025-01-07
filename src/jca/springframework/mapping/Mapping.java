@@ -42,8 +42,7 @@ public class Mapping {
         // Verification de la conformite de la methode utiliser pour l'appel de la methode de controller
         VerbAction mappingClassMethode = this.getMappingClassMethode(req.getMethod());
         // Verifier l'authentification de l'utulisateur
-        Authentification authentification = new Authentification();
-        boolean auth = authentification.isAuthorised( WebSessionParser.HttpSessionToWebSession(req), mappingClassMethode);
+        boolean auth = Authentification.isAuthorised( WebSessionParser.HttpSessionToWebSession(req), mappingClassMethode);
         // Exception si l'utilisateur ne possede pas le bon role pour executer l'action du controller
         if (!auth) {throw new AuthentificationException(mappingClassMethode);}
         // Recuperer le resultat de la requete
