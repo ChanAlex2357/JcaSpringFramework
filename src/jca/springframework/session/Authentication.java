@@ -7,5 +7,5 @@ public class Authentication {
         webSession.add(AUTH_VARIBLE, true);
         webSession.add(ROLE_VARIBLE, role);
     }
-    public boolean isAuthorised(WebSession webSession , Ver)
+    // public boolean isAuthorised(WebSession webSession , Ver)
 }

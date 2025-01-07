@@ -17,5 +17,5 @@ public class MethodAnnotation {
     public static Class<RestApi> REST_API()             {return REST_API_ANNOTATION_CLASS;}
     public static Class<Url> URL()                      {return URL_ANNOTATION_CLASS;}      
     public static Class<Post> POST()                    {return POST_ANNOTATION_CLASS;}
-    public static Class<Auth> getAuthAnnotationClass()  {return AUTH_ANNOTATION_CLASS;}
+    public static Class<Auth> AUTH()  {return AUTH_ANNOTATION_CLASS;}
 }
