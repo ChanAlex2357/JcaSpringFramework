@@ -139,5 +139,9 @@ public class VerbAction {
     public int hashCode() {
         return getVerb().hashCode() *  getMethodeAction().hashCode();
     }
+    public String getRoleAccess() {
+        return getMappingAnnotation().getRoleAccess();
+    }
+    
     
 }
