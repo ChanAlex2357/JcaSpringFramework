@@ -6,8 +6,10 @@ public class Authentification {
     public static final String AUTH_VARIBLE = "AUTH";
     public static final String ROLE_VARIBLE = "ROLE_USER";
     private String role;
-
-    public void auth(WebSession webSession,String role) {
+    public Authentification(String role){
+        setRole(role);
+    }
+    public void auth(WebSession webSession) {
         webSession.add(AUTH_VARIBLE, true);
         webSession.add(ROLE_VARIBLE, this.getRole());
     }
