@@ -3,7 +3,9 @@ package jca.springframework.builder.viewbuilder;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import jca.springframework.exception.FrameworkException;
 import jca.springframework.mapping.MappingAnnotation;
+import jca.springframework.mapping.VerbAction;
 import jca.springframework.scanner.ValidationScanner;
 import jca.springframework.view.ModelAndView;
 import jca.springframework.view.RestApiView;
@@ -15,7 +17,7 @@ public class JsonViewBuilder extends ViewBuilder {
         return gson;
     }
     @Override
-    public View buildView(Object obj, MappingAnnotation mappingAnnotation, ValidationScanner validationScanner) {
+    public View buildView(Object obj, VerbAction vba,ValidationScanner validationScanner) throws FrameworkException {
         View view= null;
         if (obj instanceof ModelAndView){
             ModelAndView modelAndView = (ModelAndView) obj;

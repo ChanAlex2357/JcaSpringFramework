@@ -96,9 +96,16 @@ public class VerbAction {
             List<Object> parameterValues = getParameterValues(req,validationScanner);
             resultObject = controllerMethod.invoke(controller,parameterValues.toArray());
         }
-        catch (NoSuchMethodException | SecurityException e){}
-        catch (IllegalAccessException e){} 
-        catch (InvocationTargetException e){}
+        catch (NoSuchMethodException | SecurityException e) {
+            throw new FrameworkException(e.getMessage(), e);
+        }
+        catch (IllegalAccessException e) {
+            throw new FrameworkException(e.getMessage(), e);
+        }
+        catch (InvocationTargetException e) {
+            Throwable cause = e.getCause();
+            throw new FrameworkException(cause != null ? cause.getMessage() : e.getMessage(), e);
+        }
         return resultObject;
     }
     /// Recuperation des donnees necessaires
@@ -118,11 +125,7 @@ public class VerbAction {
         /// Recuperer l'objet de retour de la methode du controller
         Object methodResult = getMethodResult(req,validationScanner);
         /// Traitement du resultat
-        View view =  ViewBuilder.getBuilder(getMappingAnnotation()).buildView(methodResult, getMappingAnnotation(),validationScanner);
-        /// La vue est null si le resultat ne corespond a aucun format valide
-        if ( view == null) {
-            throw new InvalidReturnException(this);
-        }
+        View view =  ViewBuilder.getBuilder(this).buildView(methodResult, this,validationScanner);
         return view;
     }
 

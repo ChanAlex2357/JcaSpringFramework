@@ -50,8 +50,14 @@ public class ObjectParameterBuilder extends ParameterBuilder {
     }
 
     protected void setObjectPrimitiveValue(Object obj, Parameter parameter , HttpServletRequest request , Field attribute , ValidationScanner validationScanner) throws IllegalArgumentException, IllegalAccessException, FrameworkException, IOException, ServletException{
-        String parameterValue = getRequestParameter(parameter,request,null,attribute.getName(),".");
-        Object value = PrimitiveScanner.parsePrimitive(attribute.getType(), parameterValue);
+        Object value = null;
+        if (PrimitiveScanner.isList(attribute)) {
+            value = getRequestParameterValues(parameter, request, null, attribute.getName()+"[]", ".");
+        }
+        else {
+            String parameterValue = getRequestParameter(parameter,request,null,attribute.getName(),".");
+            value = PrimitiveScanner.parsePrimitive(attribute.getType(), parameterValue);
+        }
         setAttributeValue(obj, attribute, value, validationScanner);
     }
 
