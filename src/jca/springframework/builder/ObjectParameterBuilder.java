@@ -14,7 +14,6 @@ import jca.springframework.mapping.FileMapping;
 import jca.springframework.scanner.PrimitiveScanner;
 import jca.springframework.scanner.ValidationScanner;
 import jca.springframework.utils.PartUtils;
-
 public class ObjectParameterBuilder extends ParameterBuilder {
     public Object getObjectParameterValue(Parameter parameter , HttpServletRequest request , ValidationScanner validationScanner) throws FrameworkException, IllegalArgumentException, IllegalAccessException, InstantiationException, InvocationTargetException, SecurityException, IOException, ServletException, FieldsValidationException{
         // Le resultat attendue

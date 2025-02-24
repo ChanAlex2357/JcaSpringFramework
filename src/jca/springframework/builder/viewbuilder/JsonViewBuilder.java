@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import jca.springframework.exception.FrameworkException;
-import jca.springframework.mapping.MappingAnnotation;
 import jca.springframework.mapping.VerbAction;
 import jca.springframework.scanner.ValidationScanner;
 import jca.springframework.view.ModelAndView;
