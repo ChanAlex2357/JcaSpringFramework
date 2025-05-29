@@ -3,7 +3,7 @@ package jca.springframework.exception;
 import jca.springframework.view.ExceptionView;
 import jca.springframework.view.View;
 
-public abstract class FrameworkException extends Exception{
+public class FrameworkException extends Exception{
     int exception_status = 500;
     public  FrameworkException(){
         super(null,null);

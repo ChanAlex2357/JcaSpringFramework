@@ -14,7 +14,6 @@ import jca.springframework.mapping.FileMapping;
 import jca.springframework.scanner.PrimitiveScanner;
 import jca.springframework.scanner.ValidationScanner;
 import jca.springframework.utils.PartUtils;
-
 public class ObjectParameterBuilder extends ParameterBuilder {
     public Object getObjectParameterValue(Parameter parameter , HttpServletRequest request , ValidationScanner validationScanner) throws FrameworkException, IllegalArgumentException, IllegalAccessException, InstantiationException, InvocationTargetException, SecurityException, IOException, ServletException, FieldsValidationException{
         // Le resultat attendue
@@ -50,8 +49,14 @@ public class ObjectParameterBuilder extends ParameterBuilder {
     }
 
     protected void setObjectPrimitiveValue(Object obj, Parameter parameter , HttpServletRequest request , Field attribute , ValidationScanner validationScanner) throws IllegalArgumentException, IllegalAccessException, FrameworkException, IOException, ServletException{
-        String parameterValue = getRequestParameter(parameter,request,null,attribute.getName(),".");
-        Object value = PrimitiveScanner.parsePrimitive(attribute.getType(), parameterValue);
+        Object value = null;
+        if (PrimitiveScanner.isList(attribute)) {
+            value = getRequestParameterValues(parameter, request, null, attribute.getName()+"[]", ".");
+        }
+        else {
+            String parameterValue = getRequestParameter(parameter,request,null,attribute.getName(),".");
+            value = PrimitiveScanner.parsePrimitive(attribute.getType(), parameterValue);
+        }
         setAttributeValue(obj, attribute, value, validationScanner);
     }
 
