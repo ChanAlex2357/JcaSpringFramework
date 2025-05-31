@@ -4,10 +4,14 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jca.springframework.controller.exception.RequestMethodCallException;
+import jca.springframework.exception.AuthentificationException;
 import jca.springframework.exception.FrameworkException;
+import jca.springframework.session.Authentification;
+import jca.springframework.session.WebSessionParser;
 import jca.springframework.view.View;
 
 public class Mapping {
@@ -36,6 +40,10 @@ public class Mapping {
     public View getViewResult(HttpServletRequest req) throws IllegalArgumentException, InstantiationException, FrameworkException, IOException, ServletException {
         // Verification de la conformite de la methode utiliser pour l'appel de la methode de controller
         VerbAction mappingClassMethode = this.getMappingClassMethode(req.getMethod());
+        // Verifier l'authentification de l'utulisateur
+        boolean auth = Authentification.isAuthorised( WebSessionParser.HttpSessionToWebSession(req), mappingClassMethode);
+        // Exception si l'utilisateur ne possede pas le bon role pour executer l'action du controller
+        if (!auth) {throw new AuthentificationException(mappingClassMethode);}
         // Recuperer le resultat de la requete
         return mappingClassMethode.getViewResult(req);
     }
@@ -46,7 +54,6 @@ public class Mapping {
                 mappingCorrespondance = mappingClassMethode;
             }
         }
-
         if (!getVerbMapping().isEmpty() && mappingCorrespondance==null) {
             throw new RequestMethodCallException(getUrl(),requestMethod);
         }

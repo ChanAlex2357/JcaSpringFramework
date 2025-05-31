@@ -1,6 +1,9 @@
 package jca.springframework.scanner;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Parameter;
+import java.sql.Date;
+import java.sql.Time;
 
 public class PrimitiveScanner {
     
@@ -9,8 +12,17 @@ public class PrimitiveScanner {
         int.class,
         double.class,
         boolean.class,
-        float.class
+        float.class,
+        Date.class,
+        Time.class
     };
+
+    public static boolean isList(Parameter parameter) {
+        return parameter.getType().equals(String[].class);
+    }
+    public static boolean isList(Field field) {
+        return field.getType().equals(String[].class);
+    }
     public static boolean isPrimitifType(Parameter parameter){
         boolean result = false;
         // Recuperer la class type du parametre de la fonction du controller 
@@ -48,6 +60,20 @@ public class PrimitiveScanner {
             try { result = Float.parseFloat(value);}
             catch (Exception e) {result =0;}
         }
+        // SQL Date
+        else if (typeOrigin.equals(java.sql.Date.class)) {
+            try { result = java.sql.Date.valueOf(value); }
+            catch (Exception e) { result = null; }
+        }
+        // SQL Time
+        else if (typeOrigin.equals(java.sql.Time.class)) {
+            if (value.length() == 5) {
+                value += ":00";
+            }
+            try { result = java.sql.Time.valueOf(value); }
+            catch (Exception e) { result = null; }
+        }
+
         
         return result;
     }

@@ -3,6 +3,7 @@ package jca.springframework.scanner;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 
+import jca.springframework.annotations.method.Auth;
 import jca.springframework.annotations.method.Get;
 import jca.springframework.annotations.method.Post;
 import jca.springframework.annotations.method.RestApi;
@@ -54,13 +55,22 @@ public class MethodScanner {
     /*
      * URL Annotation
      */
-    public static boolean isUrlAnnotation(Method method)    {return isAnnotedMethod(method, MethodAnnotation.URL());}
+    public static boolean isUrlAnnotation(Method method){return isAnnotedMethod(method, MethodAnnotation.URL());}
     public static Url getUrlAnnotation(Method method){
         Annotation annotation = getAnnotedMethod(method, MethodAnnotation.URL());
         Url urlannotaion = null;
         if(annotation != null){ urlannotaion = (Url)annotation;}
         return urlannotaion;
     }
+
+    public static boolean isAuthAnnotation(Method method){return isAnnotedMethod(method, MethodAnnotation.AUTH());}
+    public static Auth getAuthAnnotation(Method method){
+        Annotation annotation = getAnnotedMethod(method, MethodAnnotation.AUTH());
+        Auth authannotation = null;
+        if(annotation != null){ authannotation = (Auth)annotation;}
+        return authannotation;
+    }
+
     public static String getMethodeVerb(Method method) throws MultipleVerbException {
         String verb = null;
         Get getannotation = getGetAnnotation(method);
@@ -89,5 +99,16 @@ public class MethodScanner {
         }
         String url = urlannotation.path();
         return url;
+    }
+
+    public static String getMethodeRoleAccess(Method method){
+        String role = "public";
+
+        Auth authannotation = getAuthAnnotation(method);
+        if (authannotation != null) {
+            role = authannotation.role();
+        }
+
+        return role;
     }
 }

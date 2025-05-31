@@ -1,6 +1,8 @@
 package jca.springframework.mapping;
 
 import java.io.IOException;
+import java.io.File;
+import java.io.FileOutputStream;
 
 import jakarta.servlet.http.Part;
 import jca.springframework.utils.PartUtils;
@@ -26,4 +28,11 @@ public class FileMapping {
         this.bytes = bytes;
     }
     
+    
+    public void saveToFile(String directory) throws IOException {
+        File file = new File(directory, filename);
+        try (FileOutputStream fos = new FileOutputStream(file)) {
+            fos.write(bytes);
+        }
+    }
 }

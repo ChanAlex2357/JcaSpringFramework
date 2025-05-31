@@ -13,10 +13,13 @@ public class PrimitiveParameterBuilder extends ParameterBuilder {
     public Object getPrmitiveParameterValue(Parameter parameter , HttpServletRequest request) throws FrameworkException, IOException, ServletException{
         // Le resultat attendue
         Object result = null;
-        String parameterValue = getRequestParameter(parameter, request);
-        // Recuperer la class type du parametre de la fonction du controller 
-        Class<?> parameterType = parameter.getType();
-        result = PrimitiveScanner.parsePrimitive(parameterType, parameterValue);
+        if (PrimitiveScanner.isList(parameter)) {
+            result = getRequestParameterValues(parameter, request);
+        }
+        else {
+            String parameterValue = getRequestParameter(parameter, request);
+            result = PrimitiveScanner.parsePrimitive(parameter.getType(), parameterValue);
+        }
         return result; 
     }
 }

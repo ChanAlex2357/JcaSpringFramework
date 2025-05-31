@@ -45,4 +45,13 @@ public class ParameterBuilder {
     public static String getRequestParameter(Parameter parameter,HttpServletRequest request) throws FrameworkException, IOException, ServletException{
         return getRequestParameter(parameter, request,null,null,"");
     }
+
+    public static String[] getRequestParameterValues(Parameter parameter,HttpServletRequest request,String prefix , String suffix,String delimiter) throws FrameworkException, IOException, ServletException{
+        String paramName = buildParameterName(parameter, prefix, suffix, delimiter);
+        String[] parameterValues = request.getParameterValues(paramName);
+        return parameterValues;
+    }
+    public static String[] getRequestParameterValues(Parameter parameter,HttpServletRequest request) throws FrameworkException, IOException, ServletException{
+        return getRequestParameterValues(parameter, request,null,null,"");
+    }
 }

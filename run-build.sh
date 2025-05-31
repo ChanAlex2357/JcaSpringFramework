@@ -30,4 +30,7 @@ cp -R $README $OUTPUT_DIR
 # Créer le fichier JAR
 jar cf $JAR_NAME -C $OUTPUT_DIR .
 
+# # Copier le fichier JAR dans un autre dossier
+cp $JAR_NAME ../Test/lib
+
 echo "Le framework a été déployé avec succès sous forme de fichier JAR."
