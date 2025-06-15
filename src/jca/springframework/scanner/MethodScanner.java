@@ -4,6 +4,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 
 import jca.springframework.annotations.method.Auth;
+import jca.springframework.annotations.method.ErrorMapping;
 import jca.springframework.annotations.method.Get;
 import jca.springframework.annotations.method.Post;
 import jca.springframework.annotations.method.RestApi;
@@ -62,7 +63,9 @@ public class MethodScanner {
         if(annotation != null){ urlannotaion = (Url)annotation;}
         return urlannotaion;
     }
-
+    /*
+     * AUTH Annotation
+     */
     public static boolean isAuthAnnotation(Method method){return isAnnotedMethod(method, MethodAnnotation.AUTH());}
     public static Auth getAuthAnnotation(Method method){
         Annotation annotation = getAnnotedMethod(method, MethodAnnotation.AUTH());
@@ -71,6 +74,18 @@ public class MethodScanner {
         return authannotation;
     }
 
+    /*
+     * Error Redirection Annotation
+     */
+    public static boolean isErrorMapping(Method method){return isAnnotedMethod(method, MethodAnnotation.ERROR_MAPPING());}
+    public static ErrorMapping getErrorMapping(Method method){
+        Annotation annotation = getAnnotedMethod(method, MethodAnnotation.ERROR_MAPPING());
+        ErrorMapping errormappingannotation = null;
+        if(annotation != null){ errormappingannotation = (ErrorMapping)annotation;}
+        return errormappingannotation;
+    }
+
+    
     public static String getMethodeVerb(Method method) throws MultipleVerbException {
         String verb = null;
         Get getannotation = getGetAnnotation(method);
