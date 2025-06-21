@@ -24,18 +24,6 @@ public class VerbAction {
     private MappingAnnotation mappingAnnotation;
     private ClassMethode classMethode;
     
-    public ClassMethode getClassMethode() {
-        return classMethode;
-    }
-    public void setClassMethode(ClassMethode classMethode) {
-        this.classMethode = classMethode;
-    }
-    public MappingAnnotation getMappingAnnotation() {
-        return mappingAnnotation;
-    }
-    public void setMappingAnnotation(MappingAnnotation mappingAnnotation) {
-        this.mappingAnnotation = mappingAnnotation;
-    }
     public VerbAction(MappingAnnotation mappingAnnotation, String classControllerName , Method methodeController){
         this.setMappingAnnotation(mappingAnnotation);
         this.setClassMethode(new ClassMethode(classControllerName, methodeController));
@@ -45,17 +33,13 @@ public class VerbAction {
         this.setMappingAnnotation(mappingAnnotation);
         this.setClassMethode(classMethode);
     }
-    public String getVerb(){
-        return this.getMappingAnnotation().getVerb();
-    }
-    public String getMethodeAction(){
-        return this.getClassMethode().getMethodeControllerName();
-    }
-    public String getUrl(){
-        return this.getMappingAnnotation().getUrl();
-    }
-    
+
     // FUNCTIONALITIES
+    /**
+     * Recuperer un instance l'action
+     * @param request
+     * @return
+     */
     public Object getControllerInstance(HttpServletRequest request){
         Object controllerInstance = null;
         try {
@@ -143,6 +127,25 @@ public class VerbAction {
     public String getRoleAccess() {
         return getMappingAnnotation().getRoleAccess();
     }
-    
-    
+        public ClassMethode getClassMethode() {
+        return classMethode;
+    }
+    public void setClassMethode(ClassMethode classMethode) {
+        this.classMethode = classMethode;
+    }
+    public MappingAnnotation getMappingAnnotation() {
+        return mappingAnnotation;
+    }
+    public void setMappingAnnotation(MappingAnnotation mappingAnnotation) {
+        this.mappingAnnotation = mappingAnnotation;
+    }
+        public String getVerb(){
+        return this.getMappingAnnotation().getVerb();
+    }
+    public String getMethodeAction(){
+        return this.getClassMethode().getMethodeControllerName();
+    }
+    public String getUrl(){
+        return this.getMappingAnnotation().getUrl();
+    }
 }

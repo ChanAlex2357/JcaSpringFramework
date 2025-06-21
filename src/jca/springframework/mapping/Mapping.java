@@ -28,15 +28,16 @@ public class Mapping {
         getVerbMapping().add(mappingClassMethode);
     }
 
-    public boolean addVerbAction(VerbAction mappingClassMethode){
-        return getVerbMapping().add(mappingClassMethode);
-    }
-    public Set<VerbAction> getVerbMapping() {
-        return verbMapping;
-    }
-    public void setVerbMapping(Set<VerbAction> verbMapping) {
-        this.verbMapping = verbMapping;
-    }
+    /**
+     * Recuperer la view correspondant a la requete
+     * @param req la requete
+     * @return La view demandee
+     * @throws IllegalArgumentException
+     * @throws InstantiationException
+     * @throws FrameworkException
+     * @throws IOException
+     * @throws ServletException
+     */
     public View getViewResult(HttpServletRequest req) throws IllegalArgumentException, InstantiationException, FrameworkException, IOException, ServletException {
         // Verification de la conformite de la methode utiliser pour l'appel de la methode de controller
         VerbAction mappingClassMethode = this.getMappingClassMethode(req.getMethod());
@@ -47,6 +48,13 @@ public class Mapping {
         // Recuperer le resultat de la requete
         return mappingClassMethode.getViewResult(req);
     }
+
+    /**
+     * Recuperer Le verbe action correspondant a la methode de la requete
+     * @param requestMethod la method de la requete
+     * @return Le verb action associer
+     * @throws RequestMethodCallException
+     */
     public VerbAction getMappingClassMethode(String requestMethod) throws RequestMethodCallException {
         VerbAction mappingCorrespondance = null;
         for (VerbAction mappingClassMethode : verbMapping) {
@@ -54,17 +62,27 @@ public class Mapping {
                 mappingCorrespondance = mappingClassMethode;
             }
         }
+        // Exception pour un Verb introuvable pour la requete
         if (!getVerbMapping().isEmpty() && mappingCorrespondance==null) {
             throw new RequestMethodCallException(getUrl(),requestMethod);
         }
         return mappingCorrespondance;
     }
+
+//  GETTEURS AND SETTEURS
     public String getUrl() {
         return url;
     }
     public void setUrl(String url) {
         this.url = url;
     }
-
-    
+    public boolean addVerbAction(VerbAction mappingClassMethode){
+        return getVerbMapping().add(mappingClassMethode);
+    }
+    public Set<VerbAction> getVerbMapping() {
+        return verbMapping;
+    }
+    public void setVerbMapping(Set<VerbAction> verbMapping) {
+        this.verbMapping = verbMapping;
+    }
 }

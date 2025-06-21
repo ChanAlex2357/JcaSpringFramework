@@ -78,7 +78,7 @@ public class MethodScanner {
      * Error Redirection Annotation
      */
     public static boolean isErrorMapping(Method method){return isAnnotedMethod(method, MethodAnnotation.ERROR_MAPPING());}
-    public static ErrorMapping getErrorMapping(Method method){
+    public static ErrorMapping getErrorMappingAnnotionation(Method method){
         Annotation annotation = getAnnotedMethod(method, MethodAnnotation.ERROR_MAPPING());
         ErrorMapping errormappingannotation = null;
         if(annotation != null){ errormappingannotation = (ErrorMapping)annotation;}
@@ -87,26 +87,22 @@ public class MethodScanner {
 
     
     public static String getMethodeVerb(Method method) throws MultipleVerbException {
-        String verb = null;
         Get getannotation = getGetAnnotation(method);
         Post postannotation = getPostAnnotation(method);
         if (getannotation != null && postannotation != null) {
             throw new MultipleVerbException(method);
         } 
         // Verification pour GET
-        verb = checkVerb(verb, getannotation, AnnotationVerb.GET);
-        // Verification pour POST
-        verb = checkVerb(verb, postannotation, AnnotationVerb.POST);
-        // Si il n'y a pas alors on met GET comme verb
-        verb = checkVerb(verb, null, AnnotationVerb.GET);
-        return verb;
-    }
-    private static String checkVerb( String initVerb , Annotation annotation , String verbResult){
-        if ((initVerb != null) && (annotation == null)) {
-            return initVerb;
+        if (getannotation != null) {
+            return AnnotationVerb.GET;
         }
-        return verbResult;
+        // Si il n'y a pas alors on met GET comme verb
+        if (postannotation != null) {
+            return AnnotationVerb.POST;
+        }
+        return AnnotationVerb.GET;
     }
+    
     public static String getMethodeUrl( Method method){
         Url urlannotation = getUrlAnnotation(method);
         if (urlannotation == null) {
@@ -125,5 +121,12 @@ public class MethodScanner {
         }
 
         return role;
+    }
+    public static String getMethodeErrorMappint(Method method) {
+        ErrorMapping errorMapping = getErrorMappingAnnotionation(method);
+        if (errorMapping == null) {
+            return null;
+        }
+        return errorMapping.url();
     }
 }
