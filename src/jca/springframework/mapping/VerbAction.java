@@ -17,7 +17,6 @@ import jca.springframework.exception.FrameworkException;
 import jca.springframework.scanner.RequestScanner;
 import jca.springframework.scanner.SessionScanner;
 import jca.springframework.scanner.ValidationScanner;
-import jca.springframework.session.FieldsValidations;
 import jca.springframework.session.WebSession;
 import jca.springframework.session.WebSessionParser;
 import jca.springframework.utils.RequestUtils;
