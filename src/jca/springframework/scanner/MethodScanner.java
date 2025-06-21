@@ -122,7 +122,7 @@ public class MethodScanner {
 
         return role;
     }
-    public static String getMethodeErrorMappint(Method method) {
+    public static String getMethodeErrorMapping(Method method) {
         ErrorMapping errorMapping = getErrorMappingAnnotionation(method);
         if (errorMapping == null) {
             return null;

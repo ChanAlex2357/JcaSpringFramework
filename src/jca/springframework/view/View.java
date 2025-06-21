@@ -9,7 +9,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import jca.springframework.utils.StringUtils;
 
 public abstract class View {
-    String error;
     HashMap<String,Object> data;
     String viewPath;
     public View(String viewPath){
@@ -41,9 +40,6 @@ public abstract class View {
     public Object getObject(String name){
         return getData().get(name);
     }
-
-    
-    
     abstract public void dispatch(HttpServletRequest req, HttpServletResponse resp)throws ServletException, IOException;
     
     protected void setAttributs(HttpServletRequest req){
@@ -51,11 +47,5 @@ public abstract class View {
         for (String attributName : getData().keySet()) {
             req.setAttribute(attributName, getData().get(attributName));
         }
-    }
-    public String getError() {
-        return error;
-    }
-    public void setError(String error) {
-        this.error = error;
     }
 }

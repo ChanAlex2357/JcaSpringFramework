@@ -10,8 +10,8 @@ import jca.springframework.view.View;
 public class FieldValidationException extends FrameworkException {
     private  Field field;
     private  Annotation annotation;
-    private  Object value;   
-
+    private  Object value;
+   
     public FieldValidationException(Field field, Annotation annotation , Object value, String message) {
         super(message,null);
         setField(field);
@@ -41,7 +41,7 @@ public class FieldValidationException extends FrameworkException {
         if (this.getMessage() != null) {
             view.addObject(this.getErrorName(),this.getMessage());
         }
-        view.addObject(this.getValueName(),this.getValue());
+        view.addObject(this.getErrorName(),this.getValue());
     }
     public void setValidAttribute(View view) {
         if (this.getValue() == null) {

@@ -72,11 +72,12 @@ public class ValidationScanner {
             checkValidationField(field, object);
         }
     }
-    // public void thowExceptionIfNeeded() throws FieldsValidationException{
-    //     if (this.getFieldValidationExceptionsList().size() > 0) {
-    //         throw this.getValidationExceptions();
-    //     }
-    // }
+    
+    public void thowExceptionIfNeeded() throws FieldsValidationException{
+        if (isValidationErrorPresent()) {
+            throw this.getValidationException();
+        }
+    }
 
     public boolean isValidationErrorPresent(){
         return !this.getValidationException().getFieldExceptions().isEmpty() || this.getValidationException().getFieldExceptions().size() > 0;

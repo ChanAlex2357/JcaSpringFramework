@@ -29,7 +29,6 @@ public class RestApiView extends View{
 
     public RestApiView(String json) {
         super(null);
-        
         setJsonResponse(json);
     }
 }   

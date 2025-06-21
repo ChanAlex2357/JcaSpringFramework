@@ -7,6 +7,7 @@ public class MappingAnnotation {
     private String url;
     private String verb;
     private String roleAccess;
+    private String errorRedirection;
     private boolean isApiMethode;
 
     @Override
@@ -28,6 +29,7 @@ public class MappingAnnotation {
         setVerb(MethodScanner.getMethodeVerb(method));
         setRoleAccess(MethodScanner.getMethodeRoleAccess(method));
         setApiMethode(method);
+        setErrorRedirection(MethodScanner.getMethodeErrorMapping(method));
     }
     public String getUrl() {
         return url;
@@ -47,5 +49,11 @@ public class MappingAnnotation {
     }
     public String getRoleAccess() {
         return roleAccess;
+    }
+    public String getErrorRedirection() {
+        return errorRedirection;
+    }
+    public void setErrorRedirection(String errorRedirection) {
+        this.errorRedirection = errorRedirection;
     }
 }

@@ -21,10 +21,6 @@ public class FieldsValidationException extends FrameworkException {
         this.validList = new ArrayList<>();
     }
 
-    public List<FieldValidationException> getFieldExceptions() {
-        return fieldExceptions;
-    }
-
     @Override
     public String getMessage() {
         StringBuilder message = new StringBuilder("Validation errors:\n");
@@ -53,4 +49,8 @@ public class FieldsValidationException extends FrameworkException {
     public List<FieldValidationException> getValidList() {
         return validList;
     }
+    public List<FieldValidationException> getFieldExceptions() {
+        return fieldExceptions;
+    }
+
 }
