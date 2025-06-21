@@ -19,6 +19,7 @@ import jca.springframework.scanner.SessionScanner;
 import jca.springframework.scanner.ValidationScanner;
 import jca.springframework.session.WebSession;
 import jca.springframework.session.WebSessionParser;
+import jca.springframework.utils.RequestUtils;
 import jca.springframework.view.RedirectView;
 import jca.springframework.view.View;
 public class VerbAction {
@@ -102,6 +103,9 @@ public class VerbAction {
             Method controllerMethod = controller.getClass().getMethod(getClassMethode().getMethodeControllerName(),parameterTypes);
             List<Object> parameterValues = getParameterValues(req,validationScanner);
             validationScanner.thowExceptionIfNeeded();
+            
+            /// Recuperer les donnees en cache dans la session avant d'executer la methode
+            RequestUtils.freeSessionCache(req, WebSessionParser.HttpSessionToWebSession(req));
             resultObject = controllerMethod.invoke(controller,parameterValues.toArray());
         }
         catch (FieldsValidationException fe) {

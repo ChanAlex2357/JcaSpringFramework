@@ -6,6 +6,7 @@ import java.util.HashMap;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jca.springframework.utils.RequestUtils;
 import jca.springframework.utils.StringUtils;
 
 public abstract class View {
@@ -43,9 +44,6 @@ public abstract class View {
     abstract public void dispatch(HttpServletRequest req, HttpServletResponse resp)throws ServletException, IOException;
     
     protected void setAttributs(HttpServletRequest req){
-        /// Ajouter en attribut les objets de la vue
-        for (String attributName : getData().keySet()) {
-            req.setAttribute(attributName, getData().get(attributName));
-        }
+        RequestUtils.setAttributs(req, data);
     }
 }
