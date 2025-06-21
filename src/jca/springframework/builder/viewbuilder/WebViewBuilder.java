@@ -2,7 +2,6 @@ package jca.springframework.builder.viewbuilder;
 
 import jca.springframework.exception.FrameworkException;
 import jca.springframework.mapping.VerbAction;
-import jca.springframework.scanner.ValidationScanner;
 import jca.springframework.view.ModelAndView;
 import jca.springframework.view.RedirectView;
 import jca.springframework.view.StringView;
