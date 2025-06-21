@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import jca.springframework.exception.FrameworkException;
-import jca.springframework.view.View;
+import jca.springframework.session.FieldsValidations;
 
 public class FieldsValidationException extends FrameworkException {
     private final List<FieldValidationException> fieldExceptions;
@@ -31,20 +31,23 @@ public class FieldsValidationException extends FrameworkException {
         return message.toString();
     }
 
-    public void setErrorAttributes(View view){
+    public void setErrorAttributes(FieldsValidations view){
         for (FieldValidationException fieldValidationException : fieldExceptions) {
             fieldValidationException.setErrorAttribut(view);
         }
     }
-    public void setValidAttributes(View view){
+    public void setValidAttributes(FieldsValidations view){
         for (FieldValidationException fieldValidationException : validList) {
             fieldValidationException.setValidAttribute(view);
         }
     }
 
-    public void setValidationAttributes(View view){
-        setErrorAttributes(view);
-        setValidAttributes(view);
+    public FieldsValidations getFieldsValidations(){
+        FieldsValidations fv = new FieldsValidations();
+        setErrorAttributes(fv);
+        setValidAttributes(fv);
+
+        return fv;
     }
     public List<FieldValidationException> getValidList() {
         return validList;

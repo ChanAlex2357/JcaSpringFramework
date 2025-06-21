@@ -3,7 +3,9 @@ package jca.springframework.utils;
 import java.util.Map;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jca.springframework.session.FieldsValidations;
 import jca.springframework.session.RedirectAttributs;
+import jca.springframework.session.SessionAttributsMapper;
 import jca.springframework.session.WebSession;
 
 public class RequestUtils {
@@ -23,15 +25,19 @@ public class RequestUtils {
         freeRedirections(req, session);
         freeErrors(req, session);
     }
-    public static void freeRedirections(HttpServletRequest req, WebSession session) {
-        RedirectAttributs redirecAttributs = (RedirectAttributs) session.get(RedirectAttributs.SESSSION_ID);
-        if (redirecAttributs == null) {
+
+    public static void freeSessionMapper(HttpServletRequest req, WebSession session, SessionAttributsMapper target){
+        target = (SessionAttributsMapper) session.pop(target.getSESSION_ID());
+        if (target == null) {
             return;
         }
-        setAttributs(req, redirecAttributs.getRedirectData());
+        setAttributs(req, target.getAttributs());
     }
 
+    public static void freeRedirections(HttpServletRequest req, WebSession session){
+        freeSessionMapper(req, session, new RedirectAttributs());
+    }
     public static void freeErrors(HttpServletRequest req, WebSession session){
-
+        freeSessionMapper(req, session, new FieldsValidations());
     }
 }

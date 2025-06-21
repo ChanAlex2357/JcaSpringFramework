@@ -2,14 +2,22 @@ package jca.springframework.view;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Map;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jca.springframework.builder.exception.FieldsValidationException;
+import jca.springframework.session.FieldsValidations;
+import jca.springframework.session.RedirectAttributs;
+import jca.springframework.session.WebSession;
+import jca.springframework.session.WebSessionParser;
 import jca.springframework.utils.RequestUtils;
 import jca.springframework.utils.StringUtils;
 
 public abstract class View {
+    public RedirectAttributs redirectData = new RedirectAttributs();
+    public FieldsValidationException fieldsValidationException;
     HashMap<String,Object> data;
     String viewPath;
     public View(String viewPath){
@@ -45,5 +53,31 @@ public abstract class View {
     
     protected void setAttributs(HttpServletRequest req){
         RequestUtils.setAttributs(req, data);
+        
+        WebSession session = WebSessionParser.HttpSessionToWebSession(req);
+        session.add(new RedirectAttributs().getSESSION_ID(), getRedirectData());
+        if (fieldsValidationException != null) {
+            session.add(new FieldsValidations().getSESSION_ID(), fieldsValidationException.getFieldsValidations());
+        }
+    }
+    public void addRedirectAttribut(String name, Object value){
+        getRedirectData().add(name,value);
+    }
+
+    public void addAllRedirectAttribut(Map<String,Object> data){
+        getRedirectData().addAll(data);
+    }
+    public RedirectAttributs getRedirectData() {
+        return redirectData;
+    }
+
+    public void setRedirectData(RedirectAttributs redirectData) {
+        this.redirectData = redirectData;
+    }
+    public FieldsValidationException getFieldsValidationException() {
+        return fieldsValidationException;
+    }
+    public void setFieldsValidationException(FieldsValidationException fieldsValidationException) {
+        this.fieldsValidationException = fieldsValidationException;
     }
 }
