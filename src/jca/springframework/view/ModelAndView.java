@@ -1,12 +1,9 @@
 package jca.springframework.view;
 
 import java.io.IOException;
-import java.util.Map;
-
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jca.springframework.session.RedirectAttributs;
 
 public class ModelAndView extends View{
     

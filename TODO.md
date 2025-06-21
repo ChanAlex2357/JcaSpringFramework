@@ -16,3 +16,9 @@ Redirection et erreur au niveau annotation
 - [ ] type de retour pour exporter des fichiers
 - [ ] gerer la permission d'ecriture
 - [ ] genere le fichier csv a partir d'une liste de donnee
+
+- [ ] Restructuration
+  - [ ] ecriture de fichier en local
+  - [ ] recuperer fichier en local
+  - [ ] ecriture de fichier en base
+  - [ ] recuperer fichier en base
