@@ -37,11 +37,7 @@ public class FieldValidationException extends FrameworkException {
         if (this.getValue() == null) {
             return;
         }
-        // Ajouter le message d'erreur parmi les attributs de la requete
-        if (this.getMessage() != null) {
-            map.add(this.getErrorName(),this.getMessage());
-        }
-        map.add(this.getErrorName(),this.getValue());
+        map.add(this.getErrorName(),this.getMessage());
     }
     public void setValidAttribute(FieldsValidations map) {
         if (this.getValue() == null) {

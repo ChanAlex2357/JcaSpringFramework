@@ -63,7 +63,7 @@ public class ValidationScanner {
         getValidationException().getFieldExceptions().add(new FieldValidationException(field, annotation,value,message));
     }
     protected void addValidField(Field field , Annotation annotation , Object value){
-        getValidationException().getValidList().add(new FieldValidationException(field, annotation,value,null));
+        getValidationException().getValidList().add(new FieldValidationException(field, annotation,value,"valide"));
     }
     
     // Vérifier toutes les annotations d'un tableau de champs

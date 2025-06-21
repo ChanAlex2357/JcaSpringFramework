@@ -21,8 +21,8 @@ public class AnnotationChecker {
     }
     protected  String checkRequired(Object value , Annotation annotation){
         value = getRequiredForced(value);
-        if (value == null || value == "" || value == "null") {
-            return ((Required) annotation).message();
+        if (value == null || ((String)value).isEmpty() || ((String)value).length() == 0) {
+            return ((Required)annotation).message();
         }
         return null;
     }

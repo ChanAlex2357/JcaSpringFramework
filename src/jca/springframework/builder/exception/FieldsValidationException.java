@@ -46,7 +46,6 @@ public class FieldsValidationException extends FrameworkException {
         FieldsValidations fv = new FieldsValidations();
         setErrorAttributes(fv);
         setValidAttributes(fv);
-
         return fv;
     }
     public List<FieldValidationException> getValidList() {
