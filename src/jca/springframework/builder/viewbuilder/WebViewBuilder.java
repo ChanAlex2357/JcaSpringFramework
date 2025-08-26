@@ -2,6 +2,7 @@ package jca.springframework.builder.viewbuilder;
 
 import jca.springframework.exception.FrameworkException;
 import jca.springframework.mapping.VerbAction;
+import jca.springframework.view.ExportFileView;
 import jca.springframework.view.ModelAndView;
 import jca.springframework.view.RedirectView;
 import jca.springframework.view.StringView;
@@ -25,6 +26,10 @@ public class WebViewBuilder extends ViewBuilder{
         if (obj instanceof ModelAndView){
             ModelAndView mv = (ModelAndView) obj;
             view = mv;
+        }
+        else if (obj instanceof ExportFileView) {
+            ExportFileView fileView = (ExportFileView) obj;
+            view = fileView;            
         }
         else if (obj instanceof RedirectView){
             RedirectView rv = (RedirectView) obj;
