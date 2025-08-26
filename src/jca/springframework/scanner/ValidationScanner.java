@@ -63,7 +63,7 @@ public class ValidationScanner {
         getValidationException().getFieldExceptions().add(new FieldValidationException(field, annotation,value,message));
     }
     protected void addValidField(Field field , Annotation annotation , Object value){
-        getValidationException().getValidList().add(new FieldValidationException(field, annotation,value,null));
+        getValidationException().getValidList().add(new FieldValidationException(field, annotation,value,"valide"));
     }
     
     // Vérifier toutes les annotations d'un tableau de champs
@@ -72,11 +72,12 @@ public class ValidationScanner {
             checkValidationField(field, object);
         }
     }
-    // public void thowExceptionIfNeeded() throws FieldsValidationException{
-    //     if (this.getFieldValidationExceptionsList().size() > 0) {
-    //         throw this.getValidationExceptions();
-    //     }
-    // }
+    
+    public void thowExceptionIfNeeded() throws FieldsValidationException{
+        if (isValidationErrorPresent()) {
+            throw this.getValidationException();
+        }
+    }
 
     public boolean isValidationErrorPresent(){
         return !this.getValidationException().getFieldExceptions().isEmpty() || this.getValidationException().getFieldExceptions().size() > 0;

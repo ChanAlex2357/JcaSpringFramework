@@ -2,14 +2,22 @@ package jca.springframework.view;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Map;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jca.springframework.builder.exception.FieldsValidationException;
+import jca.springframework.session.FieldsValidations;
+import jca.springframework.session.RedirectAttributs;
+import jca.springframework.session.WebSession;
+import jca.springframework.session.WebSessionParser;
+import jca.springframework.utils.RequestUtils;
 import jca.springframework.utils.StringUtils;
 
 public abstract class View {
-    String error;
+    public RedirectAttributs redirectData = new RedirectAttributs();
+    public FieldsValidationException fieldsValidationException;
     HashMap<String,Object> data;
     String viewPath;
     public View(String viewPath){
@@ -41,21 +49,35 @@ public abstract class View {
     public Object getObject(String name){
         return getData().get(name);
     }
-
-    
-    
     abstract public void dispatch(HttpServletRequest req, HttpServletResponse resp)throws ServletException, IOException;
     
     protected void setAttributs(HttpServletRequest req){
-        /// Ajouter en attribut les objets de la vue
-        for (String attributName : getData().keySet()) {
-            req.setAttribute(attributName, getData().get(attributName));
+        RequestUtils.setAttributs(req, data);
+        
+        WebSession session = WebSessionParser.HttpSessionToWebSession(req);
+        session.add(new RedirectAttributs().getSESSION_ID(), getRedirectData());
+        if (fieldsValidationException != null) {
+            session.add(new FieldsValidations().getSESSION_ID(), fieldsValidationException.getFieldsValidations());
         }
     }
-    public String getError() {
-        return error;
+    public void addRedirectAttribut(String name, Object value){
+        getRedirectData().add(name,value);
     }
-    public void setError(String error) {
-        this.error = error;
+
+    public void addAllRedirectAttribut(Map<String,Object> data){
+        getRedirectData().addAll(data);
+    }
+    public RedirectAttributs getRedirectData() {
+        return redirectData;
+    }
+
+    public void setRedirectData(RedirectAttributs redirectData) {
+        this.redirectData = redirectData;
+    }
+    public FieldsValidationException getFieldsValidationException() {
+        return fieldsValidationException;
+    }
+    public void setFieldsValidationException(FieldsValidationException fieldsValidationException) {
+        this.fieldsValidationException = fieldsValidationException;
     }
 }

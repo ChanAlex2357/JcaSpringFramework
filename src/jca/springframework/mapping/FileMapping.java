@@ -9,6 +9,7 @@ import jca.springframework.utils.PartUtils;
 
 public class FileMapping {
     private String filename;
+    private String extension;
     private byte[] bytes;
     
     public FileMapping(Part part) throws IOException{
@@ -18,8 +19,14 @@ public class FileMapping {
     public String getFilename() {
         return filename;
     }
-    public void setFilename(String filename) {
+    public void setFilename(String filename, boolean ext) {
         this.filename = filename;
+        if (ext) {
+            this.filename += this.getExtension();
+        }
+    }
+    public void setFilename(String filename) {
+        setFilename(filename, false);
     }
     public byte[] getBytes() {
         return bytes;
@@ -34,5 +41,11 @@ public class FileMapping {
         try (FileOutputStream fos = new FileOutputStream(file)) {
             fos.write(bytes);
         }
+    }
+    public String getExtension() {
+        return extension;
+    }
+    public void setExtension(String extension) {
+        this.extension = extension;
     }
 }

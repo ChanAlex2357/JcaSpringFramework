@@ -1,5 +1,8 @@
 package jca.springframework.session;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import jakarta.servlet.http.HttpSession;
 
 public class WebSession {
@@ -23,5 +26,19 @@ public class WebSession {
     }
     public Object get(String key) {
         return getSession().getAttribute(key);
+    }
+    public void addAll(Map<String, Object> maps){
+        for (String attributName : maps.keySet()) {
+            add(attributName, maps.get(attributName));
+        }
+    }
+
+    public Object pop(String key){
+        Object data = get(key);
+        if (data == null) {
+            return null;
+        }
+        remove(key);
+        return data;
     }
 }

@@ -11,7 +11,6 @@ public class AnnotationChecker {
     public  String check(Object value , Annotation annotation){
         String message = null;
         if (annotation instanceof Required) {
-            System.out.println("AnnotationChecker.check() : Required");
             message = checkRequired(value, annotation);
         } else if ( annotation instanceof Min) {
             message = checkMin(value, annotation);
@@ -22,9 +21,8 @@ public class AnnotationChecker {
     }
     protected  String checkRequired(Object value , Annotation annotation){
         value = getRequiredForced(value);
-        System.out.println("AnnotationChecker.checkRequired() : " + value);
-        if (value == null || value == "" || value == "null") {
-            return ((Required) annotation).message();
+        if (value == null || ((String)value).isEmpty() || ((String)value).length() == 0) {
+            return ((Required)annotation).message();
         }
         return null;
     }

@@ -4,14 +4,14 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 
 import jca.springframework.exception.FrameworkException;
-import jca.springframework.view.View;
+import jca.springframework.session.FieldsValidations;
 
 
 public class FieldValidationException extends FrameworkException {
     private  Field field;
     private  Annotation annotation;
-    private  Object value;   
-
+    private  Object value;
+   
     public FieldValidationException(Field field, Annotation annotation , Object value, String message) {
         super(message,null);
         setField(field);
@@ -33,21 +33,17 @@ public class FieldValidationException extends FrameworkException {
     protected String getValueName(){
         return "value_"+getField().getName();
     }
-    public void setErrorAttribut(View view) {
+    public void setErrorAttribut(FieldsValidations map) {
         if (this.getValue() == null) {
             return;
         }
-        // Ajouter le message d'erreur parmi les attributs de la requete
-        if (this.getMessage() != null) {
-            view.addObject(this.getErrorName(),this.getMessage());
-        }
-        view.addObject(this.getValueName(),this.getValue());
+        map.add(this.getErrorName(),this.getMessage());
     }
-    public void setValidAttribute(View view) {
+    public void setValidAttribute(FieldsValidations map) {
         if (this.getValue() == null) {
             return;
         }
-        view.addObject(this.getValueName(),this.getValue());
+        map.add(this.getValueName(),this.getValue());
     }
 
     private void setField(Field field) {

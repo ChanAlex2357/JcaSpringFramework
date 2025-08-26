@@ -19,23 +19,13 @@ import jca.springframework.scanner.SessionScanner;
 import jca.springframework.scanner.ValidationScanner;
 import jca.springframework.session.WebSession;
 import jca.springframework.session.WebSessionParser;
+import jca.springframework.utils.RequestUtils;
+import jca.springframework.view.RedirectView;
 import jca.springframework.view.View;
 public class VerbAction {
     private MappingAnnotation mappingAnnotation;
     private ClassMethode classMethode;
     
-    public ClassMethode getClassMethode() {
-        return classMethode;
-    }
-    public void setClassMethode(ClassMethode classMethode) {
-        this.classMethode = classMethode;
-    }
-    public MappingAnnotation getMappingAnnotation() {
-        return mappingAnnotation;
-    }
-    public void setMappingAnnotation(MappingAnnotation mappingAnnotation) {
-        this.mappingAnnotation = mappingAnnotation;
-    }
     public VerbAction(MappingAnnotation mappingAnnotation, String classControllerName , Method methodeController){
         this.setMappingAnnotation(mappingAnnotation);
         this.setClassMethode(new ClassMethode(classControllerName, methodeController));
@@ -45,17 +35,13 @@ public class VerbAction {
         this.setMappingAnnotation(mappingAnnotation);
         this.setClassMethode(classMethode);
     }
-    public String getVerb(){
-        return this.getMappingAnnotation().getVerb();
-    }
-    public String getMethodeAction(){
-        return this.getClassMethode().getMethodeControllerName();
-    }
-    public String getUrl(){
-        return this.getMappingAnnotation().getUrl();
-    }
-    
+
     // FUNCTIONALITIES
+    /**
+     * Recuperer un instance de la classe controller
+     * @param request
+     * @return
+     */
     public Object getControllerInstance(HttpServletRequest request){
         Object controllerInstance = null;
         try {
@@ -67,23 +53,47 @@ public class VerbAction {
             /// Cree une nouvelle instance avec le constructeur
             Object[] nullish = null;
             controllerInstance = defaultConstructor.newInstance(nullish);
-            for(Field attribut : clazz.getDeclaredFields()){
-                // Tester si l'attribut est une session
-                if (SessionScanner.isSessionField(attribut)) {
-                    attribut.setAccessible(true);
-                    // Instancier une session
-                    WebSession session = WebSessionParser.HttpSessionToWebSession(request);
-                    attribut.set(controllerInstance, session);
-                    attribut.setAccessible(false);
-                    break;
-                }
-            }
+            setSession(controllerInstance, clazz, request);
         } catch (Exception e) {
             /// Exception pour un controller qui n'existe pas
         }
         return controllerInstance;
     }
 
+    /**
+     * Instancier la session dans un controller si elle en possede l'attribut
+     * @param controllerInstance
+     * @param clazz
+     * @param request
+     * @throws IllegalArgumentException
+     * @throws IllegalAccessException
+     */
+    public void setSession(Object controllerInstance, Class<?> clazz, HttpServletRequest request) throws IllegalArgumentException, IllegalAccessException {
+        for(Field attribut : clazz.getDeclaredFields()){
+            // Tester si l'attribut est une session
+            if (SessionScanner.isSessionField(attribut)) {
+                attribut.setAccessible(true);
+                // Instancier une session
+                WebSession session = WebSessionParser.HttpSessionToWebSession(request);
+                attribut.set(controllerInstance, session);
+                attribut.setAccessible(false);
+                break;
+            }
+        }
+    }
+
+    /**
+     * Recuperer la valeur de retour d'une method soit l'action d'un controller
+     * @param req la requete http servlet
+     * @param validationScanner pour traiter les validation de paramtres
+     * @return la valeur de retour de l'action
+     * @throws IllegalArgumentException
+     * @throws FrameworkException
+     * @throws InstantiationException
+     * @throws IOException
+     * @throws ServletException
+     * @throws FieldsValidationException
+     */
     public Object getMethodResult(HttpServletRequest req,ValidationScanner validationScanner) throws IllegalArgumentException, FrameworkException, InstantiationException, IOException, ServletException, FieldsValidationException{
         Object resultObject = null;
         Object controller =  getControllerInstance(req);
@@ -92,7 +102,16 @@ public class VerbAction {
             Class<?>[] parameterTypes = getClassMethode().getMappingParameter().getParameterTypes();
             Method controllerMethod = controller.getClass().getMethod(getClassMethode().getMethodeControllerName(),parameterTypes);
             List<Object> parameterValues = getParameterValues(req,validationScanner);
+            validationScanner.thowExceptionIfNeeded();
+            
+            /// Recuperer les donnees en cache dans la session avant d'executer la methode
+            RequestUtils.freeSessionCache(req, WebSessionParser.HttpSessionToWebSession(req));
             resultObject = controllerMethod.invoke(controller,parameterValues.toArray());
+        }
+        catch (FieldsValidationException fe) {
+            RedirectView view = new RedirectView(getMappingAnnotation().getErrorRedirection(), false);
+            view.setFieldsValidationException(fe);
+            resultObject = view;
         }
         catch (NoSuchMethodException | SecurityException e) {
             throw new FrameworkException(e.getMessage(), e);
@@ -106,7 +125,21 @@ public class VerbAction {
         }
         return resultObject;
     }
-    /// Recuperation des donnees necessaires
+    /**
+     * Recuperer les parametres de la requete mapper au parametre de la fonction action
+     * @param req la requete
+     * @param validationScanner traitement de la validation des parametres
+     * @return la liste des parametres necessaires
+     * @throws IllegalArgumentException
+     * @throws IllegalAccessException
+     * @throws FrameworkException
+     * @throws InstantiationException
+     * @throws InvocationTargetException
+     * @throws SecurityException
+     * @throws IOException
+     * @throws ServletException
+     * @throws FieldsValidationException
+     */
     private List<Object> getParameterValues(HttpServletRequest req,ValidationScanner validationScanner) throws IllegalArgumentException, IllegalAccessException, FrameworkException, InstantiationException, InvocationTargetException, SecurityException, IOException, ServletException, FieldsValidationException{
         List<Object> values = new ArrayList<>();
         RequestScanner requestScanner = new RequestScanner();
@@ -118,12 +151,22 @@ public class VerbAction {
         return values;
     }
 
+    /**
+     * Recuperer une instance de view selon le type de resultat de la method d'action
+     * @param req la requete
+     * @return une instance de view selon le 
+     * @throws IllegalArgumentException
+     * @throws FrameworkException
+     * @throws InstantiationException
+     * @throws IOException
+     * @throws ServletException
+     */
     public View getViewResult(HttpServletRequest req)throws IllegalArgumentException, FrameworkException, InstantiationException, IOException, ServletException{
         ValidationScanner validationScanner = new ValidationScanner();
         /// Recuperer l'objet de retour de la methode du controller
         Object methodResult = getMethodResult(req,validationScanner);
         /// Traitement du resultat
-        View view =  ViewBuilder.getBuilder(this).buildView(methodResult, this,validationScanner);
+        View view =  ViewBuilder.getBuilder(this).buildView(methodResult, this);
         return view;
     }
 
@@ -143,6 +186,25 @@ public class VerbAction {
     public String getRoleAccess() {
         return getMappingAnnotation().getRoleAccess();
     }
-    
-    
+        public ClassMethode getClassMethode() {
+        return classMethode;
+    }
+    public void setClassMethode(ClassMethode classMethode) {
+        this.classMethode = classMethode;
+    }
+    public MappingAnnotation getMappingAnnotation() {
+        return mappingAnnotation;
+    }
+    public void setMappingAnnotation(MappingAnnotation mappingAnnotation) {
+        this.mappingAnnotation = mappingAnnotation;
+    }
+        public String getVerb(){
+        return this.getMappingAnnotation().getVerb();
+    }
+    public String getMethodeAction(){
+        return this.getClassMethode().getMethodeControllerName();
+    }
+    public String getUrl(){
+        return this.getMappingAnnotation().getUrl();
+    }
 }

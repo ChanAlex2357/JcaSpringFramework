@@ -11,6 +11,7 @@ import jca.springframework.controller.exception.RequestMethodCallException;
 import jca.springframework.exception.AuthentificationException;
 import jca.springframework.exception.FrameworkException;
 import jca.springframework.session.Authentification;
+import jca.springframework.session.WebSession;
 import jca.springframework.session.WebSessionParser;
 import jca.springframework.view.View;
 
@@ -28,6 +29,55 @@ public class Mapping {
         getVerbMapping().add(mappingClassMethode);
     }
 
+    /**
+     * Recuperer la view correspondant a la requete
+     * @param req la requete
+     * @return La view demandee
+     * @throws IllegalArgumentException
+     * @throws InstantiationException
+     * @throws FrameworkException
+     * @throws IOException
+     * @throws ServletException
+     */
+    public View getViewResult(HttpServletRequest req) throws IllegalArgumentException, InstantiationException, FrameworkException, IOException, ServletException {
+        // Verification de la conformite de la methode utiliser pour l'appel de la methode de controller
+        VerbAction mappingClassMethode = this.getMappingClassMethode(req.getMethod());
+        // Verifier l'authentification de l'utulisateur
+        WebSession session = WebSessionParser.HttpSessionToWebSession(req);
+        boolean auth = Authentification.isAuthorised( session, mappingClassMethode);
+        // Exception si l'utilisateur ne possede pas le bon role pour executer l'action du controller
+        if (!auth) {throw new AuthentificationException(mappingClassMethode);}
+        // Recuperer le resultat de la requete
+        return mappingClassMethode.getViewResult(req);
+    }
+
+    /**
+     * Recuperer Le verbe action correspondant a la methode de la requete
+     * @param requestMethod la method de la requete
+     * @return Le verb action associer
+     * @throws RequestMethodCallException
+     */
+    public VerbAction getMappingClassMethode(String requestMethod) throws RequestMethodCallException {
+        VerbAction mappingCorrespondance = null;
+        for (VerbAction mappingClassMethode : verbMapping) {
+            if ( mappingClassMethode.getVerb().equals(requestMethod)) {
+                mappingCorrespondance = mappingClassMethode;
+            }
+        }
+        // Exception pour un Verb introuvable pour la requete
+        if (!getVerbMapping().isEmpty() && mappingCorrespondance==null) {
+            throw new RequestMethodCallException(getUrl(),requestMethod);
+        }
+        return mappingCorrespondance;
+    }
+
+//  GETTEURS AND SETTEURS
+    public String getUrl() {
+        return url;
+    }
+    public void setUrl(String url) {
+        this.url = url;
+    }
     public boolean addVerbAction(VerbAction mappingClassMethode){
         return getVerbMapping().add(mappingClassMethode);
     }
@@ -37,34 +87,4 @@ public class Mapping {
     public void setVerbMapping(Set<VerbAction> verbMapping) {
         this.verbMapping = verbMapping;
     }
-    public View getViewResult(HttpServletRequest req) throws IllegalArgumentException, InstantiationException, FrameworkException, IOException, ServletException {
-        // Verification de la conformite de la methode utiliser pour l'appel de la methode de controller
-        VerbAction mappingClassMethode = this.getMappingClassMethode(req.getMethod());
-        // Verifier l'authentification de l'utulisateur
-        boolean auth = Authentification.isAuthorised( WebSessionParser.HttpSessionToWebSession(req), mappingClassMethode);
-        // Exception si l'utilisateur ne possede pas le bon role pour executer l'action du controller
-        if (!auth) {throw new AuthentificationException(mappingClassMethode);}
-        // Recuperer le resultat de la requete
-        return mappingClassMethode.getViewResult(req);
-    }
-    public VerbAction getMappingClassMethode(String requestMethod) throws RequestMethodCallException {
-        VerbAction mappingCorrespondance = null;
-        for (VerbAction mappingClassMethode : verbMapping) {
-            if ( mappingClassMethode.getVerb().equals(requestMethod)) {
-                mappingCorrespondance = mappingClassMethode;
-            }
-        }
-        if (!getVerbMapping().isEmpty() && mappingCorrespondance==null) {
-            throw new RequestMethodCallException(getUrl(),requestMethod);
-        }
-        return mappingCorrespondance;
-    }
-    public String getUrl() {
-        return url;
-    }
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
-    
 }
