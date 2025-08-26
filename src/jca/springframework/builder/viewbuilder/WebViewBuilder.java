@@ -31,6 +31,10 @@ public class WebViewBuilder extends ViewBuilder{
             ExportFileView fileView = (ExportFileView) obj;
             view = fileView;            
         }
+        else if (obj instanceof RedirectView){
+            RedirectView rv = (RedirectView) obj;
+            view = rv;
+        }
         else if (obj instanceof String) {
             view = new StringView( obj.toString() );            
         }
